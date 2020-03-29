@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
+        android:gravity ="center_vertical"
         android:text="สะสมแต้มรับส่วนลดทันใจใส่เบอร์เลยค้าบ"
         app:layout_constraintEnd_toStartOf="@+id/view"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -20,14 +21,11 @@
 
     <View
         android:id="@+id/view"
-        android:layout_width="300dp"
-        android:layout_height="412dp"
-        android:layout_marginTop="40dp"
+        android:layout_width="500dp"
+        android:layout_height="fill_parent"
         android:background="#057ACD"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -43,6 +41,7 @@
         android:id="@+id/imageView2"
         android:layout_width="192dp"
         android:layout_height="346dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
@@ -50,16 +49,68 @@
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="200"
-        android:layout_height="40"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
         android:layout_marginTop="30dp"
         android:background="#FFFFFF"
         android:ems="10"
         android:inputType="phone"
-        android:paddingLeft="10"
-        android:textColor="#FFFFFF"
+        android:paddingLeft="10dp"
+        android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/view"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/rounded_btn"
+        android:text="8"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toBottomOf="@+id/editText" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/rounded_btn"
+        android:text="8"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="1194dp"
+        tools:layout_editor_absoluteY="350dp" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/rounded_btn"
+        android:text="8"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="1202dp"
+        tools:layout_editor_absoluteY="251dp" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/rounded_btn"
+        android:text="8"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="1400dp"
+        tools:layout_editor_absoluteY="342dp" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/rounded_btn"
+        android:text="8"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="1397dp"
+        tools:layout_editor_absoluteY="250dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
