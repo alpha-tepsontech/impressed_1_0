@@ -80,8 +80,8 @@
         android:background="@drawable/rounded_btn"
         android:text="8"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="1194dp"
-        tools:layout_editor_absoluteY="350dp" />
+        tools:layout_editor_absoluteX="1074dp"
+        tools:layout_editor_absoluteY="239dp" />
 
     <Button
         android:id="@+id/button5"
@@ -90,8 +90,8 @@
         android:background="@drawable/rounded_btn"
         android:text="8"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="1202dp"
-        tools:layout_editor_absoluteY="251dp" />
+        tools:layout_editor_absoluteX="1207dp"
+        tools:layout_editor_absoluteY="342dp" />
 
     <Button
         android:id="@+id/button3"
@@ -110,7 +110,7 @@
         android:background="@drawable/rounded_btn"
         android:text="8"
         android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="1397dp"
-        tools:layout_editor_absoluteY="250dp" />
+        tools:layout_editor_absoluteX="1330dp"
+        tools:layout_editor_absoluteY="281dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
