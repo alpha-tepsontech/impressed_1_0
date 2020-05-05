@@ -7,20 +7,20 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/welcome_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:gravity ="center_vertical"
         android:text="สะสมแต้มรับส่วนลดทันใจใส่เบอร์เลยค้าบ"
-        app:layout_constraintEnd_toStartOf="@+id/view"
+        app:layout_constraintEnd_toStartOf="@+id/input_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/view"
+        android:id="@+id/input_view"
         android:layout_width="350dp"
         android:layout_height="604dp"
         android:background="#057ACD"
@@ -33,8 +33,8 @@
         android:layout_height="40dp"
         android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/view"
-        app:layout_constraintTop_toTopOf="@+id/view"
+        app:layout_constraintStart_toStartOf="@+id/input_view"
+        app:layout_constraintTop_toTopOf="@+id/input_view"
         app:srcCompat="@drawable/impressed_logo_thai" />
 
     <ImageView
@@ -42,9 +42,9 @@
         android:layout_width="192dp"
         android:layout_height="346dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/view"
+        app:layout_constraintEnd_toStartOf="@+id/input_view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/welcome_text"
         app:srcCompat="@drawable/sawasdee" />
 
     <EditText
@@ -58,7 +58,7 @@
         android:paddingLeft="10dp"
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintStart_toStartOf="@+id/input_view"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
@@ -71,5 +71,15 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/log_in_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="enter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/input_view"
+        app:layout_constraintStart_toStartOf="@+id/input_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
