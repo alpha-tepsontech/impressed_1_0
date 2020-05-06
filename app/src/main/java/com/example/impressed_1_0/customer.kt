@@ -1,5 +1,6 @@
 package com.example.impressed_1_0
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
@@ -14,6 +15,10 @@ class customer : AppCompatActivity() {
 
     store_name.text = "store name"
 
+        // set log out btn
+        log_out_btn.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
 
 
     }
