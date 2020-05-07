@@ -21,6 +21,9 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
+import android.view.LayoutInflater
+// import elements from verification_dialog view
+import kotlinx.android.synthetic.main.verification_dialog.view.*
 
 
 
@@ -30,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var mCallbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
     lateinit var mAuth: FirebaseAuth
     var verificationId = ""
+    var verification_code = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,32 +140,34 @@ class MainActivity : AppCompatActivity() {
             override fun onCodeSent(verfication: String, p1: PhoneAuthProvider.ForceResendingToken) {
                 Log.d("test","Vcodesent")
 
-                // dialog box code start
-                // build alert dialog
-                val dialogBuilder = AlertDialog.Builder(this)
+                // dialog with edittext
+                //Inflate the dialog with custom view
+                val mDialogView = LayoutInflater.from(this@MainActivity).inflate(R.layout.verification_dialog,null)
 
-                // set message of alert dialog
-                dialogBuilder.setMessage("ใส่ OTP ได้เลยคร้าบ")
-                    // if the dialog is cancelable
-                    .setCancelable(false)
-                    // positive button text and action
-                    .setPositiveButton("Proceed", DialogInterface.OnClickListener {
-                        //dialog, id ->finish()
-                            dialog, id -> startActivity(Intent(this, customer::class.java))
-                    })
-                    // negative button text and action
-                    .setNegativeButton("Cancel", DialogInterface.OnClickListener {
-                            dialog, id -> dialog.cancel()
-                    })
+                //AlertDialogBuilder
+                val mBuilder = AlertDialog.Builder(this@MainActivity)
+                    .setView(mDialogView)
+                    .setTitle("ยืนยันเบอร์โทรศัพท์")
+                //show dialog
+                val  mAlertDialog = mBuilder.show()
+                //login button click of custom layout
+                mDialogView.dialogLoginBtn.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
+                    //get text from EditTexts of custom layout
+                    verification_code = mDialogView.dialogNameEt.text.toString()
 
-                // create dialog box
-                val alert = dialogBuilder.create()
-                // set title for alert dialog box
-                alert.setTitle("Hello MFing world")
-                // show alert dialog
-                alert.show()
+                    // call authenticate to verify OTP
+                    authenticate()
 
-// dialog box code ends
+
+                }
+                //cancel button click of custom layout
+                mDialogView.dialogCancelBtn.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
+                }
+
 
 
                 super.onCodeSent(verfication, p1)
@@ -171,6 +177,7 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
 
     private fun verify () {
         Log.d("test","verify")
@@ -195,16 +202,16 @@ class MainActivity : AppCompatActivity() {
                     task: Task<AuthResult> ->
                 if (task.isSuccessful) {
 //                    Toast("Logged in Successfully :)")
-                    startActivity(Intent(this, MainActivity::class.java))
+                    startActivity(Intent(this, customer::class.java))
                 }
             }
     }
 
     private fun authenticate () {
 
-        val verifiNo = verifiTxt.text.toString()
+        val verifyNo = verification_code
 
-        val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, verifiNo)
+        val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, verifyNo)
 
         signIn(credential)
 

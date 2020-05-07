@@ -96,15 +96,7 @@
         app:layout_constraintStart_toStartOf="@+id/input_view"
         app:layout_constraintTop_toTopOf="@+id/verifiTxt" />
 
-    <EditText
-        android:id="@+id/verifiTxt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:textAlignment="center"
-        android:inputType="number"
-        android:layout_below="@+id/phnNoTxt"
-        android:layout_marginTop="43dp"
-        android:hint="Verification Code" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
