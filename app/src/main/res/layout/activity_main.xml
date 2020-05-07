@@ -94,7 +94,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/input_view"
-        app:layout_constraintTop_toTopOf="@+id/verifiTxt" />
+        app:layout_constraintTop_toTopOf="@+id/input_view" />
 
 
 
