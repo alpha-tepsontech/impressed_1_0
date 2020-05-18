@@ -39,10 +39,14 @@ dependencies {
 
     // firebase set up
     implementation "com.google.firebase:firebase-auth:19.3.1"
-    implementation "com.google.firebase:firebase-database-ktx:19.2.1"
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
 
     // FirebaseUI for Firebase Auth
     implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
+
+    // firebase database setup
+    implementation 'com.google.firebase:firebase-database-ktx:19.3.0'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+//    implementation 'com.google.firebase:firebase-firestore-ktx:21.4.3'
 }

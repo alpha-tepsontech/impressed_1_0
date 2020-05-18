@@ -22,20 +22,20 @@
     <View
         android:id="@+id/input_view"
         android:layout_width="350dp"
-        android:layout_height="604dp"
-        android:background="#057ACD"
+        android:layout_height="fill_parent"
+        android:background="@color/colorBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/input_view"
-        app:layout_constraintTop_toTopOf="@+id/input_view"
-        app:srcCompat="@drawable/impressed_logo_thai" />
+<!--    <ImageView-->
+<!--        android:id="@+id/imageView"-->
+<!--        android:layout_width="200dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginTop="40dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/input_view"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/input_view"-->
+<!--        app:srcCompat="@drawable/impressed_logo_thai" />-->
 
     <ImageView
         android:id="@+id/imageView2"
@@ -47,41 +47,221 @@
         app:layout_constraintTop_toBottomOf="@+id/welcome_text"
         app:srcCompat="@drawable/sawasdee" />
 
-    <EditText
-        android:id="@+id/phnNoTxt"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:background="#FFFFFF"
-        android:ems="10"
-        android:gravity="center"
-        android:inputType="phone"
-        android:paddingLeft="10dp"
-        android:textColor="@android:color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/input_view"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+<!--    <EditText-->
+<!--        android:id="@+id/phnNoTxt"-->
+<!--        android:layout_width="200dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        android:background="@drawable/phone_input_border"-->
+<!--        android:ems="10"-->
+<!--        android:gravity="center"-->
+<!--        android:inputType="phone"-->
+<!--        android:paddingLeft="10dp"-->
+<!--        android:textColor="@android:color/black"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/input_view"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/imageView" />-->
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="@drawable/rounded_btn"
-        android:text="8"
-        android:textColor="#FFFFFF"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/log_in_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:text="enter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/input_view"
-        app:layout_constraintStart_toStartOf="@+id/input_view" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center_horizontal"
+        android:hapticFeedbackEnabled="false"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/input_view"
+        app:layout_constraintEnd_toEndOf="@id/input_view"
+        app:layout_constraintStart_toStartOf="@id/input_view"
+        app:layout_constraintTop_toTopOf="@id/input_view">
+
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/impressed_logo_thai" />
+
+        <EditText
+            android:id="@+id/phnNoTxt"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/edittext_border"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="phone"
+            android:textColor="@color/colorLetterlight"
+            android:textSize="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/logo" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/letter1"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/colorLetterlight"
+                android:textSize="40dp" />
+
+            <TextView
+                android:id="@+id/letter2"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="@color/colorLetterlight"
+                android:textSize="40dp" />
+
+            <TextView
+                android:id="@+id/letter3"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="3"
+                android:textColor="@color/colorLetterlight"
+                android:textSize="40dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/letter4"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="4"
+                android:textColor="@color/colorLetterlight"
+                android:textSize="40dp" />
+
+            <TextView
+                android:id="@+id/letter5"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="5"
+                android:textColor="@color/colorLetterlight"
+                android:textSize="40dp" />
+
+            <TextView
+                android:id="@+id/letter6"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="6"
+                android:textColor="@color/colorLetterlight"
+                android:textSize="40dp" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/letter7"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="7"
+                android:textColor="@color/colorLetterlight"
+                android:textSize="40dp" />
+
+            <TextView
+                android:id="@+id/letter8"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="8"
+                android:textColor="@color/colorLetterlight"
+                android:textSize="40dp" />
+
+            <TextView
+                android:id="@+id/letter9"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="9"
+                android:textColor="@color/colorLetterlight"
+                android:textSize="40dp" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/del"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="DEL"
+                android:textColor="@color/colorLetterlight"
+                android:textSize="30dp" />
+            <TextView
+                android:id="@+id/letter0"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/colorLetterlight"
+                android:textSize="40dp" />
+
+
+
+            <ImageButton
+                android:id="@+id/log_in_btn"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/rounded_btn"
+                app:srcCompat="@drawable/btn_enter" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+
+
 
     <ProgressBar
         android:id="@+id/progress"

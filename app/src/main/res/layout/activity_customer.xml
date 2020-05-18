@@ -23,7 +23,7 @@
         android:id="@+id/input_view"
         android:layout_width="350dp"
         android:layout_height="604dp"
-        android:background="#057ACD"
+        android:background="@color/colorBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -87,7 +87,7 @@
         android:layout_marginEnd="50dp"
         android:layout_marginRight="50dp"
         android:text="x 1"
-        android:textColor="@color/fui_bgEmail"
+        android:textColor="@color/colorAccentbright"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/input_view"
