@@ -11,10 +11,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".biz_dashboard"></activity>
         <activity
             android:name=".biz_auth"
-            android:windowSoftInputMode="stateHidden"></activity>
-        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".MainActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,11 +26,8 @@
         </activity>
         <activity
             android:name=".launcher"
-            android:windowSoftInputMode="stateHidden">
-
-        </activity>
+            android:windowSoftInputMode="stateHidden"></activity>
         <activity android:name=".customer" />
-
     </application>
 
 </manifest>

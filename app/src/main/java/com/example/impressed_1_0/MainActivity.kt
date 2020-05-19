@@ -6,9 +6,13 @@ package com.example.impressed_1_0
 // import elements from verification_dialog view
 
 import android.app.AlertDialog
+import android.app.Application
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.Configuration
+import android.hardware.Sensor
+
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,6 +22,7 @@ import android.view.Surface
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.example.impressed_1_0.MyApplication.Companion.global_main_activity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthResult
@@ -31,6 +36,24 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.verification_dialog.view.*
 import java.util.concurrent.TimeUnit
 
+// set up sensor events
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+
+
+// detect
+
+
+// set global val
+
+class MyApplication: Application() {
+    companion object {
+        var global_main_activity = true
+    }
+
+}
+// set global val ends
 
 // [START User_class]
 data class User(
@@ -42,7 +65,14 @@ data class User(
 // [END user_class]
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() , SensorEventListener{
+
+    // sensor vars
+    private var mSensorManager : SensorManager ?= null
+    private var mAccelerometer : Sensor ?= null
+    // sensor vars ends
+
+
     // firebase auth setup
 
     lateinit var mCallbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
@@ -55,11 +85,24 @@ class MainActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
 
 
+
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        log_in_btn.text = "enter"
+
+        // get reference of the sensor
+        mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        // focus in accelerometer
+        mAccelerometer = mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
+
+
+
         // disable the btn until input is entered
         log_in_btn.setEnabled(false)
         welcome_text.text = "this is mother fucking welcome text MF!!"
@@ -137,13 +180,6 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        log_in_btn.setOnLongClickListener {
-
-
-            Log.d("test","longClicked")
-            true
-
-        }
 
         // custom keyboard ends
 
@@ -220,17 +256,22 @@ class MainActivity : AppCompatActivity() {
 
 
             }
-
-
-
-
-//            if (mAuth.currentUser == null){
-//                Toast.makeText(this, "button pressed :)", Toast.LENGTH_LONG).show()
-//            startActivity(Intent(this, customer::class.java))
-//            }
         }
     }
 
+    // gravity sensor code
+
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+
+            Log.d("test","yes!")
+
+    }
+
+    // gravity sensor code ends
 
 
     private fun verificationCallbacks () {
@@ -394,20 +435,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
     }
-
-
-    fun getRotation(context: Context): String? {
-        val rotation =
-            (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
-                .orientation
-        return when (rotation) {
-            Surface.ROTATION_0 -> "portrait"
-            Surface.ROTATION_90 -> "landscape"
-            Surface.ROTATION_180 -> "reverse portrait"
-            else -> "reverse landscape"
-        }
-    }
-
 
 
 }
