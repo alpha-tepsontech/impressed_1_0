@@ -11,7 +11,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
-import android.hardware.Sensor
 
 import android.os.Bundle
 import android.text.Editable
@@ -40,6 +39,17 @@ import java.util.concurrent.TimeUnit
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Point
+import android.hardware.Sensor
+
+import android.os.Build
+import android.os.Vibrator
+import android.view.*
+
 
 
 // detect
@@ -70,6 +80,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
     // sensor vars
     private var mSensorManager : SensorManager ?= null
     private var mAccelerometer : Sensor ?= null
+
     // sensor vars ends
 
 
@@ -99,6 +110,22 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         // focus in accelerometer
         mAccelerometer = mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
+        // setup the window
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+            window.decorView.systemUiVisibility =   View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            View.SYSTEM_UI_FLAG_FULLSCREEN
+            View.SYSTEM_UI_FLAG_IMMERSIVE
+        }
 
 
 
@@ -267,7 +294,9 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
     override fun onSensorChanged(event: SensorEvent?) {
 
-            Log.d("test","yes!")
+        if (event != null) {
+            Log.d("test",event.values[0].toString())
+        }
 
     }
 
