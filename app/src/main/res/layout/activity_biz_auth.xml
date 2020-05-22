@@ -10,7 +10,7 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,11 +59,11 @@
         android:id="@+id/btn_enter"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="50dp"
         android:background="@drawable/rounded_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pw_input"
+        app:layout_constraintTop_toBottomOf="@+id/forgot_pass"
         app:srcCompat="@drawable/btn_enter" />
 
     <TextView
@@ -104,6 +104,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/forgot_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="forgot password?"
+        android:textColor="@color/colorLetterlight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pw_input" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,8 +12,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".gravity_test"
-            android:exported="true">
+        <activity android:name=".launcher_land"></activity>
+        <activity
+            android:name=".gravity_test"
+            android:exported="true" />
+        <activity
+            android:name=".biz_dashboard"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".biz_auth"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="stateHidden">
+
+
+
+        </activity>
+        <activity
+            android:name=".launcher"
+            android:windowSoftInputMode="stateHidden">
             <!-- launch code -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,19 +41,6 @@
             <!-- launch code ends -->
 
         </activity>
-        <activity android:name=".biz_dashboard" />
-        <activity
-            android:name=".biz_auth"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".MainActivity"
-            android:windowSoftInputMode="stateHidden">
-
-
-        </activity>
-        <activity
-            android:name=".launcher"
-            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".customer" />
     </application>
 

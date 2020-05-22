@@ -110,16 +110,14 @@ class launcher : AppCompatActivity() {
 
         // custom keyboard ends
 
+        //send to activity base on rotation
 
-            logo.setOnLongClickListener {
+        val rotation = windowManager.defaultDisplay.rotation
 
+        if (rotation == 1 || rotation == 3){
 
-
-             startActivity(Intent(this@launcher, biz_auth::class.java))
-
-                true
-            }
-
+            startActivity(Intent(this,launcher_land::class.java))
+        }
 
 
 

@@ -10,6 +10,7 @@ import android.app.Application
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 
 import android.os.Bundle
@@ -39,21 +40,7 @@ import java.util.concurrent.TimeUnit
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.content.pm.ActivityInfo
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Point
 import android.hardware.Sensor
-
-import android.os.Build
-import android.os.Vibrator
-import android.view.*
-
-
-
-// detect
-
 
 // set global val
 
@@ -77,11 +64,11 @@ data class User(
 
 class MainActivity : AppCompatActivity() , SensorEventListener{
 
-    // sensor vars
+    // init sensor vars
     private var mSensorManager : SensorManager ?= null
     private var mAccelerometer : Sensor ?= null
 
-    // sensor vars ends
+    // init sensor vars ends
 
 
     // firebase auth setup
@@ -95,40 +82,18 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
     // firebase realtime database setup
     private lateinit var database: DatabaseReference
 
-
-
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        // get reference of the sensor
+        // gravity sensor setup
+        // get reference of the service
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         // focus in accelerometer
         mAccelerometer = mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-
-        // setup the window
+        // lock orientation while on this activity
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
-            window.decorView.systemUiVisibility =   View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            View.SYSTEM_UI_FLAG_FULLSCREEN
-            View.SYSTEM_UI_FLAG_IMMERSIVE
-        }
-
-
-
+        // gravity sensor setup ends
 
         // disable the btn until input is entered
         log_in_btn.setEnabled(false)
@@ -214,9 +179,6 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         // firebase auth
         mAuth = FirebaseAuth.getInstance()
 
-
-
-
         // initialize_database_ref
         database = Firebase.database.reference
         // init ends
@@ -284,23 +246,14 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
             }
         }
-    }
 
-    // gravity sensor code
-
-
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-    }
-
-    override fun onSensorChanged(event: SensorEvent?) {
-
-        if (event != null) {
-            Log.d("test",event.values[0].toString())
+        logo.setOnLongClickListener {
+            startActivity(Intent(this,biz_dashboard::class.java))
+            true
         }
-
     }
 
-    // gravity sensor code ends
+
 
 
     private fun verificationCallbacks () {
@@ -465,5 +418,31 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
             }
     }
 
+       // gravity sensor code
+
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event != null && event.values[0] < -8 && global_main_activity == true) {
+            global_main_activity = false
+            startActivity(Intent(this,biz_dashboard::class.java))
+
+        }
+
+    }
+    override fun onResume() {
+        super.onResume()
+        mSensorManager!!.registerListener(this,mAccelerometer,
+            SensorManager.SENSOR_DELAY_GAME)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mSensorManager!!.unregisterListener(this)
+    }
+
+    // gravity sensor code ends
 
 }

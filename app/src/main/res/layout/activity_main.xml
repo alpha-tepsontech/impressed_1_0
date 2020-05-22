@@ -77,13 +77,13 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/impressed_logo_thai" />
+            app:srcCompat="@drawable/logo_thai_light" />
 
         <EditText
             android:id="@+id/phnNoTxt"

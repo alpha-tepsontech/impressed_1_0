@@ -22,8 +22,11 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.verification_dialog.view.*
+import kotlinx.android.synthetic.main.forgot_pw_dialog.*
+import kotlinx.android.synthetic.main.forgot_pw_dialog.view.*
+
 import java.util.concurrent.TimeUnit
+
 
 class biz_auth : AppCompatActivity() {
 
@@ -46,6 +49,15 @@ class biz_auth : AppCompatActivity() {
         // initialize_database_ref
         database = Firebase.database.reference
         // init ends
+
+        // check if user is already signed in
+
+        if(auth.currentUser !== null){
+
+            // sent to main activity
+            startActivity(Intent(this,MainActivity::class.java))
+
+        }
 
 
         // btn_enter
@@ -84,6 +96,7 @@ class biz_auth : AppCompatActivity() {
             } else {
                 Log.d("test", "empty_editText")
                 Toast.makeText(this, "Please enter email & password", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.INVISIBLE
 
             }
 
@@ -106,28 +119,8 @@ class biz_auth : AppCompatActivity() {
 
                 // show progressbar
                 progressBar.visibility = View.VISIBLE
-
                 // sign user up
-                auth.createUserWithEmailAndPassword(
-                    email_input.text.toString(),
-                    pw_input.text.toString()
-                )
-                    .addOnCompleteListener(this) { task ->
-                        if (task.isSuccessful) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("test", "createUserWithEmail:success")
-                            Toast.makeText(this, "success", Toast.LENGTH_SHORT).show()
-
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("test", "createUserWithEmail:failure", task.exception)
-                            Toast.makeText(
-                                baseContext, "Authentication failed.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
+                signUp()
 
 
             } else {
@@ -137,6 +130,60 @@ class biz_auth : AppCompatActivity() {
             }
 
         }
+
+        forgot_pass.setOnClickListener {
+
+            // dialog with edittext start
+            //Inflate the dialog with custom view
+            val mDialogView = LayoutInflater.from(this@biz_auth).inflate(R.layout.forgot_pw_dialog,null)
+
+            //AlertDialogBuilder
+            val mBuilder = AlertDialog.Builder(this@biz_auth)
+                .setView(mDialogView)
+                .setTitle("")
+            //show dialog
+            val  mAlertDialog = mBuilder.show()
+            //login button click of custom layout
+            mDialogView.dialog_send.setOnClickListener {
+
+                var dialog_email_string = mDialogView.dialog_email.text.toString()
+
+                auth!!.sendPasswordResetEmail(dialog_email_string)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(this, "Success!! please follow instruction sent to "+dialog_email_string, Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(
+                                baseContext, task.exception.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+
+
+
+
+
+                //dismiss dialog
+                mAlertDialog.dismiss()
+
+
+
+
+
+            }
+            //cancel button click of custom layout
+            mDialogView.forgot_pw_cancel_btn.setOnClickListener {
+                //dismiss dialog
+                mAlertDialog.dismiss()
+            }
+
+            // dialog with editText ends
+
+
+
+        }
+
     }
 
     private fun signIn () {
@@ -148,6 +195,34 @@ class biz_auth : AppCompatActivity() {
 
                     startActivity(Intent(this, MainActivity::class.java))
 
+    }
+
+    private fun signUp(){
+
+        // sign user up
+        auth.createUserWithEmailAndPassword(
+            email_input.text.toString(),
+            pw_input.text.toString()
+        )
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d("test", "createUserWithEmail:success")
+                    Toast.makeText(this, "success", Toast.LENGTH_SHORT).show()
+
+
+                } else {
+                    // If sign in fails, display a message to the user.
+
+                    Log.w("test", "createUserWithEmail:failure", task.exception)
+                    Toast.makeText(
+                        baseContext, task.exception.toString(),
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    progressBar.visibility = View.INVISIBLE
+                }
+            }
     }
 
 
