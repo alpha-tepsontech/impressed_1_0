@@ -84,11 +84,13 @@ class biz_auth : AppCompatActivity() {
 
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w("test", "createUserWithEmail:failure", task.exception)
                             Toast.makeText(
                                 baseContext, task.exception.toString(),
                                 Toast.LENGTH_LONG
                             ).show()
+                            //hide progressBar
+
+                            progressBar.visibility = View.INVISIBLE
                         }
                     }
 
@@ -111,6 +113,7 @@ class biz_auth : AppCompatActivity() {
             finish()
         }
         // back btn ends
+
         // sign up btn
 
         signup.setOnClickListener {
@@ -126,6 +129,10 @@ class biz_auth : AppCompatActivity() {
             } else {
                 Log.d("test", "empty_editText")
                 Toast.makeText(this, "Please enter email & password", Toast.LENGTH_SHORT).show()
+
+                //hide progressBar
+
+                progressBar.visibility = View.INVISIBLE
 
             }
 
@@ -193,7 +200,7 @@ class biz_auth : AppCompatActivity() {
 
                     progressBar.visibility = View.INVISIBLE
 
-                    startActivity(Intent(this, MainActivity::class.java))
+                    startActivity(Intent(this, biz_dashboard::class.java))
 
     }
 

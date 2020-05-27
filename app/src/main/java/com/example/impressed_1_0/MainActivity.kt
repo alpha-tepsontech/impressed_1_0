@@ -41,6 +41,13 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.Sensor
+import android.widget.Toast
+
+// import firebase database
+
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 // set global val
 
@@ -55,9 +62,7 @@ class MyApplication: Application() {
 // [START User_class]
 data class User(
     var phone: String? = "",
-    var name: String? = "",
-    var location: String? = "",
-    var heart: Int? = 0
+    var name: String? = ""
 )
 // [END user_class]
 
@@ -81,6 +86,8 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
     // firebase realtime database setup
     private lateinit var database: DatabaseReference
+
+    private var customer_phone_listener: ValueEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -270,9 +277,6 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
             }
 
 
-
-
-
             override fun onCodeSent(verfication: String, p1: PhoneAuthProvider.ForceResendingToken) {
                 Log.d("test","Vcodesent")
 
@@ -332,8 +336,30 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         )
     }
 
+    private fun checkifexist(){
+
+        val country_code = "+66"
+        val phnNo = country_code+phnNoTxt.text.toString()
+
+        val customer_phone_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Get Post object and use the values to update the UI
+                val post = dataSnapshot.getValue<phone>()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "Failed to load post.",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+        database.child("customers").addValueEventListener(customer_phone_listener)
 
 
+        }
 
     private fun authenticate () {
 
@@ -398,14 +424,14 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
                     //add user on to database with phone number
 
-                    // Write a message to the database
+                    // Write user's name to the database
 
                     val country_code = "+66"
                     val phnNo = country_code+phnNoTxt.text.toString()
 
                     val user = User(phnNo, name_input)
 
-                    database.child("users").push().setValue(user)
+                    database.child("customers").push().setValue(user)
 
                     Log.d("test", "user-setValue")
 

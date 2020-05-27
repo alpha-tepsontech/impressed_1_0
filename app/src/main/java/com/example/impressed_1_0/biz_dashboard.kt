@@ -133,6 +133,14 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
         }
 
+        clear.setOnClickListener {
+            //set text
+            total_input.setText("")
+
+
+
+        }
+
         total_ent.setOnClickListener {
 
 
