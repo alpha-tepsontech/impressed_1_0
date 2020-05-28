@@ -38,24 +38,24 @@
         app:srcCompat="@drawable/impressed_logo_thai" />
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/logged_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="customer_name"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/input_view"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/input_view"
-        app:layout_constraintTop_toTopOf="@+id/input_view" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/phone"
+        android:id="@+id/logged_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="099123456"
+        android:text="###-###-####"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/input_view"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintTop_toBottomOf="@+id/logged_name" />
 
     <TextView
         android:id="@+id/textView4"

@@ -42,22 +42,17 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.Sensor
 import android.widget.Toast
+import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
+import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
 
 // import firebase database
 
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.activity_customer.*
 
-// set global val
 
-class MyApplication: Application() {
-    companion object {
-        var global_main_activity = true
-    }
-
-}
-// set global val ends
 
 // [START User_class]
 data class User(
@@ -358,8 +353,11 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
                     for (ds in dataSnapshot.children) {
                         val phonerecorded = ds.child("phone").getValue(String::class.java)
+                        val namerecorded = ds.child("name").getValue(String::class.java)
 
                         if (phonerecorded == phnNo) {
+                            customer_logged_phone = phonerecorded
+                            customer_logged_name = namerecorded
                             startActivity(Intent(this@MainActivity, customer::class.java))
 
                         }

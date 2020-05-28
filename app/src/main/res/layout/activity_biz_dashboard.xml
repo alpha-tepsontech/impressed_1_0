@@ -273,7 +273,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
-        android:text=" ออกจากระบบ"
+        android:text="รับลูกค้าใหม่"
         android:textColor="@color/colorLetterlight"
         app:layout_constraintBottom_toBottomOf="@+id/input_view"
         app:layout_constraintEnd_toEndOf="@+id/input_view"

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".launcher_land"></activity>
+        <activity android:name=".dashboard"></activity>
+        <activity android:name=".launcher_land" />
         <activity
             android:name=".gravity_test"
             android:exported="true" />
@@ -24,14 +25,11 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="stateHidden">
-
-
-
-        </activity>
+            android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name=".launcher"
             android:windowSoftInputMode="stateHidden">
+
             <!-- launch code -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

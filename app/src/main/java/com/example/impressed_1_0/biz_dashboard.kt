@@ -1,5 +1,6 @@
 package com.example.impressed_1_0
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -13,6 +14,8 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.Sensor
 import android.util.Log
+import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
+import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 
@@ -21,6 +24,8 @@ private var mSensorManager : SensorManager ?= null
 private var mAccelerometer : Sensor ?= null
 
 // set sensor vars ends
+
+
 
 
 
@@ -153,13 +158,15 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
         log_out_btn.setOnClickListener {
 
-            auth.signOut()
-            startActivity(Intent(this,launcher_land::class.java))
+              customer_logged_phone = ""
+              customer_logged_name = ""
+            startActivity(Intent(this,dashboard::class.java))
+//            auth.signOut()
+//            startActivity(Intent(this,launcher_land::class.java))
         }
 
 
     }
-
     // gravity sensor code
 
 
@@ -167,9 +174,9 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.values[0] > 8 && MyApplication.global_main_activity == false) {
-            MyApplication.global_main_activity = true
-            startActivity(Intent(this,MainActivity::class.java))
+        if (event != null && event.values[0] > 8 && MyApplication.global_customer == false) {
+            MyApplication.global_customer = true
+            startActivity(Intent(this,customer::class.java))
 
 
         }

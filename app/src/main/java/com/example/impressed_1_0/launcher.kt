@@ -1,6 +1,7 @@
 package com.example.impressed_1_0
 
 import android.app.AlertDialog
+import android.app.Application
 import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,19 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthMultiFactorException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.ktx.Firebase
+
+// set global val
+
+class MyApplication: Application() {
+    companion object {
+        var global_main_activity = true
+        var customer_logged_name : String? = ""
+        var customer_logged_phone: String? = ""
+        var global_customer = true
+    }
+
+}
+// set global val ends
 
 
 class launcher : AppCompatActivity() {
