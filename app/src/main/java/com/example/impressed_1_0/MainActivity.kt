@@ -89,6 +89,8 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
     private var customer_phone_listener: ValueEventListener? = null
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -224,7 +226,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 //                Log.d("test","btn click")
             if(phnNoTxt.text.isNotEmpty()){
 
-                verify ()
+                checkifexist()
             }else{
 //                    view: View? -> progress.visibility = View.INVISIBLE
 // dialog box code start
@@ -336,27 +338,76 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         )
     }
 
-    private fun checkifexist(){
 
+    private fun checkifexist(){
+        Log.d("test","checkifexist-run")
         val country_code = "+66"
         val phnNo = country_code+phnNoTxt.text.toString()
 
+        var customersref  = database.child("customers").orderByChild("phone").equalTo(phnNo)
+
         val customer_phone_listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // Get Post object and use the values to update the UI
-                val post = dataSnapshot.getValue<phone>()
+
+                var phonecheck = dataSnapshot.getValue()
+
+                if (phonecheck == null){
+                    verify()
+                }
+                else if(phonecheck !== null) {
+
+                    for (ds in dataSnapshot.children) {
+                        val phonerecorded = ds.child("phone").getValue(String::class.java)
+
+                        if (phonerecorded == phnNo) {
+                            startActivity(Intent(this@MainActivity, customer::class.java))
+
+                        }
+
+                    }
+                }
+
+
+
+
+//                for (ds in dataSnapshot.children) {
+//                    val phonerecorded = ds.child("phone").getValue(String::class.java)
+//
+//                    if (phonerecorded == null){
+//                        Log.d("test","null phone")
+//                    }
+//
+//
+//                    if (phonerecorded == phnNo) {
+//                       startActivity(Intent(this@MainActivity,customer::class.java))
+//
+//                    } else {
+//                        Log.d("test", "phone not match")
+//                    }
+//
+//                }
+
+
+
+
+//                var users = dataSnapshot.getValue()
+//                Log.d("test",users.toString())
+//                for (users in dataSnapshot.children){
+//                Log.d("test", users.toString())
+//                }
+
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                Log.w("error", "loadPost:onCancelled", databaseError.toException())
                 // [START_EXCLUDE]
                 Toast.makeText(baseContext, "Failed to load post.",
                     Toast.LENGTH_SHORT).show()
                 // [END_EXCLUDE]
             }
         }
-        database.child("customers").addValueEventListener(customer_phone_listener)
+        customersref.addListenerForSingleValueEvent(customer_phone_listener)
 
 
         }
