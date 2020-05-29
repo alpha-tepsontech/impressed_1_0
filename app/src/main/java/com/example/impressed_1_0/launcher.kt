@@ -30,6 +30,7 @@ class MyApplication: Application() {
         var customer_logged_name : String? = ""
         var customer_logged_phone: String? = ""
         var global_customer = true
+        var global_dashboard = true
     }
 
 }

@@ -55,7 +55,7 @@ class biz_auth : AppCompatActivity() {
         if(auth.currentUser !== null){
 
             // sent to main activity
-            startActivity(Intent(this,MainActivity::class.java))
+            startActivity(Intent(this,dashboard::class.java))
 
         }
 
@@ -200,7 +200,7 @@ class biz_auth : AppCompatActivity() {
 
                     progressBar.visibility = View.INVISIBLE
 
-                    startActivity(Intent(this, biz_dashboard::class.java))
+                    startActivity(Intent(this, dashboard::class.java))
 
     }
 
@@ -216,6 +216,7 @@ class biz_auth : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("test", "createUserWithEmail:success")
                     Toast.makeText(this, "success", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, dashboard::class.java))
 
 
                 } else {
