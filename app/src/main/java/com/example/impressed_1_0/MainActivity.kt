@@ -22,7 +22,6 @@ import android.view.Surface
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import com.example.impressed_1_0.MyApplication.Companion.global_main_activity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthResult
@@ -500,9 +499,8 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.values[0] < -8 && global_main_activity == true) {
-            global_main_activity = false
-            startActivity(Intent(this,biz_dashboard::class.java))
+        if (event != null && event.values[0] < -8) {
+            startActivity(Intent(this,dashboard::class.java))
 
         }
 

@@ -73,6 +73,7 @@
         android:layout_marginEnd="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginBottom="10dp"
+        android:background="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/scroll_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_add" />
@@ -90,14 +91,14 @@
         app:layout_constraintTop_toTopOf="@+id/view">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/dash_biz_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ิbiz_email"
             android:textColor="@color/colorLetterlight" />
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/email_edit"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@color/colorBackground"
@@ -124,7 +125,7 @@
             android:textColor="@color/colorLetterlight" />
 
         <ImageButton
-            android:id="@+id/imageButton3"
+            android:id="@+id/location_edit"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@color/colorBackground"
@@ -150,7 +151,7 @@
             android:textColor="@color/colorLetterlight" />
 
         <ImageButton
-            android:id="@+id/imageButton4"
+            android:id="@+id/device_edit"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:background="@color/colorBackground"
@@ -183,7 +184,7 @@
             android:textColor="@color/colorLetterlight" />
 
         <TextView
-            android:id="@+id/textView8"
+            android:id="@+id/heart_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="##"
@@ -195,6 +196,14 @@
             android:layout_height="wrap_content"
             android:text="บาท"
             android:textColor="@color/colorLetterlight" />
+        <ImageButton
+            android:id="@+id/heart_edit"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:background="@color/colorBackground"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/edit_light" />
     </LinearLayout>
 
     <TextView
@@ -207,6 +216,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintStart_toStartOf="parent" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

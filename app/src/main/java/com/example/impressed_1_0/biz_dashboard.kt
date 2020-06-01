@@ -18,6 +18,8 @@ import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_biz_dashboard.log_out_btn
+import kotlinx.android.synthetic.main.activity_customer.*
 
 // set sensor vars
 private var mSensorManager : SensorManager ?= null
@@ -60,6 +62,9 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         if(auth.currentUser !== null){
             biz_email.text = auth.currentUser!!.email
         }
+
+        customer_phone.text = customer_logged_phone
+        customer_name.text = customer_logged_name
 
         // custom keyboard start
         // disable softkeyboard on focus
@@ -174,8 +179,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.values[0] > 8 && MyApplication.global_customer == false) {
-            MyApplication.global_customer = true
+        if (event != null && event.values[0] > 8) {
             startActivity(Intent(this,customer::class.java))
 
 

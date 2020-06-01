@@ -66,8 +66,7 @@ class customer : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.values[0] < -8 && MyApplication.global_customer == true) {
-            MyApplication.global_customer = false
+        if (event != null && event.values[0] < -8) {
             startActivity(Intent(this,biz_dashboard::class.java))
 
         }

@@ -26,11 +26,8 @@ import com.google.firebase.ktx.Firebase
 
 class MyApplication: Application() {
     companion object {
-        var global_main_activity = true
         var customer_logged_name : String? = ""
         var customer_logged_phone: String? = ""
-        var global_customer = true
-        var global_dashboard = true
     }
 
 }

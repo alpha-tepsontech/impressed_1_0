@@ -7,6 +7,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -54,8 +55,7 @@ class biz_auth : AppCompatActivity() {
 
         if(auth.currentUser !== null){
 
-            // sent to main activity
-            startActivity(Intent(this,dashboard::class.java))
+            signIn()
 
         }
 
@@ -195,12 +195,11 @@ class biz_auth : AppCompatActivity() {
 
     private fun signIn () {
 
+        //hide progressBar
 
-                    //hide progressBar
+        progressBar.visibility = View.INVISIBLE
 
-                    progressBar.visibility = View.INVISIBLE
-
-                    startActivity(Intent(this, dashboard::class.java))
+        startActivity(Intent(this, dashboard::class.java))
 
     }
 
