@@ -31,9 +31,15 @@ import java.util.concurrent.TimeUnit
 // start data class
 data class Location(
     var locationName: String? = "",
+    var heartWorth: Int? = 0
+)
+// ends
+
+// start data class
+data class Devices(
     var deviceID: String? = "",
     var deviceName: String? = "",
-    var heart_worth: Int? = 0
+    var locationKey:String? = ""
 )
 // ends
 
@@ -208,20 +214,6 @@ class biz_auth : AppCompatActivity() {
 
         progressBar.visibility = View.INVISIBLE
 
-        // test firebase write
-
-        // write to database
-
-        var biz_uid = auth.currentUser!!.uid
-
-        val deviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-
-        var location_info = Location("สาขาแรก",deviceID,"เครื่องแรก",100)
-
-//        database.child("biz_owners").child(biz_uid).child("สาขาแรก").child("devices").child("เครื่องแรก").setValue(deviceID)
-        database.child("biz_owners").child(biz_uid).orderByChild("สาขาสอง").equalTo("สาขาสาม")
-
-
         startActivity(Intent(this, dashboard::class.java))
 
     }
@@ -245,7 +237,16 @@ class biz_auth : AppCompatActivity() {
 
                     val deviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
 
-                    var location_name_ref = database.child("biz_owners").child(biz_uid).child("สาขาแรก")
+
+                    var location_key = database.push().key.toString()
+
+                    var location_info = Location("สาขาแรก",100)
+
+                    database.child("biz_owners").child(biz_uid).child("locations").child(location_key).setValue(location_info)
+
+                    var device_info = Devices(deviceID,"เครื่องแรก",location_key)
+
+                    database.child("biz_owners").child(biz_uid).child("devices").push().setValue(device_info)
 
 
 

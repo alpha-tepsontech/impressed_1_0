@@ -114,12 +114,10 @@
         android:id="@+id/linearLayout6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/input_view"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_store_name">
+        app:layout_constraintStart_toStartOf="@+id/biz_device_display"
+        app:layout_constraintTop_toBottomOf="@+id/biz_device_display">
 
 
         <ImageView
@@ -138,11 +136,11 @@
             android:textColor="@color/colorLetterlight" />
 
         <TextView
-            android:id="@+id/heart_worth"
+            android:id="@+id/heart_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:text="100"
+            android:text="###"
             android:textColor="@color/colorLetterlight" />
 
         <TextView
@@ -671,18 +669,8 @@
     </LinearLayout>
 
 
-    <Spinner
-        android:id="@+id/spinner_store_name"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/biz_email" />
-
     <TextView
-        android:id="@+id/biz_email"
+        android:id="@+id/biz_email_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -692,6 +680,26 @@
         android:textColor="@color/colorLetterlight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/biz_location_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="biz_location"
+        android:textColor="@color/colorLetterlight"
+        app:layout_constraintStart_toStartOf="@+id/biz_email_display"
+        app:layout_constraintTop_toBottomOf="@+id/biz_email_display" />
+
+    <TextView
+        android:id="@+id/biz_device_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="device_name"
+        android:textColor="@color/colorLetterlight"
+        app:layout_constraintStart_toStartOf="@+id/biz_location_display"
+        app:layout_constraintTop_toBottomOf="@+id/biz_location_display" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

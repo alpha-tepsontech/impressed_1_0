@@ -13,11 +13,20 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.Sensor
+import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
+import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_biz_dashboard.biz_location_display
 import kotlinx.android.synthetic.main.activity_biz_dashboard.log_out_btn
 import kotlinx.android.synthetic.main.activity_customer.*
 
@@ -36,6 +45,9 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
     // [START declare_auth]
     private lateinit var auth: FirebaseAuth
 // [END declare_auth]
+
+    // firebase realtime database setup
+    private lateinit var database: DatabaseReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,11 +72,88 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         // set elements
 
         if(auth.currentUser !== null){
-            biz_email.text = auth.currentUser!!.email
+            biz_email_display.text = auth.currentUser!!.email
         }
 
         customer_phone.text = customer_logged_phone
         customer_name.text = customer_logged_name
+
+        // initialize_database_ref
+        database = Firebase.database.reference
+        // init ends
+
+
+        // set elements
+        // get device data from database
+
+        var biz_uid = auth.currentUser!!.uid
+
+        var device_ref  = database.child("biz_owners").child(biz_uid).child("devices").orderByChild("locationKey").equalTo(global_location_key)
+
+        val device_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
+                for (ds in dataSnapshot.children) {
+                    val deviceName = ds.child("deviceName").getValue()
+                    biz_device_display.text = deviceName.toString()
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error", "loadPost:onCancelled", databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "Failed to load post.",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+        device_ref.addValueEventListener(device_listener)
+        // database ends
+
+
+        // get location data from database
+
+        var location_ref  = database.child("biz_owners").child(biz_uid).child("locations").child(global_location_key.toString())
+
+        val location_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                val location_info = dataSnapshot.getValue()
+
+                Log.d("test2",location_info.toString())
+
+
+                biz_location_display.text = dataSnapshot.child("locationName").getValue().toString()
+                heart_display.text = dataSnapshot.child("heartWorth").getValue().toString()
+
+           }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error", "loadPost:onCancelled", databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "Failed to load post.",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+        location_ref.addValueEventListener(location_listener)
+        // database ends
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // custom keyboard start
         // disable softkeyboard on focus

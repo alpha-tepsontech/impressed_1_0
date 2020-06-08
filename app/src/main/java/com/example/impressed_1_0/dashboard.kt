@@ -11,11 +11,12 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.impressed_1_0.MyApplication.Companion.global_location
+import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -59,43 +60,24 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
 
         // set elements
-        // get data from database
+        // get device data from database
 
         var biz_uid = auth.currentUser!!.uid
 
-        var biz_ref  = database.child("biz_owners").child(biz_uid).limitToFirst(1)
+        val deviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
 
-        val biz_listener = object : ValueEventListener {
+        var device_ref  = database.child("biz_owners").child(biz_uid).child("devices").orderByChild("deviceID").equalTo(deviceID).limitToLast(1)
+
+        val device_listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
+
+
                 for (ds in dataSnapshot.children) {
-                    val location_key = ds.key.toString()
-                    global_location = location_key
-                    val heart_worth = ds.child("heart_worth").getValue()
-                    heart_display.text = heart_worth.toString()
-                    val locationName = ds.child("locationName").getValue()
-                    location_display.text = locationName.toString()
+                    val location_key = ds.child("locationKey").getValue()
+                    global_location_key = location_key.toString()
                     val deviceName = ds.child("deviceName").getValue()
                     device_display.text = deviceName.toString()
-
-
-
-
-
-
-
-
-//                var location_info= dataSnapshot.key.toString()
-//
-//
-////                val location_info = dataSnapshot.child(biz_uid).child(location_key).getValue()
-//
-//                Log.d("test",location_info.toString())
-//
-//
-//                var heart_worth = dataSnapshot.child("heart_worth").getValue()
-//                if (heart_worth !== null) {
-//                    heart_display.text = heart_worth.toString()
                 }
             }
 
@@ -108,7 +90,59 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                 // [END_EXCLUDE]
             }
         }
-       biz_ref.addValueEventListener(biz_listener)
+
+
+       device_ref.addListenerForSingleValueEvent(device_listener)
+        // database ends
+
+
+        // get location data from database
+
+//        var location_ref  = database.child("biz_owners").child(biz_uid).child("locations").child(global_location_key.toString())
+        var location_ref  = database.child("biz_owners").child(biz_uid).child("locations").child(global_location_key.toString())
+
+        val location_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                Log.d("test", global_location_key.toString())
+                val location_info = dataSnapshot.getValue()
+                Log.d("test",location_info.toString())
+
+
+                location_display.text = dataSnapshot.child("locationName").getValue().toString()
+                heart_display.text = dataSnapshot.child("heartWorth").getValue().toString()
+//
+//                val location_info = dataSnapshot.getValue()
+//
+//                Log.d("test",location_info.toString())
+//
+//
+//
+//                for (ds in dataSnapshot.children) {
+//
+//                    // get heart_worth value
+//                    val heartWorth = ds.child("heartWorth").getValue()
+//                    heart_display.text = heartWorth.toString()
+//
+//
+//                    // get location name
+//                    val locationName = ds.child("locationName").getValue()
+//                    location_display.text = locationName.toString()
+//
+//
+//                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+        location_ref.addListenerForSingleValueEvent(location_listener)
         // database ends
 
 
