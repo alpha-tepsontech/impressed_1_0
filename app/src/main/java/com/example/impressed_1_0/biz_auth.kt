@@ -28,6 +28,15 @@ import kotlinx.android.synthetic.main.forgot_pw_dialog.view.*
 
 import java.util.concurrent.TimeUnit
 
+// start data class
+data class Location(
+    var locationName: String? = "",
+    var deviceID: String? = "",
+    var deviceName: String? = "",
+    var heart_worth: Int? = 0
+)
+// ends
+
 
 class biz_auth : AppCompatActivity() {
 
@@ -199,6 +208,20 @@ class biz_auth : AppCompatActivity() {
 
         progressBar.visibility = View.INVISIBLE
 
+        // test firebase write
+
+        // write to database
+
+        var biz_uid = auth.currentUser!!.uid
+
+        val deviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+
+        var location_info = Location("สาขาแรก",deviceID,"เครื่องแรก",100)
+
+//        database.child("biz_owners").child(biz_uid).child("สาขาแรก").child("devices").child("เครื่องแรก").setValue(deviceID)
+        database.child("biz_owners").child(biz_uid).orderByChild("สาขาสอง").equalTo("สาขาสาม")
+
+
         startActivity(Intent(this, dashboard::class.java))
 
     }
@@ -215,6 +238,19 @@ class biz_auth : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("test", "createUserWithEmail:success")
                     Toast.makeText(this, "success", Toast.LENGTH_SHORT).show()
+
+                    // write to database
+
+                    var biz_uid = auth.currentUser!!.uid
+
+                    val deviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+
+                    var location_name_ref = database.child("biz_owners").child(biz_uid).child("สาขาแรก")
+
+
+
+
+
                     startActivity(Intent(this, dashboard::class.java))
 
 

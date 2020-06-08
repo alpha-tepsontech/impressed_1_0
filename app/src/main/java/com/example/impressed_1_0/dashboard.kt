@@ -11,11 +11,11 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.provider.Settings.Secure
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.impressed_1_0.MyApplication.Companion.global_location
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -24,8 +24,10 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_dashboard.*
-import kotlinx.android.synthetic.main.forgot_pw_dialog.view.*
 import kotlinx.android.synthetic.main.heart_worth_dialog.view.*
+import kotlinx.android.synthetic.main.new_device_dialog.view.*
+import kotlinx.android.synthetic.main.new_loc_dialog.view.*
+import kotlin.coroutines.ContinuationInterceptor
 
 
 // set sensor vars
@@ -61,19 +63,39 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
         var biz_uid = auth.currentUser!!.uid
 
-        var biz_ref  = database.orderByChild("biz_owners").equalTo(biz_uid)
+        var biz_ref  = database.child("biz_owners").child(biz_uid).limitToFirst(1)
 
         val biz_listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                if(dataSnapshot !== null) {
+                for (ds in dataSnapshot.children) {
+                    val location_key = ds.key.toString()
+                    global_location = location_key
+                    val heart_worth = ds.child("heart_worth").getValue()
+                    heart_display.text = heart_worth.toString()
+                    val locationName = ds.child("locationName").getValue()
+                    location_display.text = locationName.toString()
+                    val deviceName = ds.child("deviceName").getValue()
+                    device_display.text = deviceName.toString()
 
-                    for (ds in dataSnapshot.children) {
-                        val heart_recorded = ds.child("heart_worth").getValue(String::class.java)
 
-                        heart_display.text = heart_recorded
 
-                    }
+
+
+
+
+
+//                var location_info= dataSnapshot.key.toString()
+//
+//
+////                val location_info = dataSnapshot.child(biz_uid).child(location_key).getValue()
+//
+//                Log.d("test",location_info.toString())
+//
+//
+//                var heart_worth = dataSnapshot.child("heart_worth").getValue()
+//                if (heart_worth !== null) {
+//                    heart_display.text = heart_worth.toString()
                 }
             }
 
@@ -102,6 +124,13 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         heart_edit.setOnClickListener {
 
             heart_dialog()
+        }
+        location_edit.setOnClickListener {
+            new_loc_dialog()
+        }
+
+        device_edit.setOnClickListener {
+            new_device_dialog()
         }
 
 
@@ -170,6 +199,79 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         }
         //cancel button click of custom layout
         mDialogView.heart_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+        // dialog with editText ends
+
+    }
+
+    private fun new_loc_dialog(){
+
+
+        // dialog with edittext start
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.new_loc_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+        //login button click of custom layout
+        mDialogView.newloc_save.setOnClickListener {
+
+            var biz_uid = auth.currentUser!!.uid
+
+            var new_loc = mDialogView.dialog_newlocation.text.toString()
+
+            database.child("biz_owners").child(biz_uid).child("locations").child(new_loc).setValue(1)
+
+            //dismiss dialog
+            mAlertDialog.dismiss()
+
+        }
+        //cancel button click of custom layout
+        mDialogView.newloc_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+        // dialog with editText ends
+
+    }
+
+
+    private fun new_device_dialog(){
+
+
+        // dialog with edittext start
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.new_device_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+        //login button click of custom layout
+        mDialogView.newdevice_save.setOnClickListener {
+
+            var biz_uid = auth.currentUser!!.uid
+
+            var new_device = mDialogView.dialog_newdevice.text.toString()
+
+            database.child("biz_owners").child(biz_uid).child("devices").child(new_device).setValue(1)
+
+            //dismiss dialog
+            mAlertDialog.dismiss()
+
+        }
+        //cancel button click of custom layout
+        mDialogView.newdevice_cancel.setOnClickListener {
             //dismiss dialog
             mAlertDialog.dismiss()
         }

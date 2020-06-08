@@ -28,6 +28,7 @@ class MyApplication: Application() {
     companion object {
         var customer_logged_name : String? = ""
         var customer_logged_phone: String? = ""
+        var global_location:String? =""
     }
 
 }

@@ -118,7 +118,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/location_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ิbiz_location"
@@ -132,6 +132,7 @@
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/edit_light" />
 
+
     </LinearLayout>
 
     <LinearLayout
@@ -144,7 +145,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/device_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ิbiz_device"
@@ -162,6 +163,7 @@
 
 
     <LinearLayout
+        android:id="@+id/linearLayout11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -196,6 +198,7 @@
             android:layout_height="wrap_content"
             android:text="บาท"
             android:textColor="@color/colorLetterlight" />
+
         <ImageButton
             android:id="@+id/heart_edit"
             android:layout_width="20dp"
@@ -216,8 +219,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintStart_toStartOf="parent" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

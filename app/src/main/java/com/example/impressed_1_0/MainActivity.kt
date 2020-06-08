@@ -338,6 +338,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         val country_code = "+66"
         val phnNo = country_code+phnNoTxt.text.toString()
 
+        // get data from database
         var customersref  = database.child("customers").orderByChild("phone").equalTo(phnNo)
 
         val customer_phone_listener = object : ValueEventListener {
@@ -406,6 +407,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         }
         customersref.addListenerForSingleValueEvent(customer_phone_listener)
 
+        // database ends
 
         }
 
