@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthResult
@@ -247,9 +248,6 @@ class biz_auth : AppCompatActivity() {
                     var device_info = Devices(deviceID,"เครื่องแรก",location_key)
 
                     database.child("biz_owners").child(biz_uid).child("devices").push().setValue(device_info)
-
-
-
 
 
                     startActivity(Intent(this, dashboard::class.java))

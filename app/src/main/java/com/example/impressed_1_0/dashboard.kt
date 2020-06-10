@@ -2,6 +2,7 @@ package com.example.impressed_1_0
 
 // set up sensor events
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -47,6 +48,10 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 // firebase realtime database setup
     private lateinit var database: DatabaseReference
 
+//    var loc_key = global_location_key.toString()
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,92 +63,8 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         database = Firebase.database.reference
         // init ends
 
-
-        // set elements
-        // get device data from database
-
-        var biz_uid = auth.currentUser!!.uid
-
-        val deviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-
-        var device_ref  = database.child("biz_owners").child(biz_uid).child("devices").orderByChild("deviceID").equalTo(deviceID).limitToLast(1)
-
-        val device_listener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-
-
-                for (ds in dataSnapshot.children) {
-                    val location_key = ds.child("locationKey").getValue()
-                    global_location_key = location_key.toString()
-                    val deviceName = ds.child("deviceName").getValue()
-                    device_display.text = deviceName.toString()
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w("error", "loadPost:onCancelled", databaseError.toException())
-                // [START_EXCLUDE]
-                Toast.makeText(baseContext, "Failed to load post.",
-                    Toast.LENGTH_SHORT).show()
-                // [END_EXCLUDE]
-            }
-        }
-
-
-       device_ref.addListenerForSingleValueEvent(device_listener)
-        // database ends
-
-
-        // get location data from database
-
-//        var location_ref  = database.child("biz_owners").child(biz_uid).child("locations").child(global_location_key.toString())
-        var location_ref  = database.child("biz_owners").child(biz_uid).child("locations").child(global_location_key.toString())
-
-        val location_listener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                Log.d("test", global_location_key.toString())
-                val location_info = dataSnapshot.getValue()
-                Log.d("test",location_info.toString())
-
-
-                location_display.text = dataSnapshot.child("locationName").getValue().toString()
-                heart_display.text = dataSnapshot.child("heartWorth").getValue().toString()
-//
-//                val location_info = dataSnapshot.getValue()
-//
-//                Log.d("test",location_info.toString())
-//
-//
-//
-//                for (ds in dataSnapshot.children) {
-//
-//                    // get heart_worth value
-//                    val heartWorth = ds.child("heartWorth").getValue()
-//                    heart_display.text = heartWorth.toString()
-//
-//
-//                    // get location name
-//                    val locationName = ds.child("locationName").getValue()
-//                    location_display.text = locationName.toString()
-//
-//
-//                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w("error",databaseError.toException())
-                // [START_EXCLUDE]
-                Toast.makeText(baseContext, "database failed",
-                    Toast.LENGTH_SHORT).show()
-                // [END_EXCLUDE]
-            }
-        }
-        location_ref.addListenerForSingleValueEvent(location_listener)
-        // database ends
+        // call device_read to get all the elements from the database
+        device_database_read()
 
 
         if(auth.currentUser !== null) {
@@ -179,6 +100,83 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         // gravity sensor setup ends
 
     }
+
+    private fun device_database_read(){
+
+
+        // get device data from database
+
+        var biz_uid = auth.currentUser!!.uid
+
+        val deviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+
+        var device_ref  = database.child("biz_owners").child(biz_uid).child("devices").orderByChild("deviceID").equalTo(deviceID)
+
+        val device_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
+                for (ds in dataSnapshot.children) {
+                    val location_key = ds.child("locationKey").getValue()
+                    global_location_key = location_key.toString()
+                    val deviceName = ds.child("deviceName").getValue()
+                    device_display.text = deviceName.toString()
+                }
+
+                // call location_read after key is obtained
+                location_database_read()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error", "loadPost:onCancelled", databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "Failed to load post.",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+
+        device_ref.addListenerForSingleValueEvent(device_listener)
+
+        Log.d("test_after_device_fun", global_location_key)
+        // database ends
+
+    }
+
+    private fun location_database_read(){
+
+
+        var biz_uid = auth.currentUser!!.uid
+
+        var location_ref  = database.child("biz_owners").child(biz_uid).child("locations").child(global_location_key.toString())
+
+        val location_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                location_display.text = dataSnapshot.child("locationName").getValue().toString()
+                heart_display.text = dataSnapshot.child("heartWorth").getValue().toString()
+
+                }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+        location_ref.addListenerForSingleValueEvent(location_listener)
+        // database ends
+
+    }
+
+
+
 // gravity sensor code
 
 
