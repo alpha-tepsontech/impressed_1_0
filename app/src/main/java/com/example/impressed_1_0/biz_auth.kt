@@ -21,9 +21,13 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.forgot_pw_dialog.*
 import kotlinx.android.synthetic.main.forgot_pw_dialog.view.*
 
@@ -42,6 +46,13 @@ data class Devices(
     var deviceName: String? = "",
     var locationKey:String? = ""
 )
+// ends
+
+// start data class
+data class Promos(
+    var PromoName: String? = "",
+    var PromoWorth: Int? = 0
+    )
 // ends
 
 
@@ -232,6 +243,12 @@ class biz_auth : AppCompatActivity() {
                     Log.d("test", "createUserWithEmail:success")
                     Toast.makeText(this, "success", Toast.LENGTH_SHORT).show()
 
+                    // read standard promo from settings table
+
+
+
+
+
                     // write to database
 
                     var biz_uid = auth.currentUser!!.uid
@@ -248,6 +265,44 @@ class biz_auth : AppCompatActivity() {
                     var device_info = Devices(deviceID,"เครื่องแรก",location_key)
 
                     database.child("biz_owners").child(biz_uid).child("devices").push().setValue(device_info)
+
+                   // read setting from database
+
+                    var settings_ref  = database.child("settings").child("standard_promo")
+
+
+
+                    val device_listener = object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
+                            for (ds in dataSnapshot.children) {
+                                val standard_promo_key = ds.key
+                                val standard_promo_price: Int? = ds.getValue(Int::class.java)
+                                var promo_key = database.push().key.toString()
+
+                                var promo_insert = Promos(standard_promo_key,standard_promo_price)
+
+                                database.child("biz_owners").child(biz_uid).child(location_key).child("promos").child(promo_key).setValue(promo_insert)
+
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w("error", "loadPost:onCancelled", databaseError.toException())
+                            // [START_EXCLUDE]
+                            Toast.makeText(baseContext, "Failed to load post.",
+                                Toast.LENGTH_SHORT).show()
+                            // [END_EXCLUDE]
+                        }
+                    }
+
+
+                    settings_ref.addListenerForSingleValueEvent(device_listener)
+
+               // ends database read
+
 
 
                     startActivity(Intent(this, dashboard::class.java))
@@ -266,6 +321,9 @@ class biz_auth : AppCompatActivity() {
                 }
             }
     }
+
+
+
 
 
 }

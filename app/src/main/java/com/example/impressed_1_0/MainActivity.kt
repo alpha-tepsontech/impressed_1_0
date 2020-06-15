@@ -60,6 +60,13 @@ data class User(
 )
 // [END user_class]
 
+// start data class
+data class Transaction(
+    var phone: String? = "",
+    var heartReceived: Int? = 0
+)
+// ends
+
 
 class MainActivity : AppCompatActivity() , SensorEventListener{
 
@@ -483,7 +490,10 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
                     database.child("customers").push().setValue(user)
 
-                    Log.d("test", "user-setValue")
+                    val transaction_insert = Transaction(phnNo,0)
+                    database.child("transactions").push().setValue(transaction_insert)
+
+
 
                     // hide progress animation start
                     progress.visibility = View.INVISIBLE
