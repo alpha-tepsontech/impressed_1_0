@@ -258,14 +258,9 @@
     </LinearLayout>
 
 
-
-
-
-
-
     <ProgressBar
         android:id="@+id/progress"
-        style="@style/Widget.AppCompat.ProgressBar"
+        style="@style/whiteProgressBar"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_alignTop="@+id/phnNoTxt"

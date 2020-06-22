@@ -2,26 +2,21 @@ package com.example.impressed_1_0
 
 // set up sensor events
 
-import android.app.ActionBar
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.graphics.Typeface
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.media.Image
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.ResourcesCompat
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -34,6 +29,9 @@ import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.heart_worth_dialog.view.*
 import kotlinx.android.synthetic.main.new_device_dialog.view.*
 import kotlinx.android.synthetic.main.new_loc_dialog.view.*
+import kotlinx.android.synthetic.main.new_promo_dialog.view.*
+import kotlinx.android.synthetic.main.new_promo_dialog.view.dialogCancelBtn
+import kotlinx.android.synthetic.main.promo_del_confirmation_dialog.view.*
 
 
 // set sensor vars
@@ -41,6 +39,13 @@ private var mSensorManager : SensorManager ?= null
 private var mAccelerometer : Sensor ?= null
 
 // set sensor vars ends
+
+//// start data class
+//data class Promos(
+//    var PromoName: String? = "",
+//    var PromoWorth: Int? = 0
+//)
+//// ends
 
 class dashboard : AppCompatActivity() , SensorEventListener {
 
@@ -66,6 +71,9 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         // initialize_database_ref
         database = Firebase.database.reference
         // init ends
+
+        // show progress bar
+        dash_progress.visibility = View.VISIBLE
 
         // call device_read to get all the elements from the database
         device_database_read()
@@ -93,6 +101,15 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         device_edit.setOnClickListener {
             new_device_dialog()
         }
+
+        // biz elements set up
+
+        newPromoBtn.setOnClickListener{
+
+            write_new_promo()
+
+        }
+
 
 
         // gravity sensor setup
@@ -147,7 +164,6 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
         device_ref.addListenerForSingleValueEvent(device_listener)
 
-        Log.d("test_after_device_fun", global_location_key)
         // database ends
 
     }
@@ -322,97 +338,31 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
     private fun promos_database_read(){
 
+
+
         //read data
 
         var biz_uid = auth.currentUser!!.uid
 
-        Log.d("test",biz_uid.toString())
-
         var promos_ref  = database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).child("promos").orderByChild("promoWorth")
 
         val promos_listener = object : ValueEventListener {
+
+
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
 
                 for (ds in dataSnapshot.children) {
 
                     var promoName = ds.child("promoName").getValue(String::class.java)
-                    Log.d("test",promoName)
+
                     var promoWorth = ds.child("promoWorth").getValue(Int::class.java)
 
-//                    val promo_linear_layout = LinearLayout(this@dashboard)
-//
-//                    promo_linear_layout.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
-//                    promo_linear_layout.orientation = LinearLayout.HORIZONTAL
-//
-//                    val promoName_textview = TextView(this@dashboard)
-//                    promoName_textview.text = promoName
-//
-//
-//                    var promoName_textview_params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
-//                    promoName_textview_params.setMargins(0,0,10,0)
-//
-////                    (promoName_textview.layoutParams as LinearLayout.LayoutParams).weight = 0.6.toFloat()
-//                    val param = promoName_textview.layoutParams as LinearLayout.LayoutParams
-//                    param.weight = 0.5f
-//                    promoName_textview.layoutParams = param
-//
-////                    promoName_textview.layoutParams = promoName_textview_params
-//
-//                    promoName_textview.setPadding(10,0,10,0)
-//                    promoName_textview.setBackgroundResource(R.drawable.edittext_border)
-//                    val sukhumvit_bold : Typeface? = ResourcesCompat.getFont(this@dashboard, R.font.sukhumvit_bold)
-//
-//
-//                    promoName_textview.typeface = sukhumvit_bold
-//
-//
-//                    val btn_frame = FrameLayout(this@dashboard)
-//                    var btn_frame_params =  ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, 50)
-////                    btn_frame_params.horizontalWeight = 1.0f
-//                    btn_frame.layoutParams = btn_frame_params
-//
-//
-//                    val heart_btn = ImageButton(this@dashboard)
-//                    heart_btn.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
-//                    heart_btn.setImageResource(R.drawable.heart_light)
-////                    heart_btn.setBackgroundResource(null)
-//                    heart_btn.scaleType = ImageView.ScaleType.FIT_START
-//
-//                    val heart_text = TextView(this@dashboard)
-//                    var heart_text_params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
-////                    heart_text_params.horizontalWeight = 1.0f
-//                    heart_text.gravity = Gravity.END
-//                    heart_text.text = promoWorth.toString()
-//
-//
-//                    btn_frame.addView(heart_btn)
-//                    btn_frame.addView(heart_text)
-//
-//
-////                    var heart = "\u2764"
-////
-////                    heart_btn.text = heart+promoWorth.toString()
-//                    val edit_btn = ImageButton(this@dashboard)
-//
-//                    var edit_btn_params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT,50)
-////                    edit_btn_params.horizontalWeight = 1.0f
-//
-//                    edit_btn.layoutParams = edit_btn_params
-//                        edit_btn.setImageResource(R.drawable.edit_light)
-//                    edit_btn.scaleType = ImageView.ScaleType.FIT_CENTER
-//                    val delete_btn = ImageButton(this@dashboard)
-//                    delete_btn.layoutParams = ConstraintLayout.LayoutParams(50,50)
-//                    delete_btn.setImageResource(R.drawable.heart)
-//                    delete_btn.scaleType = ImageView.ScaleType.FIT_CENTER
-//
-//
+                    var promoKey = ds.key.toString()
 
 
-//                    promo_frame.addView(promo_linear_layout)
-//                    promo_linear_layout.addView(promoName_textview)
-//                    promo_linear_layout.addView(btn_frame)
-//                    promo_linear_layout.addView(edit_btn)
-//                    promo_linear_layout.addView(delete_btn)
+
 
                     val btn_set = LayoutInflater.from(this@dashboard).inflate(R.layout.promo_btn_set,null)
                     val promoName_holder = btn_set.findViewById<TextView>(R.id.promoName_textview)
@@ -421,16 +371,29 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                     promoWorth_holder.text = promoWorth.toString()
                     promo_frame.addView(btn_set)
 
-                    val edit_btn = btn_set.findViewById<ImageButton>(R.id.edit_btn)
+                    val promo_del_btn = btn_set.findViewById<ImageButton>(R.id.promo_del_btn)
 
-                    edit_btn.setOnClickListener{
-                        //TODO implement edit btn
+                        promo_del_btn.setOnClickListener{
+
+                            promo_delete(promoKey,promoName.toString())
+
+
+                    }
+                    val promo_edit_btn = btn_set.findViewById<ImageButton>(R.id.promo_edit_btn)
+
+                    promo_edit_btn.setOnClickListener{
+
+                        promo_edit(promoKey,promoName.toString(),promoWorth)
+
+
                     }
 
 
 
                     }
-                }
+
+                dash_progress.visibility = View.INVISIBLE
+            }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Post failed, log a message
@@ -439,16 +402,183 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                 Toast.makeText(baseContext, "database failed",
                     Toast.LENGTH_SHORT).show()
                 // [END_EXCLUDE]
+                dash_progress.visibility = View.INVISIBLE
             }
         }
 
         promos_ref.addListenerForSingleValueEvent(promos_listener)
         // database ends
 
+    }
+
+        private fun write_new_promo(){
+
+            // dialog with edittext start
+            //Inflate the dialog with custom view
+            val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.new_promo_dialog,null)
+
+            //AlertDialogBuilder
+            val mBuilder = AlertDialog.Builder(this@dashboard)
+                .setView(mDialogView)
+                .setTitle("")
+            //show dialog
+            val  mAlertDialog = mBuilder.show()
+
+            // check null
 
 
+
+
+                // button click of custom layout
+                mDialogView.dialogAddBtn.setOnClickListener {
+
+                    var promoName = mDialogView.new_promo_name.text.toString()
+                    var promoWorth = mDialogView.promo_worth.text.toString()
+
+                   if (promoName.isNotEmpty() && promoWorth.isNotEmpty()) {
+
+                       var biz_uid = auth.currentUser!!.uid
+
+
+
+                       var promo_insert = Promos(promoName, promoWorth.toInt())
+                       database.child("biz_owners").child(biz_uid)
+                           .child(global_location_key.toString()).child("promos").push()
+                           .setValue(promo_insert)
+
+                       //dismiss dialog
+                       mAlertDialog.dismiss()
+                       // restart activity
+                       finish();
+                       startActivity(getIntent());
+
+                   } else {
+
+                        Toast.makeText(
+                            baseContext, "ใส่ข้อมูลไม่ครบครับ",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    }
+                }
+
+            //cancel button click of custom layout
+            mDialogView.dialogCancelBtn.setOnClickListener {
+                //dismiss dialog
+                mAlertDialog.dismiss()
+            }
+
+            // dialog with editText ends
+
+        }
+
+    private fun promo_delete(promoKey:String,promoName:String){
+
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.promo_del_confirmation_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        mDialogView.promo_del_name.text = promoName
+        //login button click of custom layout
+        mDialogView.del_conf_DelBtn.setOnClickListener {
+
+            // delete from database
+
+            var biz_uid = auth.currentUser!!.uid
+            database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).child("promos").child(promoKey).removeValue()
+
+
+            //dismiss dialog
+            mAlertDialog.dismiss()
+
+            //restart activity
+            finish();
+            startActivity(getIntent());
+
+        }
+        //cancel button click of custom layout
+        mDialogView.del_conf_CancelBtn.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+        // dialog with editText ends
 
     }
+
+        private fun promo_edit(promoKey:String, promoName: String, promoWorth: Int?){
+
+
+                    // dialog with edittext start
+                    //Inflate the dialog with custom view
+                    val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.new_promo_dialog,null)
+
+                    //AlertDialogBuilder
+                    val mBuilder = AlertDialog.Builder(this@dashboard)
+                        .setView(mDialogView)
+                        .setTitle("")
+                    //show dialog
+                    val  mAlertDialog = mBuilder.show()
+
+                    // populate edit texts
+
+                    mDialogView.new_promo_name.setText(promoName)
+
+                    mDialogView.promo_worth.setText(promoWorth.toString())
+
+
+
+
+                    // button click of custom layout
+                    mDialogView.dialogAddBtn.setOnClickListener {
+
+                        var promoName = mDialogView.new_promo_name.text.toString()
+                        var promoWorth = mDialogView.promo_worth.text.toString()
+
+                        if (promoName.isNotEmpty() && promoWorth.isNotEmpty()) {
+
+                            var biz_uid = auth.currentUser!!.uid
+
+
+
+                            var promo_insert = Promos(promoName, promoWorth.toInt())
+                            database.child("biz_owners").child(biz_uid)
+                                .child(global_location_key.toString()).child("promos").child(promoKey).setValue(promo_insert)
+
+                            //dismiss dialog
+                            mAlertDialog.dismiss()
+                            // restart activity
+                            finish();
+                            startActivity(getIntent());
+
+                        } else {
+
+                            Toast.makeText(
+                                baseContext, "ใส่ข้อมูลไม่ครบครับ",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                        }
+                    }
+
+                    //cancel button click of custom layout
+                    mDialogView.dialogCancelBtn.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+                    }
+
+                    // dialog with editText ends
+
+
+                }
+
 
 
 

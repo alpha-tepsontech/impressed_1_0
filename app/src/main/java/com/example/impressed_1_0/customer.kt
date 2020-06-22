@@ -19,6 +19,9 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.Sensor
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.firebase.auth.FirebaseAuth
@@ -29,6 +32,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_customer.log_out_btn
+import kotlinx.android.synthetic.main.activity_dashboard.*
+import java.text.DecimalFormat
 
 
 // set sensor vars
@@ -75,7 +80,13 @@ class customer : AppCompatActivity(), SensorEventListener {
 
         transaction_database_read()
 
-        logged_phone.text = customer_logged_phone
+        promos_database_read()
+
+        val phone_striped = customer_logged_phone!!.drop(3)
+        val phone_format = DecimalFormat("###,###,####")
+        val formatted_phone = phone_format.format(phone_striped)
+
+        logged_phone.text = formatted_phone
         logged_name.text = customer_logged_name
 
         // set log out btn
@@ -174,6 +185,57 @@ class customer : AppCompatActivity(), SensorEventListener {
 
 
     }
+
+    private fun promos_database_read(){
+
+        //read data
+
+        var biz_uid = auth.currentUser!!.uid
+
+        Log.d("test",biz_uid.toString())
+
+        var promos_ref  = database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).child("promos").orderByChild("promoWorth")
+
+        val promos_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                for (ds in dataSnapshot.children) {
+
+                    var promoName = ds.child("promoName").getValue(String::class.java)
+                    Log.d("test",promoName)
+                    var promoWorth = ds.child("promoWorth").getValue(Int::class.java)
+
+
+
+                    val promo_set = LayoutInflater.from(this@customer).inflate(R.layout.promo_set,null)
+                    val promoName_holder = promo_set.findViewById<TextView>(R.id.promoName_textview)
+                    val promoWorth_holder = promo_set.findViewById<TextView>(R.id.promoWorth_textview)
+                    promoName_holder.text = promoName
+                    promoWorth_holder.text = promoWorth.toString()
+                    customer_promo_frame.addView(promo_set)
+
+
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+        promos_ref.addListenerForSingleValueEvent(promos_listener)
+        // database ends
+
+
+
+
+    }
+
 
 
 }

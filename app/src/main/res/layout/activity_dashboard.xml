@@ -68,20 +68,20 @@
             android:gravity="left"
             android:orientation="vertical">
 
-
         </LinearLayout>
     </ScrollView>
 
     <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/newPromoBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginRight="30dp"
         android:background="@android:color/white"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:srcCompat="@drawable/add_icon" />
 
 
     <LinearLayout
@@ -232,5 +232,15 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
+    <ProgressBar
+        android:id="@+id/dash_progress"
+        style="@style/blueProgressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/promo_scroll_view"
+        app:layout_constraintStart_toStartOf="@+id/promo_scroll_view"
+        app:layout_constraintTop_toTopOf="@+id/promo_scroll_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

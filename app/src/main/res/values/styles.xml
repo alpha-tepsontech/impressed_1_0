@@ -8,4 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="blueProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:indeterminateTintMode">src_atop</item>
+        <item name="android:indeterminateTint">@color/colorBackground</item>
+    </style>
+
+    <style name="whiteProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:indeterminateTintMode">src_atop</item>
+        <item name="android:indeterminateTint">@color/colorLetterlight</item>
+    </style>
+
 </resources>
