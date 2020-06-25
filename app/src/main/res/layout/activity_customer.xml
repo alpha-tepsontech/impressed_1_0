@@ -75,11 +75,11 @@
         android:id="@+id/input_view"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        app:layout_constraintWidth_percent="0.4"
-
         android:background="@color/colorBackground"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.4" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -120,7 +120,7 @@
         android:id="@+id/linearLayout12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
         android:orientation="horizontal"
@@ -131,12 +131,15 @@
             android:id="@+id/heart"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             app:srcCompat="@drawable/heart" />
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
             android:text="x"
             android:textColor="@color/colorAccentbright"
             android:textSize="24sp"
@@ -145,7 +148,8 @@
         <TextView
             android:id="@+id/customer_heart_bank"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:text="##"
             android:textColor="@color/colorAccentbright"
             android:textSize="24sp"
@@ -174,7 +178,7 @@
         app:layout_constraintWidth_percent="0.6">
 
         <LinearLayout
-            android:id = "@+id/customer_promo_frame"
+            android:id="@+id/customer_promo_frame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />

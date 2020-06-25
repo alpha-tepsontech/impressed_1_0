@@ -18,6 +18,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.Sensor
+import android.telephony.PhoneNumberUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageButton
@@ -34,6 +35,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_customer.log_out_btn
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import java.text.DecimalFormat
+import java.util.*
 
 
 // set sensor vars
@@ -82,19 +84,34 @@ class customer : AppCompatActivity(), SensorEventListener {
 
         promos_database_read()
 
-        val phone_striped = customer_logged_phone!!.drop(3)
-        val phone_format = DecimalFormat("###,###,####")
-        val formatted_phone = phone_format.format(phone_striped)
+//        val phone_striped = customer_logged_phone!!.drop(3)
+//        val phone_format = DecimalFormat("###,###,####")
+//        val formatted_phone = phone_format.format(phone_striped)
 
-        logged_phone.text = formatted_phone
+
+
+
+
+
+
+        logged_phone.text = customer_logged_phone
         logged_name.text = customer_logged_name
 
         // set log out btn
         log_out_btn.setOnClickListener {
             customer_logged_name = ""
             customer_logged_phone = ""
-            startActivity(Intent(this, MainActivity::class.java))
+
+            val providerID = auth.currentUser!!.providerId
+
+            Log.d("test",providerID)
+
+            unlink(providerID)
+
         }
+
+
+
 
 
     }
@@ -236,6 +253,18 @@ class customer : AppCompatActivity(), SensorEventListener {
 
     }
 
+    private fun unlink(providerId: String) {
 
+        // [START auth_unlink]
+        auth.currentUser!!.unlink(providerId)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+
+
+                    startActivity(Intent(this, MainActivity::class.java))
+                }
+            }
+        // [END auth_unlink]
+    }
 
 }

@@ -49,4 +49,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx:19.3.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 //    implementation 'com.google.firebase:firebase-firestore-ktx:21.4.3'
+//    implementation group: "com.twilio.sdk", name: "twilio", version: "7.52.0"
 }

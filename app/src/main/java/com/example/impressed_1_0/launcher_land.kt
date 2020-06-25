@@ -3,6 +3,7 @@ package com.example.impressed_1_0
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.telephony.SmsManager
 import kotlinx.android.synthetic.main.activity_launcher_land.*
 
 class launcher_land : AppCompatActivity() {
@@ -17,6 +18,10 @@ class launcher_land : AppCompatActivity() {
 
             true
         }
+
+
+        val smsManager = SmsManager.getDefault() as SmsManager
+        smsManager.sendTextMessage("+660970050062", null, "sms message", null, null)
 
 
         //send to activity base on rotation

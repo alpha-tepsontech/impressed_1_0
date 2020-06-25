@@ -51,6 +51,12 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_customer.*
 
+// twillio sms
+//
+//import com.twilio.Twilio
+//import com.twilio.rest.api.v2010.account.Message
+//import com.twilio.type.PhoneNumber
+
 
 
 // [START User_class]
@@ -63,7 +69,7 @@ data class User(
 // start data class
 data class Transaction(
     var phone: String? = "",
-    var heartReceived: Int? = 0
+    var heartBank: Int? = 0
 )
 // ends
 
@@ -107,7 +113,8 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
         // disable the btn until input is entered
         log_in_btn.setEnabled(false)
-        welcome_text.text = "this is mother fucking welcome text MF!!"
+
+        welcome_text()
 
 
         // custom keyboard start
@@ -264,84 +271,8 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
     }
 
 
-
-
-    private fun verificationCallbacks () {
-        mCallbacks = object: PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                Log.d("test","Vcompleted")
-                progress.visibility = View.INVISIBLE
-                signIn(credential)
-            }
-
-            override fun onVerificationFailed(p0: FirebaseException) {
-                Log.d("test","Vfailed")
-                progress.visibility = View.INVISIBLE
-            }
-
-
-            override fun onCodeSent(verfication: String, p1: PhoneAuthProvider.ForceResendingToken) {
-                Log.d("test","Vcodesent")
-
-                // dialog with edittext start
-                //Inflate the dialog with custom view
-                val mDialogView = LayoutInflater.from(this@MainActivity).inflate(R.layout.verification_dialog,null)
-
-                //AlertDialogBuilder
-                val mBuilder = AlertDialog.Builder(this@MainActivity)
-                    .setView(mDialogView)
-                    .setTitle("ยืนยันเบอร์โทรศัพท์")
-                //show dialog
-                val  mAlertDialog = mBuilder.show()
-                //login button click of custom layout
-                mDialogView.dialogLoginBtn.setOnClickListener {
-                    //dismiss dialog
-                    mAlertDialog.dismiss()
-                    //get text from EditTexts of custom layout
-                    verification_code = mDialogView.dialogNameEt.text.toString()
-
-                    // call authenticate to verify OTP
-                    authenticate()
-
-
-                }
-                //cancel button click of custom layout
-                mDialogView.dialogCancelBtn.setOnClickListener {
-                    //dismiss dialog
-                    mAlertDialog.dismiss()
-                }
-
-                // dialog with editText ends
-
-                super.onCodeSent(verfication, p1)
-                verificationId = verfication.toString()
-                progress.visibility = View.INVISIBLE
-            }
-
-        }
-    }
-
-
-    private fun verify () {
-        Log.d("test","verify")
-        //Thread.sleep(2_000)
-
-        verificationCallbacks()
-        val country_code = "+66"
-        val phnNo = country_code+phnNoTxt.text.toString()
-
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-            phnNo,
-            60,
-            TimeUnit.SECONDS,
-            this,
-            mCallbacks
-        )
-    }
-
-
     private fun checkifexist(){
-        Log.d("test","checkifexist-run")
+
         val country_code = "+66"
         val phnNo = country_code+phnNoTxt.text.toString()
 
@@ -372,35 +303,6 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                     }
                 }
 
-
-
-
-//                for (ds in dataSnapshot.children) {
-//                    val phonerecorded = ds.child("phone").getValue(String::class.java)
-//
-//                    if (phonerecorded == null){
-//                        Log.d("test","null phone")
-//                    }
-//
-//
-//                    if (phonerecorded == phnNo) {
-//                       startActivity(Intent(this@MainActivity,customer::class.java))
-//
-//                    } else {
-//                        Log.d("test", "phone not match")
-//                    }
-//
-//                }
-
-
-
-
-//                var users = dataSnapshot.getValue()
-//                Log.d("test",users.toString())
-//                for (users in dataSnapshot.children){
-//                Log.d("test", users.toString())
-//                }
-
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -416,70 +318,130 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
         // database ends
 
+    }
+
+
+
+
+
+
+    private fun verify () {
+        Log.d("test","verify")
+        //Thread.sleep(2_000)
+
+        verificationCallbacks()
+        val country_code = "+66"
+        val phnNo = country_code+phnNoTxt.text.toString()
+
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+            phnNo,
+            60,
+            TimeUnit.SECONDS,
+            this,
+            mCallbacks
+        )
+    }
+
+    private fun verificationCallbacks () {
+        mCallbacks = object: PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+
+                Log.d("test","vcompleted")
+
+
+            }
+
+            override fun onVerificationFailed(p0: FirebaseException) {
+                Log.d("test","Vfailed")
+                progress.visibility = View.INVISIBLE
+            }
+
+
+            override fun onCodeSent(verfication: String, p1: PhoneAuthProvider.ForceResendingToken) {
+                Log.d("Test","Vsent")
+                // dialog with edittext start
+                //Inflate the dialog with custom view
+                val mDialogView = LayoutInflater.from(this@MainActivity).inflate(R.layout.verification_dialog,null)
+
+                //AlertDialogBuilder
+                val mBuilder = AlertDialog.Builder(this@MainActivity)
+                    .setView(mDialogView)
+                    .setTitle("ยืนยันเบอร์โทรศัพท์")
+                //show dialog
+                val  mAlertDialog = mBuilder.show()
+                //login button click of custom layout
+                mDialogView.dialogLoginBtn.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
+
+                    //get text from EditTexts of custom layout
+                    verification_code = mDialogView.dialogNameEt.text.toString()
+
+                    // call authenticate to verify OTP
+                    authenticate()
+
+
+                }
+                //cancel button click of custom layout
+                mDialogView.dialogCancelBtn.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
+                }
+
+                // dialog with editText ends
+
+                super.onCodeSent(verfication, p1)
+                verificationId = verfication.toString()
+                progress.visibility = View.INVISIBLE
+            }
+
         }
+    }
+
 
     private fun authenticate () {
-
+        Log.d("test","authenticate")
         val verifyNo = verification_code
 
         val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, verifyNo)
 
-
-        // dialog box asking name start
-
-        //Inflate the dialog with custom view
-        val mDialogView = LayoutInflater.from(this@MainActivity).inflate(R.layout.name_dialog,null)
-
-        //AlertDialogBuilder
-        val mBuilder = AlertDialog.Builder(this@MainActivity)
-            .setView(mDialogView)
-            .setTitle("ขอชื่อเล่นด้วยครับ")
-        //show dialog
-        val  mAlertDialog = mBuilder.show()
-        //login button click of custom layout
-        mDialogView.dialogLoginBtn.setOnClickListener {
-            //dismiss dialog
-            mAlertDialog.dismiss()
-            //get text from EditTexts of custom layout
-            name_input = mDialogView.dialogNameEt.text.toString()
-
-
-            // call signIn and pass credential to sign user in
-            signIn(credential)
-
-
-
-
-        }
-        //cancel button click of custom layout
-        mDialogView.dialogCancelBtn.setOnClickListener {
-            //dismiss dialog
-            mAlertDialog.dismiss()
-        }
-
-
-
-        // dialog box asking name ends
-
+       linkAccount(credential)
 
 
     }
 
-    private fun signIn (credential: PhoneAuthCredential) {
+    private fun linkAccount(credential: PhoneAuthCredential){
 
+        Log.d("test","inlink"+credential.toString())
 
         // show progress animation start
         progress.visibility = View.VISIBLE
         // show progress animation ends
 
-        mAuth.signInWithCredential(credential)
-            .addOnCompleteListener {
-                    task: Task<AuthResult> ->
+        mAuth.currentUser!!.linkWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+//                    Log.d("test", "linkWithCredential:success")
 
+                    // dialog box asking name start
 
+                    //Inflate the dialog with custom view
+                    val mDialogView = LayoutInflater.from(this@MainActivity).inflate(R.layout.name_dialog,null)
 
-                    //add user on to database with phone number
+                    //AlertDialogBuilder
+                    val mBuilder = AlertDialog.Builder(this@MainActivity)
+                        .setView(mDialogView)
+                        .setTitle("ขอชื่อเล่นด้วยครับ")
+                    //show dialog
+                    val  mAlertDialog = mBuilder.show()
+                    //login button click of custom layout
+                    mDialogView.dialogLoginBtn.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+                        //get text from EditTexts of custom layout
+                        name_input = mDialogView.dialogNameEt.text.toString()
+
+                    // add user on to database with phone number
 
                     // Write user's name to the database
 
@@ -499,9 +461,62 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                     progress.visibility = View.INVISIBLE
                     // hide progress animation ends
 
-                    startActivity(Intent(this, customer::class.java))
+                        startActivity(Intent(this@MainActivity, customer::class.java))
+
+                    }
+                    //cancel button click of custom layout
+                    mDialogView.dialogCancelBtn.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+                    }
+
+                    // dialog box asking name ends
+
+                } else {
+                    Log.w("test", "linkWithCredential:failure", task.exception)
+                    Toast.makeText(baseContext, task.exception.toString(),
+                        Toast.LENGTH_LONG).show()
+
+
+                    progress.visibility = View.INVISIBLE
+
                 }
+
+
             }
+
+
+
+//        mAuth.currentUser!!.linkWithCredential(credential)
+//            .addOnCompleteListener {
+//                    task: Task<AuthResult> ->
+//                if (task.isSuccessful) {
+//
+//                    Log.d("test","linksuccessful")
+//
+//                    //add user on to database with phone number
+//
+//                    // Write user's name to the database
+//
+////                    val country_code = "+66"
+////                    val phnNo = country_code+phnNoTxt.text.toString()
+////
+////                    val user = User(phnNo, name_input)
+////
+////                    database.child("customers").push().setValue(user)
+////
+////                    val transaction_insert = Transaction(phnNo,0)
+////                    database.child("transactions").push().setValue(transaction_insert)
+//
+//
+//
+//                    // hide progress animation start
+//                    progress.visibility = View.INVISIBLE
+//                    // hide progress animation ends
+//
+//                    startActivity(Intent(this, customer::class.java))
+//                }
+//            }
     }
 
        // gravity sensor code
@@ -529,5 +544,57 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
     }
 
     // gravity sensor code ends
+
+    private fun welcome_text(){
+
+        // initialize_database_ref
+        database = Firebase.database.reference
+        // init ends
+        // read setting from database
+
+        var settings_ref  = database.child("settings").child("welcome_text")
+
+
+
+        val device_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                welcome_text.text = dataSnapshot.getValue().toString()
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error", "welcome text failed", databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "Failed to load welcome text.",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+
+        settings_ref.addListenerForSingleValueEvent(device_listener)
+
+        // ends database read
+
+
+    }
+
+//    private fun sendSMS(args:Array<String>){
+//        Twilio.init(
+//            System.getenv("TWILIO_ACCOUNT_SID"),
+//            System.getenv("TWILIO_AUTH_TOKEN")
+//        )
+//
+//        val message = Message.creator(
+//            PhoneNumber(System.getenv("MY_NUMBER")),
+//            PhoneNumber(System.getenv("TWILIO_NUMBER")),
+//            "Ahoy from Twilio"
+//        ).create()
+//
+//        print(message.sid)
+//    }
+
 
 }

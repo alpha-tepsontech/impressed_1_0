@@ -99,6 +99,7 @@
             android:id="@+id/dash_biz_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:fontFamily="@font/sukhumvit_medium"
             android:text="ิbiz_email"
             android:textColor="@color/colorLetterlight" />
@@ -127,6 +128,7 @@
             android:id="@+id/location_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:fontFamily="@font/sukhumvit_medium"
             android:text="ิbiz_location"
             android:textColor="@color/colorLetterlight" />
@@ -155,6 +157,7 @@
             android:id="@+id/device_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:fontFamily="@font/sukhumvit_medium"
             android:text="ิbiz_device"
             android:textColor="@color/colorLetterlight" />
@@ -184,12 +187,14 @@
             android:id="@+id/imageView8"
             android:layout_width="20dp"
             android:layout_height="20dp"
+            android:layout_marginRight="5dp"
             app:srcCompat="@drawable/heart_light" />
 
         <TextView
             android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
             android:fontFamily="@font/sukhumvit_medium"
             android:text="="
             android:textColor="@color/colorLetterlight" />
@@ -198,6 +203,7 @@
             android:id="@+id/heart_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
             android:fontFamily="@font/sukhumvit_medium"
             android:text="##"
             android:textColor="@color/colorLetterlight" />
@@ -206,6 +212,7 @@
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:fontFamily="@font/sukhumvit_medium"
             android:text="บาท"
             android:textColor="@color/colorLetterlight" />
