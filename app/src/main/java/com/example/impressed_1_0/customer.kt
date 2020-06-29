@@ -32,10 +32,9 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_customer.log_out_btn
-import kotlinx.android.synthetic.main.activity_dashboard.*
-import java.text.DecimalFormat
-import java.util.*
+import kotlinx.android.synthetic.main.activity_customer.customer_logout
+
+
 
 
 // set sensor vars
@@ -98,15 +97,14 @@ class customer : AppCompatActivity(), SensorEventListener {
         logged_name.text = customer_logged_name
 
         // set log out btn
-        log_out_btn.setOnClickListener {
+        customer_logout.setOnClickListener {
+
             customer_logged_name = ""
             customer_logged_phone = ""
 
-            val providerID = auth.currentUser!!.providerId
+            unlink("phone")
 
-            Log.d("test",providerID)
-
-            unlink(providerID)
+            startActivity(Intent(this,MainActivity::class.java))
 
         }
 
@@ -259,9 +257,6 @@ class customer : AppCompatActivity(), SensorEventListener {
         auth.currentUser!!.unlink(providerId)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-
-
-                    startActivity(Intent(this, MainActivity::class.java))
                 }
             }
         // [END auth_unlink]

@@ -351,6 +351,8 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
+                // clean out frame
+                promo_frame.removeAllViews()
 
 
                 for (ds in dataSnapshot.children) {
@@ -406,7 +408,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
             }
         }
 
-        promos_ref.addListenerForSingleValueEvent(promos_listener)
+        promos_ref.addValueEventListener(promos_listener)
         // database ends
 
     }
@@ -449,8 +451,8 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                        //dismiss dialog
                        mAlertDialog.dismiss()
                        // restart activity
-                       finish();
-                       startActivity(getIntent());
+//                       finish();
+//                       startActivity(getIntent());
 
                    } else {
 
@@ -499,8 +501,8 @@ class dashboard : AppCompatActivity() , SensorEventListener {
             mAlertDialog.dismiss()
 
             //restart activity
-            finish();
-            startActivity(getIntent());
+//            finish();
+//            startActivity(getIntent());
 
         }
         //cancel button click of custom layout
@@ -555,8 +557,8 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                             //dismiss dialog
                             mAlertDialog.dismiss()
                             // restart activity
-                            finish();
-                            startActivity(getIntent());
+//                            finish();
+//                            startActivity(getIntent());
 
                         } else {
 

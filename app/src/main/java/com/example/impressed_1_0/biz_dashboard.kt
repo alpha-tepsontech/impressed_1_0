@@ -14,7 +14,11 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.Sensor
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.TextView
 import android.widget.Toast
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
@@ -28,6 +32,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_biz_dashboard.biz_location_display
 import kotlinx.android.synthetic.main.activity_biz_dashboard.log_out_btn
+import kotlinx.android.synthetic.main.activity_biz_dashboard.total_input
 import kotlinx.android.synthetic.main.activity_customer.*
 
 // set sensor vars
@@ -68,6 +73,39 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
 
         // gravity sensor setup ends
+
+        // enable btn if text field is not empty - start
+
+        total_ent.setEnabled(false)
+
+        total_input.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                if (s.toString().trim { it <= ' ' }.length == 0) {
+                    total_ent.setEnabled(false)
+                } else {
+                    total_ent.setEnabled(true)
+                }
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) { // TODO Auto-generated method stub
+            }
+
+            override fun afterTextChanged(s: Editable) { // TODO Auto-generated method stub
+            }
+        })
+
+        // enable btn if text field is not empty - ends
+
+
+
 
         // set elements
 
@@ -147,7 +185,9 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
 
 
+        // get promos
 
+        promos_database_read()
 
 
 
@@ -242,8 +282,12 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
         total_ent.setOnClickListener {
 
+            var totalInput = Integer.parseInt(total_input.text.toString())
+            val transaction_insert = Transaction(customer_logged_phone,totalInput)
 
-            Log.d("test","longClicked")
+            database.child("transactions").push().setValue(transaction_insert)
+
+            total_input.text.clear()
 
 
         }
@@ -251,12 +295,13 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         // custom keyboard ends
 
         log_out_btn.setOnClickListener {
-
               customer_logged_phone = ""
               customer_logged_name = ""
+
+            unlink("phone")
+
             startActivity(Intent(this,dashboard::class.java))
-//            auth.signOut()
-//            startActivity(Intent(this,launcher_land::class.java))
+
         }
 
 
@@ -287,5 +332,66 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
     }
 
     // gravity sensor code ends
+
+
+    private fun unlink(providerId: String) {
+
+        // [START auth_unlink]
+        auth.currentUser!!.unlink(providerId)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    }
+            }
+        // [END auth_unlink]
+    }
+
+
+    private fun promos_database_read(){
+
+        //read data
+
+        var biz_uid = auth.currentUser!!.uid
+
+        var promos_ref  = database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).child("promos").orderByChild("promoWorth")
+
+        val promos_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                for (ds in dataSnapshot.children) {
+
+                    var promoName = ds.child("promoName").getValue(String::class.java)
+
+                    var promoWorth = ds.child("promoWorth").getValue(Int::class.java)
+
+
+
+                    val promo_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.biz_promo_set,null)
+                    val promoName_holder = promo_set.findViewById<TextView>(R.id.promoName_textview)
+                    val promoWorth_holder = promo_set.findViewById<TextView>(R.id.promoWorth_textview)
+                    promoName_holder.text = promoName
+                    promoWorth_holder.text = promoWorth.toString()
+                    biz_promo_frame.addView(promo_set)
+
+
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+        promos_ref.addListenerForSingleValueEvent(promos_listener)
+        // database ends
+
+
+
+
+    }
 
 }

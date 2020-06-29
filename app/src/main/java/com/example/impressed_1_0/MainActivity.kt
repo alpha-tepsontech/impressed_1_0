@@ -50,6 +50,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_customer.*
+import java.util.*
 
 // twillio sms
 //
@@ -69,7 +70,8 @@ data class User(
 // start data class
 data class Transaction(
     var phone: String? = "",
-    var heartBank: Int? = 0
+    var heartBank: Int? = 0,
+    var time:Date = Date()
 )
 // ends
 
@@ -455,6 +457,10 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                     val transaction_insert = Transaction(phnNo,0)
                     database.child("transactions").push().setValue(transaction_insert)
 
+                        // set global variables
+
+                        customer_logged_phone = phnNo
+                        customer_logged_name = name_input
 
 
                     // hide progress animation start
