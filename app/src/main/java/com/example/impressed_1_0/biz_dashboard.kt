@@ -1,5 +1,6 @@
 package com.example.impressed_1_0
 
+import android.app.AlertDialog
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -18,6 +19,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
@@ -33,7 +35,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_biz_dashboard.biz_location_display
 import kotlinx.android.synthetic.main.activity_biz_dashboard.log_out_btn
 import kotlinx.android.synthetic.main.activity_biz_dashboard.total_input
-import kotlinx.android.synthetic.main.activity_customer.*
+
 
 // set sensor vars
 private var mSensorManager : SensorManager ?= null
@@ -54,6 +56,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
     // firebase realtime database setup
     private lateinit var database: DatabaseReference
 
+    var heartWorth:Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -164,7 +167,8 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
 
                 biz_location_display.text = dataSnapshot.child("locationName").getValue().toString()
-                heart_display.text = dataSnapshot.child("heartWorth").getValue().toString()
+                heartWorth = dataSnapshot.child("heartWorth").getValue().toString().toInt()
+                heart_display.text = heartWorth.toString()
 
            }
 
@@ -190,7 +194,13 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         promos_database_read()
 
 
+        // get tx records
 
+        tx_record_read()
+
+        // read values from database
+
+        tx_database_read()
 
 
 
@@ -282,10 +292,52 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
         total_ent.setOnClickListener {
 
-            var totalInput = Integer.parseInt(total_input.text.toString())
-            val transaction_insert = Transaction(customer_logged_phone,totalInput)
 
-            database.child("transactions").push().setValue(transaction_insert)
+
+            //Inflate the dialog with custom view
+            val mDialogView = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.promo_del_confirmation_dialog,null)
+
+            //AlertDialogBuilder
+            val mBuilder = AlertDialog.Builder(this@biz_dashboard)
+                .setView(mDialogView)
+                .setTitle("")
+            //show dialog
+            val  mAlertDialog = mBuilder.show()
+
+            mDialogView.promo_del_name.text = promoName
+            //login button click of custom layout
+            mDialogView.del_conf_DelBtn.setOnClickListener {
+
+                // delete from database
+
+                var biz_uid = auth.currentUser!!.uid
+                database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).child("promos").child(promoKey).removeValue()
+
+
+                //dismiss dialog
+                mAlertDialog.dismiss()
+
+                //restart activity
+//            finish();
+//            startActivity(getIntent());
+
+            }
+            //cancel button click of custom layout
+            mDialogView.del_conf_CancelBtn.setOnClickListener {
+                //dismiss dialog
+                mAlertDialog.dismiss()
+            }
+
+            // dialog with editText ends
+
+
+
+
+            var totalInput = total_input.text.toString().toFloat()
+            var heartInsert = kotlin.math.floor(totalInput/heartWorth.toFloat()).toInt()
+            val transaction_insert = Transaction(customer_logged_phone,heartInsert,totalInput)
+
+            database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
 
             total_input.text.clear()
 
@@ -391,6 +443,180 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
 
 
+
+    }
+
+    private fun tx_record_read(){
+
+        //read data
+
+
+        var tx_ref  = database.child("transactions").child(global_location_key.toString()).orderByChild(customer_logged_phone.toString()).limitToLast(4)
+
+        val tx_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                tx_scroll_view.removeAllViews()
+
+
+
+                for (ds in dataSnapshot.children) {
+
+                    var txAmount = ds.child("amount").getValue(Float::class.java)
+
+                    var txDay = ds.child("time").child("date").getValue(Int::class.java)
+                    var txMonth = ds.child("time").child("month").getValue(Int::class.java)
+                    var txYear_raw = ds.child("time").child("year").getValue(Int::class.java)
+                    var txYear = 1900+ txYear_raw!!
+
+                    var txHour = ds.child("time").child("hours").getValue(Int::class.java)
+                    var txMinute = ds.child("time").child("minutes").getValue(Int::class.java)
+
+
+
+
+
+                    val tx_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.tx_record,null)
+                    val tx_holder = tx_set.findViewById<TextView>(R.id.tx_record)
+                    val tx_day_holder = tx_set.findViewById<TextView>(R.id.tx_day)
+                    val tx_month_holder = tx_set.findViewById<TextView>(R.id.tx_month)
+                    val tx_year_holder = tx_set.findViewById<TextView>(R.id.tx_year)
+                    val tx_hour_holder = tx_set.findViewById<TextView>(R.id.tx_hour)
+                    val tx_minute_holder = tx_set.findViewById<TextView>(R.id.tx_minute)
+
+                    tx_holder.text = txAmount.toString()
+                    tx_day_holder.text = txDay.toString()
+                    tx_month_holder.text = txMonth.toString()
+                    tx_year_holder.text = txYear.toString()
+                    tx_hour_holder.text = txHour.toString()
+                    tx_minute_holder.text = txMinute.toString()
+
+
+                    tx_scroll_view.addView(tx_set)
+
+                    // setup tx_del
+                    var txKey = ds.key.toString()
+
+
+                    val tx_del_btn = tx_set.findViewById<ImageButton>(R.id.tx_del)
+
+                    tx_del_btn.setOnClickListener{
+
+                        if (txKey !== null) {
+                            tx_delete(txKey,
+                                txAmount!!,
+                                txDay!!,
+                                txMonth!!,
+                                txYear!!,
+                                txHour!!,
+                                txMinute!!
+                            )
+                        }
+
+                    }
+
+
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+        tx_ref.addValueEventListener(tx_listener)
+        // database ends
+
+
+
+
+    }
+
+    private fun tx_delete(txKey:String,txAmount:Float,txDay:Int,txMonth:Int,txYear:Int,txHour:Int,txMinute:Int){
+
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.tx_del_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@biz_dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        mDialogView.tx_del_amount.text = txAmount.toString()
+        mDialogView.tx_del_day.text = txDay.toString()
+        mDialogView.tx_del_month.text = txMonth.toString()
+        mDialogView.tx_del_year.text = txYear.toString()
+        mDialogView.tx_del_hour.text = txHour.toString()
+        mDialogView.tx_del_minute.text = txMinute.toString()
+
+        //login button click of custom layout
+        mDialogView.tx_del_btn.setOnClickListener {
+
+            // delete from database
+
+            database.child("transactions").child(global_location_key.toString()).child(txKey).removeValue()
+
+
+            //dismiss dialog
+            mAlertDialog.dismiss()
+
+            //restart activity
+//            finish();
+//            startActivity(getIntent());
+
+        }
+        //cancel button click of custom layout
+        mDialogView.tx_del_CancelBtn.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+        // dialog with editText ends
+
+    }
+
+
+    private fun tx_database_read(){
+
+        //read data
+
+        var tx_ref  = database.child("transactions").child(global_location_key.toString()).orderByChild("phone").equalTo(customer_logged_phone.toString())
+
+        val tx_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var amount_sum = 0.00F
+                var heart_sum = 0
+                for (ds in dataSnapshot.children) {
+
+                    amount_sum += ds.child("amount").getValue(Float::class.java)!!
+                    heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
+
+                }
+
+                customer_total.text = amount_sum.toString()
+                customer_heart.text = heart_sum.toString()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+        tx_ref.addValueEventListener(tx_listener)
+        // database ends
 
     }
 

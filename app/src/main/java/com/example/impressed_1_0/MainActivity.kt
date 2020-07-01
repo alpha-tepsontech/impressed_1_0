@@ -43,6 +43,7 @@ import android.hardware.Sensor
 import android.widget.Toast
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
+import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 
 // import firebase database
 
@@ -50,6 +51,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_customer.*
+import java.math.BigDecimal
 import java.util.*
 
 // twillio sms
@@ -71,6 +73,7 @@ data class User(
 data class Transaction(
     var phone: String? = "",
     var heartBank: Int? = 0,
+    var amount:Float =0.0F,
     var time:Date = Date()
 )
 // ends
@@ -455,7 +458,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                     database.child("customers").push().setValue(user)
 
                     val transaction_insert = Transaction(phnNo,0)
-                    database.child("transactions").push().setValue(transaction_insert)
+                    database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
 
                         // set global variables
 

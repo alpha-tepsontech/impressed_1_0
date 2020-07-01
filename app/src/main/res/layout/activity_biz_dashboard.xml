@@ -167,10 +167,11 @@
         android:id="@+id/linearLayout7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout6"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+        app:layout_constraintEnd_toEndOf="@+id/input_view"
+        app:layout_constraintTop_toTopOf="@+id/biz_email_display">
 
         <TextView
             android:id="@+id/textView20"
@@ -317,11 +318,10 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/input_view"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout6">
+        app:layout_constraintEnd_toEndOf="@+id/linearLayout14"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout14">
 
 
         <TextView
@@ -494,7 +494,6 @@
         android:inputType="numberDecimal"
         app:layout_constraintBottom_toTopOf="@+id/numpad_linearlayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/input_view"
         app:layout_constraintWidth_percent="0.6" />
 
@@ -708,11 +707,10 @@
 
     <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_height="120dp"
+        app:layout_constraintBottom_toTopOf="@+id/total_input"
         app:layout_constraintEnd_toEndOf="@+id/total_input"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4"
-        app:layout_constraintWidth_percent="0.4">
+        app:layout_constraintWidth_percent="0.3">
 
         <LinearLayout
             android:id="@+id/tx_scroll_view"

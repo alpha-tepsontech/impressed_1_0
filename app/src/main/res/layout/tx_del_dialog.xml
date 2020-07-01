@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+
+    <TextView
+        android:id="@+id/tx_del_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sukhumvit_medium"
+        android:gravity="center"
+        android:text="ลบรายการนี้" />
+
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout13"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingRight="20dp">
+
+        <TextView
+            android:id="@+id/tx_del_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/unit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:text="บาท : "
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/tx_del_day"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/separator"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:text="/"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/tx_del_month"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/separator"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:text="/"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/tx_del_year"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/tx_del_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/separator_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:text=":"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/tx_del_minute"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:textColor="@color/colorLetterDark" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/tx_del_CancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:background="@color/colorBackground"
+            android:fontFamily="@font/sukhumvit_medium"
+            android:text="ยกเลิก"
+            android:textColor="@color/colorLetterlight" />
+
+        <Button
+            android:id="@+id/tx_del_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorBackground"
+            android:fontFamily="@font/sukhumvit_medium"
+            android:text="ลบ"
+            android:textColor="@color/colorLetterlight" />
+    </LinearLayout>
+
+</LinearLayout>
