@@ -32,9 +32,10 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_biz_dashboard.biz_location_display
 import kotlinx.android.synthetic.main.activity_biz_dashboard.log_out_btn
 import kotlinx.android.synthetic.main.activity_biz_dashboard.total_input
+import kotlinx.android.synthetic.main.total_ent_dialog.view.*
+import kotlinx.android.synthetic.main.tx_del_dialog.view.*
 
 
 // set sensor vars
@@ -128,29 +129,29 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         // get device data from database
 
         var biz_uid = auth.currentUser!!.uid
-
-        var device_ref  = database.child("biz_owners").child(biz_uid).child("devices").orderByChild("locationKey").equalTo(global_location_key)
-
-        val device_listener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-
-                for (ds in dataSnapshot.children) {
-                    val deviceName = ds.child("deviceName").getValue()
-                    biz_device_display.text = deviceName.toString()
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w("error", "loadPost:onCancelled", databaseError.toException())
-                // [START_EXCLUDE]
-                Toast.makeText(baseContext, "Failed to load post.",
-                    Toast.LENGTH_SHORT).show()
-                // [END_EXCLUDE]
-            }
-        }
-        device_ref.addValueEventListener(device_listener)
+//
+//        var device_ref  = database.child("biz_owners").child(biz_uid).child("devices").orderByChild("locationKey").equalTo(global_location_key)
+//
+//        val device_listener = object : ValueEventListener {
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//
+//
+//                for (ds in dataSnapshot.children) {
+//                    val deviceName = ds.child("deviceName").getValue()
+//                    biz_device_display.text = deviceName.toString()
+//                }
+//            }
+//
+//            override fun onCancelled(databaseError: DatabaseError) {
+//                // Getting Post failed, log a message
+//                Log.w("error", "loadPost:onCancelled", databaseError.toException())
+//                // [START_EXCLUDE]
+//                Toast.makeText(baseContext, "Failed to load post.",
+//                    Toast.LENGTH_SHORT).show()
+//                // [END_EXCLUDE]
+//            }
+//        }
+//        device_ref.addValueEventListener(device_listener)
         // database ends
 
 
@@ -163,10 +164,9 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
                 val location_info = dataSnapshot.getValue()
 
-                Log.d("test2",location_info.toString())
 
 
-                biz_location_display.text = dataSnapshot.child("locationName").getValue().toString()
+//                biz_location_display.text = dataSnapshot.child("locationName").getValue().toString()
                 heartWorth = dataSnapshot.child("heartWorth").getValue().toString().toInt()
                 heart_display.text = heartWorth.toString()
 
@@ -295,7 +295,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
 
             //Inflate the dialog with custom view
-            val mDialogView = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.promo_del_confirmation_dialog,null)
+            val mDialogView = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.total_ent_dialog,null)
 
             //AlertDialogBuilder
             val mBuilder = AlertDialog.Builder(this@biz_dashboard)
@@ -304,14 +304,31 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
             //show dialog
             val  mAlertDialog = mBuilder.show()
 
-            mDialogView.promo_del_name.text = promoName
+            mDialogView.total_amount.text = total_input.text
+
+
+            val base_heart = kotlin.math.floor(total_input.text.toString().toFloat()/heartWorth.toString().toFloat())
+
+            val upsale = heartWorth-total_input.text.toString().toFloat()%heartWorth.toString().toFloat()
+
+            mDialogView.heart_amount.text = base_heart.toString()
+
+            mDialogView.upsale_amount.text = upsale.toString()
+
+
+
             //login button click of custom layout
-            mDialogView.del_conf_DelBtn.setOnClickListener {
+            mDialogView.total_save_btn.setOnClickListener {
 
-                // delete from database
+                // tx write to database
 
-                var biz_uid = auth.currentUser!!.uid
-                database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).child("promos").child(promoKey).removeValue()
+                var totalInput = total_input.text.toString().toFloat()
+            var heartInsert = kotlin.math.floor(totalInput/heartWorth.toFloat()).toInt()
+            val transaction_insert = Transaction(customer_logged_phone,heartInsert,totalInput)
+
+            database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
+
+            total_input.text.clear()
 
 
                 //dismiss dialog
@@ -323,24 +340,26 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
             }
             //cancel button click of custom layout
-            mDialogView.del_conf_CancelBtn.setOnClickListener {
+            mDialogView.total_x_btn.setOnClickListener {
+                //dismiss dialog
+                mAlertDialog.dismiss()
+            }
+
+            mDialogView.upsale_btn.setOnClickListener {
+
+                //set hint
+
+                val total_base = total_input.text.toString()
+
+                total_input.text.clear()
+                total_input.setHint("ยอดเดิม $total_base บาทได้ $base_heart ดวง ซื้อเพ่ิม $upsale บาทได้เพิ่ม 1 ดวง")
+
+
                 //dismiss dialog
                 mAlertDialog.dismiss()
             }
 
             // dialog with editText ends
-
-
-
-
-            var totalInput = total_input.text.toString().toFloat()
-            var heartInsert = kotlin.math.floor(totalInput/heartWorth.toFloat()).toInt()
-            val transaction_insert = Transaction(customer_logged_phone,heartInsert,totalInput)
-
-            database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
-
-            total_input.text.clear()
-
 
         }
 

@@ -24,7 +24,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:orientation="horizontal"
-        app:layout_constraintStart_toEndOf="@+id/input_view"
+        app:layout_constraintStart_toStartOf="@+id/input_view"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -32,7 +32,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="###-###-####"
-            android:textColor="@color/colorLetterDark"
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold"
             tools:layout_editor_absoluteX="418dp"
             tools:layout_editor_absoluteY="103dp" />
 
@@ -44,7 +45,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:text=": คุณ"
-            android:textColor="@color/colorLetterDark"
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold"
             tools:layout_editor_absoluteX="512dp"
             tools:layout_editor_absoluteY="103dp" />
 
@@ -53,19 +55,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ประทับใจ"
-            android:textColor="@color/colorLetterDark" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
         android:gravity="right"
         android:orientation="horizontal"
-        app:layout_constraintStart_toEndOf="@+id/linearLayout3"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout3">
+        app:layout_constraintEnd_toEndOf="@+id/scrollView3"
+        app:layout_constraintTop_toTopOf="@+id/input_view">
 
         <ImageView
             android:id="@+id/imageView6"
@@ -83,7 +87,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:text="x"
-            android:textColor="@color/colorHeart"
+            android:textColor="@color/colorAccentbright"
             tools:layout_editor_absoluteX="901dp"
             tools:layout_editor_absoluteY="103dp" />
 
@@ -92,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
-            android:textColor="@color/colorHeart"
+            android:textColor="@color/colorAccentbright"
             tools:layout_editor_absoluteX="909dp"
             tools:layout_editor_absoluteY="103dp" />
 
@@ -104,9 +108,8 @@
         android:layout_width="100dp"
         android:layout_height="30dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/total_btns"
+        app:layout_constraintStart_toEndOf="@+id/scrollView3"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo_thai_dark" />
 
@@ -114,10 +117,10 @@
         android:id="@+id/linearLayout6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/biz_device_display"
-        app:layout_constraintTop_toBottomOf="@+id/biz_device_display">
+        app:layout_constraintStart_toStartOf="@+id/linearLayout8"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
 
 
         <ImageView
@@ -133,7 +136,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:text="="
-            android:textColor="@color/colorLetterlight" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/heart_display"
@@ -141,7 +145,8 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:text="###"
-            android:textColor="@color/colorLetterlight" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textView11"
@@ -149,88 +154,13 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:text="บาท"
-            android:textColor="@color/colorLetterlight" />
-
-        <ImageButton
-            android:id="@+id/heart_worth_edit"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:background="@color/colorBackground"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/edit_light" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/input_view"
-        app:layout_constraintTop_toTopOf="@+id/biz_email_display">
 
-        <TextView
-            android:id="@+id/textView20"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ยอดรวม"
-            android:textColor="@color/colorLetterlight" />
-
-        <TextView
-            android:id="@+id/store_totalsale"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="0"
-            android:textColor="@color/colorLetterlight" />
-
-        <TextView
-            android:id="@+id/textView15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="บาท/เดือน"
-            android:textColor="@color/colorLetterlight" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout14"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout7"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
-
-        <TextView
-            android:id="@+id/textView21"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ยอดเพิ่ม"
-            android:textColor="@color/colorLetterlight" />
-
-        <TextView
-            android:id="@+id/store_upsale"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="0"
-            android:textColor="@color/colorLetterlight" />
-
-        <TextView
-            android:id="@+id/textView18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="บาท/เดือน"
-            android:textColor="@color/colorLetterlight" />
-
-    </LinearLayout>
 
 
     <LinearLayout
@@ -247,7 +177,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ยอดรวม"
-            android:textColor="@color/colorLetterDark" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/customer_total"
@@ -256,14 +187,16 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:text="0"
-            android:textColor="@color/colorLetterDark" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textView23"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="บาท"
-            android:textColor="@color/colorLetterDark" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
 
     </LinearLayout>
@@ -293,7 +226,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ยอดเพิ่ม"
-            android:textColor="@color/colorLetterDark" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
 
         <TextView
@@ -303,73 +237,20 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:text="0"
-            android:textColor="@color/colorLetterDark" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textView22"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="บาท"
-            android:textColor="@color/colorLetterDark" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
     </LinearLayout>
-
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout14"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout14">
-
-
-        <TextView
-            android:id="@+id/textView24"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ใช้"
-            android:textColor="@color/colorLetterlight" />
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            app:srcCompat="@drawable/heart" />
-
-        <TextView
-            android:id="@+id/textView25"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="แล้ว"
-            android:textColor="@color/colorLetterlight" />
-
-        <TextView
-            android:id="@+id/store_heart_used"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="0"
-            android:textColor="@color/colorLetterlight" />
-
-        <TextView
-            android:id="@+id/textView26"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ดวง/เดือน"
-            android:textColor="@color/colorLetterlight" />
-
-
-    </LinearLayout>
-
-
-
-
-
-   <LinearLayout
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:orientation= "horizontal">
@@ -392,7 +273,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ใช้"
-            android:textColor="@color/colorLetterDark" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/imageView7"
@@ -408,7 +290,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="แล้ว"
-            android:textColor="@color/colorLetterDark" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/customer_heart_used"
@@ -417,14 +300,16 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:text="0"
-            android:textColor="@color/colorLetterDark" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textView13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ดวง"
-            android:textColor="@color/colorLetterDark" />
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
 
     </LinearLayout>
@@ -433,14 +318,13 @@
     <ScrollView
         android:id="@+id/scrollView3"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_height="300dp"
+        android:layout_marginBottom="20dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         app:layout_constraintBottom_toTopOf="@+id/log_out_btn"
         app:layout_constraintEnd_toEndOf="@+id/input_view"
         app:layout_constraintStart_toStartOf="@+id/input_view"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout14"
         app:layout_constraintWidth_percent="0.4">
 
         <LinearLayout
@@ -679,35 +563,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
         android:text="biz_email"
-        android:textColor="@color/colorLetterlight"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/biz_location_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="biz_location"
-        android:textColor="@color/colorLetterlight"
-        app:layout_constraintStart_toStartOf="@+id/biz_email_display"
-        app:layout_constraintTop_toBottomOf="@+id/biz_email_display" />
-
-    <TextView
-        android:id="@+id/biz_device_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="device_name"
-        android:textColor="@color/colorLetterlight"
-        app:layout_constraintStart_toStartOf="@+id/biz_location_display"
-        app:layout_constraintTop_toBottomOf="@+id/biz_location_display" />
+        android:textColor="@color/colorLetterDark"
+        app:layout_constraintStart_toEndOf="@+id/scrollView3"
+        app:layout_constraintTop_toTopOf="@+id/scrollView4" />
 
     <ScrollView
+        android:id="@+id/scrollView4"
         android:layout_width="0dp"
-        android:layout_height="120dp"
+        android:layout_height="130dp"
         app:layout_constraintBottom_toTopOf="@+id/total_input"
         app:layout_constraintEnd_toEndOf="@+id/total_input"
         app:layout_constraintWidth_percent="0.3">

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:id="@+id/linearLayout13"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:paddingRight="10dp">
+
+    <ImageButton
+        android:id="@+id/total_x_btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@color/fui_transparent"
+        android:scaleType="fitEnd"
+        app:srcCompat="@drawable/x_icon" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout13"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingRight="20dp">
+
+        <TextView
+            android:id="@+id/buytext"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:text="ซื้อ"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/total_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/unit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:text="บาท รับ "
+            android:textColor="@color/colorLetterDark" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="5dp"
+            app:srcCompat="@drawable/heart" />
+
+        <TextView
+            android:id="@+id/heart_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:textColor="@color/colorLetterDark" />
+        <TextView
+            android:id="@+id/unit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:text="ดวง"
+            android:textColor="@color/colorLetterDark" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linearLayout13"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingRight="20dp">
+
+        <TextView
+            android:id="@+id/buytext"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:text="ซื้อเพิ่ม"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/upsale_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/unit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:text="บาท รับเพ่ิม 1 ดวง "
+            android:textColor="@color/colorLetterDark" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/total_save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:background="@color/colorBackground"
+            android:fontFamily="@font/sukhumvit_medium"
+            android:text="บันทึก"
+            android:textColor="@color/colorLetterlight" />
+
+        <Button
+            android:id="@+id/upsale_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorBackground"
+            android:fontFamily="@font/sukhumvit_medium"
+            android:text="ซื้อเพ่ิม"
+            android:textColor="@color/colorLetterlight" />
+    </LinearLayout>
+
+
+
+</LinearLayout>
+

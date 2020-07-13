@@ -18,12 +18,14 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.Sensor
+import android.media.Image
 import android.telephony.PhoneNumberUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -41,8 +43,10 @@ import kotlinx.android.synthetic.main.activity_customer.customer_logout
 private var mSensorManager : SensorManager ?= null
 private var mAccelerometer : Sensor ?= null
 
+
 // set sensor vars ends
 
+private var heart_sum = 0
 
 class customer : AppCompatActivity(), SensorEventListener {
 
@@ -53,6 +57,7 @@ class customer : AppCompatActivity(), SensorEventListener {
 // firebase realtime database setup
     private lateinit var database: DatabaseReference
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_customer)
@@ -62,6 +67,8 @@ class customer : AppCompatActivity(), SensorEventListener {
         // initialize_database_ref
         database = Firebase.database.reference
         // init ends
+
+
 
 
 
@@ -81,7 +88,6 @@ class customer : AppCompatActivity(), SensorEventListener {
 
         transaction_database_read()
 
-        promos_database_read()
 
 //        val phone_striped = customer_logged_phone!!.drop(3)
 //        val phone_format = DecimalFormat("###,###,####")
@@ -173,15 +179,16 @@ class customer : AppCompatActivity(), SensorEventListener {
 
     private fun transaction_database_read(){
 
-        var transaction_ref  = database.child("transactions").orderByChild("phone").equalTo(customer_logged_phone)
+        var transaction_ref  = database.child("transactions").child(global_location_key.toString()).orderByChild("phone").equalTo(customer_logged_phone)
 
         val transaction_listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (ds in dataSnapshot.children) {
-                    var heartReceived = ds.child("heartReceived").getValue(Int::class.java)
-                    customer_heart_bank.text = heartReceived.toString()
+                    heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
+                    customer_heart_bank.text = heart_sum.toString()
                 }
 
+                promos_database_read()
 
             }
 
@@ -225,8 +232,34 @@ class customer : AppCompatActivity(), SensorEventListener {
                     val promo_set = LayoutInflater.from(this@customer).inflate(R.layout.promo_set,null)
                     val promoName_holder = promo_set.findViewById<TextView>(R.id.promoName_textview)
                     val promoWorth_holder = promo_set.findViewById<TextView>(R.id.promoWorth_textview)
+                    val promoWorth_img_btn = promo_set.findViewById<ImageButton>(R.id.heartButton)
                     promoName_holder.text = promoName
                     promoWorth_holder.text = promoWorth.toString()
+
+                    // check heart bank and set btn status
+
+                    promoWorth_img_btn.setEnabled(false)
+
+                    if(heart_sum - promoWorth!! > 0){
+                        val active_color = ContextCompat.getColor(this@customer,R.color.colorHeart)
+                        promoWorth_img_btn.setBackgroundColor(active_color)
+                        promoWorth_img_btn.setEnabled(true)
+                    }
+
+                    promoWorth_img_btn.setOnClickListener{
+
+                        val intent = Intent(this@customer,customer_redeem::class.java)
+                        intent.putExtra("redeem_name",promoName)
+                        intent.putExtra("promoWorth",promoWorth.toString())
+                        startActivity(intent)
+
+
+                    }
+
+
+
+
+
                     customer_promo_frame.addView(promo_set)
 
 

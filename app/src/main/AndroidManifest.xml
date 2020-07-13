@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".sel_log_dialog"></activity>
+        <activity android:name=".biz_redeem"></activity>
+        <activity android:name=".customer_redeem" />
+        <activity android:name=".sel_log_dialog" />
         <activity android:name=".dashboard" />
         <activity android:name=".launcher_land" />
         <activity

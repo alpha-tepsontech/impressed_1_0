@@ -23,11 +23,7 @@
             android:hint="ตั้งชื่อ promotion เลยครับ "
             android:inputType="text" />
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/heart" />
+
 
         <EditText
             android:id="@+id/promo_worth"

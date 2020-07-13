@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+
+    <TextView
+        android:id="@+id/redeem_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:fontFamily="@font/sukhumvit_medium"
+        android:gravity="center"
+        android:text="redeem title"
+        android:textColor="@color/colorLetterDark"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/redeem_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sukhumvit_medium"
+        android:textColor="@color/colorLetterDark"
+        android:gravity="center"
+        android:text="promoName" />
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout13"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingRight="20dp">
+
+
+
+        <TextView
+            android:id="@+id/unit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:text="ใช้"
+            android:textColor="@color/colorLetterDark" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="5dp"
+            app:srcCompat="@drawable/heart" />
+
+        <TextView
+            android:id="@+id/redeem_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:textColor="@color/colorLetterDark" />
+        <TextView
+            android:id="@+id/unit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:text="ดวง"
+            android:textColor="@color/colorLetterDark" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/redeem_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorBackground"
+            android:fontFamily="@font/sukhumvit_medium"
+            android:text="ยกเลิก"
+            android:textColor="@color/colorLetterlight" />
+
+
+    </LinearLayout>
+
+</LinearLayout>
