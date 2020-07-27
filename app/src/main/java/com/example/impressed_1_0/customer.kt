@@ -68,6 +68,9 @@ class customer : AppCompatActivity(), SensorEventListener {
         database = Firebase.database.reference
         // init ends
 
+        // reset heart counter
+        heart_sum = 0
+
 
 
 

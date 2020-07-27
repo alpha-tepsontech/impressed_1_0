@@ -521,7 +521,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
                     tx_del_btn.setOnClickListener{
 
-                        if (txKey !== null) {
+                        if (txKey != null) {
                             tx_delete(txKey,
                                 txAmount!!,
                                 txDay!!,

@@ -20,19 +20,51 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/device_icon" />
+            app:srcCompat="@drawable/email_icon" />
 
         <EditText
-            android:id="@+id/dialog_newdevice"
+            android:id="@+id/dialog_newemail"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:hint="ชื่อเครื่องใหม่"
-            android:inputType="textCapWords" />
+            android:hint="อีเมล์ใหม่"
+            android:inputType="textEmailAddress" />
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="20dp">
+
+        <ImageView
+            android:id="@+id/imageView11"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/key_icon" />
+
+        <EditText
+            android:id="@+id/dialog_newpw"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="password ใหม่"
+            android:inputType="textPassword" />
+
+    </LinearLayout>
+
+
+    <ProgressBar
+        android:id="@+id/dialog_progressbar"
+        style="@style/blueProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +73,7 @@
         android:gravity="center">
 
         <Button
-            android:id="@+id/newdevice_cancel"
+            android:id="@+id/newemail_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -51,7 +83,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/newdevice_save"
+            android:id="@+id/newemail_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"

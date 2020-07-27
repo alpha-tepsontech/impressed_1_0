@@ -4,6 +4,7 @@ package com.example.impressed_1_0
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.hardware.Sensor
@@ -12,11 +13,15 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.impressed_1_0.MyApplication.Companion.global_device_id
+import com.example.impressed_1_0.MyApplication.Companion.global_device_key
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -25,13 +30,19 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_biz_auth.*
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.android.synthetic.main.confirm_dialog.view.*
+import kotlinx.android.synthetic.main.dialog_frame.view.*
+import kotlinx.android.synthetic.main.email_update.view.*
 import kotlinx.android.synthetic.main.heart_worth_dialog.view.*
 import kotlinx.android.synthetic.main.new_device_dialog.view.*
 import kotlinx.android.synthetic.main.new_loc_dialog.view.*
 import kotlinx.android.synthetic.main.new_promo_dialog.view.*
 import kotlinx.android.synthetic.main.new_promo_dialog.view.dialogCancelBtn
 import kotlinx.android.synthetic.main.promo_del_confirmation_dialog.view.*
+import kotlinx.android.synthetic.main.radio_set.*
+import kotlinx.android.synthetic.main.reauth.view.*
 
 
 // set sensor vars
@@ -110,6 +121,11 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
         }
 
+        email_edit.setOnClickListener{
+
+            email_edit()
+        }
+
 
 
         // gravity sensor setup
@@ -144,6 +160,21 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                     global_location_key = location_key.toString()
                     val deviceName = ds.child("deviceName").getValue()
                     device_display.text = deviceName.toString()
+                    val database_deviceID = ds.child("deviceID").getValue()
+                    global_device_id = database_deviceID.toString()
+                    val deviceKey = ds.key
+                    global_device_key = deviceKey.toString()
+                }
+
+                Log.d("test", global_device_id.toString())
+                Log.d("test2",deviceID.toString())
+
+                // check for a new device
+
+                if (global_device_id != deviceID){
+
+                    add_new_device()
+
                 }
 
                 // call location_read after key is obtained
@@ -162,7 +193,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         }
 
 
-        device_ref.addListenerForSingleValueEvent(device_listener)
+        device_ref.addValueEventListener(device_listener)
 
         // database ends
 
@@ -193,7 +224,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
             }
         }
 
-        location_ref.addListenerForSingleValueEvent(location_listener)
+        location_ref.addValueEventListener(location_listener)
         // database ends
 
     }
@@ -246,7 +277,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
             var heart_worth = mDialogView.dialog_heart_value.text.toString()
 
-            database.child("biz_owners").child(biz_uid).child("heart_worth").setValue(heart_worth)
+            database.child("biz_owners").child(biz_uid).child("locations").child(global_location_key.toString()).child("heartWorth").setValue(heart_worth)
 
             //dismiss dialog
             mAlertDialog.dismiss()
@@ -282,7 +313,14 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
             var new_loc = mDialogView.dialog_newlocation.text.toString()
 
-            database.child("biz_owners").child(biz_uid).child("locations").child(new_loc).setValue(1)
+            var new_heartWorth = mDialogView.dialog_heart_worth.text.toString().toInt()
+
+            var location_key = database.push().key.toString()
+
+            var location_info = Location(new_loc,new_heartWorth)
+
+            database.child("biz_owners").child(biz_uid).child("locations").child(location_key).setValue(location_info)
+
 
             //dismiss dialog
             mAlertDialog.dismiss()
@@ -302,6 +340,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
     private fun new_device_dialog(){
 
 
+
         // dialog with edittext start
         //Inflate the dialog with custom view
         val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.new_device_dialog,null)
@@ -317,9 +356,21 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
             var biz_uid = auth.currentUser!!.uid
 
-            var new_device = mDialogView.dialog_newdevice.text.toString()
+            var new_device_name = mDialogView.dialog_newdevice.text.toString()
 
-            database.child("biz_owners").child(biz_uid).child("devices").child(new_device).setValue(1)
+            var currentDeviceID  = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+
+            // check if same device
+            if (global_device_id == currentDeviceID){
+
+                database.child("biz_owners").child(biz_uid).child("devices").child(global_device_key.toString()).child("deviceName").setValue(new_device_name)
+            }else{
+
+                // TODO
+
+            }
+
+
 
             //dismiss dialog
             mAlertDialog.dismiss()
@@ -581,7 +632,324 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
                 }
 
+    private fun email_edit(){
 
+        // dialog with edittext start
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.reauth,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+
+        // enable btn if text field is not empty - start
+
+        mDialogView.reauth_next.setEnabled(false)
+
+
+        mDialogView.reauth_pw.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                if (s.toString().trim { it <= ' ' }.length == 0) {
+                    mDialogView.reauth_next.setEnabled(false)
+                } else {
+                    mDialogView.reauth_next.setEnabled(true)
+                }
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) { // TODO Auto-generated method stub
+            }
+
+            override fun afterTextChanged(s: Editable) { // TODO Auto-generated method stub
+            }
+        })
+
+        // enable btn if text field is not empty - ends
+
+
+
+
+
+
+
+
+
+
+        //button click of custom layout
+        mDialogView.reauth_next.setOnClickListener {
+
+            val pw_input = mDialogView.reauth_pw.text.toString()
+
+            // sign user in
+            val currentEmail = auth.currentUser!!.email
+            auth.signInWithEmailAndPassword(currentEmail.toString(), pw_input)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+
+                        // inflate new email dialog
+
+
+                        //Inflate the new email/pw dialog
+                        val mDialogView =
+                            LayoutInflater.from(this@dashboard).inflate(R.layout.email_update, null)
+
+                        //AlertDialogBuilder
+                        val mBuilder = AlertDialog.Builder(this@dashboard)
+                            .setView(mDialogView)
+                            .setTitle("")
+                        //show dialog
+                        val mAlertDialog = mBuilder.show()
+                        //login button click of custom layout
+                        mDialogView.newemail_save.setOnClickListener {
+
+                            mDialogView.dialog_progressbar.visibility = View.VISIBLE
+
+                            mDialogView.newemail_save.setEnabled(false)
+                            mDialogView.newemail_cancel.setEnabled(false)
+
+                            val newemail_input = mDialogView.dialog_newemail.text.toString()
+                            val newpw_input = mDialogView.dialog_newpw.text.toString()
+
+                            auth.currentUser!!.updateEmail(newemail_input)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful){
+                                    // update email success
+
+                                        auth.currentUser!!.updatePassword(newpw_input)
+                                            .addOnCompleteListener { task ->
+                                                if(task.isSuccessful){
+                                                    // update pw success
+
+                                                    toast("password updated")
+                                                    //dismiss dialog
+                                                    mAlertDialog.dismiss()
+                                                    finish();
+                                                    startActivity(getIntent());
+                                                }else{
+                                                    // update pw failed
+                                                    toast(task.exception.toString())
+                                                }
+                                            }
+
+
+
+
+
+                                    }else{
+                                        // update email failed
+                                        toast(task.exception.toString())
+                                    }
+                                }
+                                }
+
+
+
+
+                        }else{
+
+                        // sign in failed
+                        toast(task.exception.toString())
+                    }
+
+
+//                        //dismiss dialog
+//                        mAlertDialog.dismiss()
+
+                    }
+                }
+        //cancel button click of custom layout
+        mDialogView.reauth_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+        // dialog with editText ends
+
+    }
+
+    private fun toast(msg:String){
+
+        Toast.makeText(
+            baseContext, msg,
+            Toast.LENGTH_LONG
+        ).show()
+
+
+    }
+
+    private fun add_new_device(){
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.confirm_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        mDialogView.confirm_title.text = "พบเคร่ื่องใหม่"
+        mDialogView.confirm_body.text = "เพ่ิมเครื่องนี้ใน account ของคุณ?"
+        //login button click of custom layout
+        mDialogView.confirm_next.setOnClickListener {
+
+            location_select()
+
+
+
+
+
+
+            //dismiss dialog
+            mAlertDialog.dismiss()
+
+
+        }
+        //cancel button click of custom layout
+        mDialogView.confirm_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+        // dialog with editText ends
+
+    }
+
+    private fun location_select(){
+
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.dialog_frame,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        mDialogView.frame_title.text = "เลือกสาขาสำหรับเครื่องนี้"
+
+        // read location database then add radio set to dialog
+
+        var biz_uid = auth.currentUser!!.uid
+
+        var loc_select_ref  = database.child("biz_owners").child(biz_uid).child("locations")
+
+        val loc_select_listener = object : ValueEventListener {
+
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                var radioID = 0
+                for (ds in dataSnapshot.children) {
+
+                    var locName = ds.child("locationName").getValue(String::class.java)
+
+
+
+                    val radioSet =  LayoutInflater.from(this@dashboard).inflate(R.layout.radio_set,null)
+                    val radioButton_holder = radioSet.findViewById<RadioButton>(R.id.radioButton)
+
+                    radioID += 1
+                    radioButton_holder.id = radioID
+                    radioButton_holder.text = locName.toString()
+
+                    mDialogView.radioSet_group.addView(radioSet)
+
+                    Log.d("test",radioID.toString())
+
+
+
+                    }
+
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+        loc_select_ref.addValueEventListener(loc_select_listener)
+        // read location database ends
+
+        // get checked id from radio group
+
+        mDialogView.radioSet_group.setOnCheckedChangeListener(
+            RadioGroup.OnCheckedChangeListener { group, checkedId ->
+                val radio: RadioButton = findViewById(checkedId)
+
+            })
+
+        //next btn
+        mDialogView.frame_next.setOnClickListener {
+
+            // TODO  change global_location_id then add device to database
+
+            // get id from radio group
+
+            var id: Int = mDialogView.radioSet_group.checkedRadioButtonId
+            if(id!=-1){
+                val radio:RadioButton =findViewById(id)
+            }else{
+
+                // no radio selected
+            }
+
+
+            // add device to database
+
+//            var currentDeviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+//
+//            var biz_uid = auth.currentUser!!.uid
+//
+//            // if not set new device info
+//            var device_info = Devices(currentDeviceID,currentDeviceID, global_location_key)
+//
+//            database.child("biz_owners").child(biz_uid).child("devices").push().setValue(device_info)
+
+
+
+            //dismiss dialog
+            mAlertDialog.dismiss()
+
+
+        }
+
+
+        // dialog with editText ends
+
+
+
+
+        //cancel button click of custom layout
+        mDialogView.frame_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+    }
 
 
 

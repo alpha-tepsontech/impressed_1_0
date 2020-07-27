@@ -29,6 +29,9 @@ class MyApplication: Application() {
         var customer_logged_name : String? = ""
         var customer_logged_phone: String? = ""
         var global_location_key:String? =""
+        var global_device_id:String? = ""
+        var global_device_key:String? = ""
+
     }
 
 }

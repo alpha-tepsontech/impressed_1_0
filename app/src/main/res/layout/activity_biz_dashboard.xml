@@ -107,8 +107,9 @@
         android:id="@+id/imageView4"
         android:layout_width="100dp"
         android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
-        app:layout_constraintEnd_toEndOf="@+id/total_btns"
         app:layout_constraintStart_toEndOf="@+id/scrollView3"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo_thai_dark" />
@@ -318,7 +319,7 @@
     <ScrollView
         android:id="@+id/scrollView3"
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="250dp"
         android:layout_marginBottom="20dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
@@ -571,7 +572,7 @@
     <ScrollView
         android:id="@+id/scrollView4"
         android:layout_width="0dp"
-        android:layout_height="130dp"
+        android:layout_height="120dp"
         app:layout_constraintBottom_toTopOf="@+id/total_input"
         app:layout_constraintEnd_toEndOf="@+id/total_input"
         app:layout_constraintWidth_percent="0.3">

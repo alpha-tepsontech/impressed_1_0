@@ -98,7 +98,7 @@ class biz_auth : AppCompatActivity() {
 
             if (!email_input.text.isEmpty() && !pw_input.text.isEmpty()) {
 
-                // sign user up
+                // sign user in
                 auth.signInWithEmailAndPassword(email_input.text.toString(), pw_input.text.toString())
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
@@ -262,7 +262,7 @@ class biz_auth : AppCompatActivity() {
 
                     database.child("biz_owners").child(biz_uid).child("locations").child(location_key).setValue(location_info)
 
-                    var device_info = Devices(deviceID,"เครื่องแรก",location_key)
+                    var device_info = Devices(deviceID,deviceID,location_key)
 
                     database.child("biz_owners").child(biz_uid).child("devices").push().setValue(device_info)
 

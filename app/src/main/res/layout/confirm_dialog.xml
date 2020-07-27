@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+
+    <TextView
+        android:id="@+id/confirm_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sukhumvit_medium"
+        android:gravity="center"
+        android:text="" />
+
+
+    <TextView
+        android:id="@+id/confirm_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sukhumvit_medium"
+        android:gravity="center"
+        android:text="" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/confirm_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:background="@color/colorBackground"
+            android:fontFamily="@font/sukhumvit_medium"
+            android:text="ยกเลิก"
+            android:textColor="@color/colorLetterlight" />
+
+        <Button
+            android:id="@+id/confirm_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorBackground"
+            android:fontFamily="@font/sukhumvit_medium"
+            android:text="ต่อไป"
+            android:textColor="@color/colorLetterlight" />
+    </LinearLayout>
+
+</LinearLayout>
