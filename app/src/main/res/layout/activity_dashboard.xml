@@ -14,6 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:layout_constraintWidth_percent="0.4" />
 
     <View
@@ -106,8 +107,8 @@
 
         <ImageButton
             android:id="@+id/email_edit"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:background="@color/colorBackground"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/edit_light" />
@@ -135,11 +136,20 @@
 
         <ImageButton
             android:id="@+id/location_edit"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:background="@color/colorBackground"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/edit_light" />
+
+        <ImageButton
+            android:id="@+id/new_loc"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="5dp"
+            android:background="@color/colorBackground"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/addnew_icon" />
 
 
     </LinearLayout>
@@ -164,8 +174,8 @@
 
         <ImageButton
             android:id="@+id/device_edit"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:background="@color/colorBackground"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/edit_light" />
@@ -219,8 +229,8 @@
 
         <ImageButton
             android:id="@+id/heart_edit"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_weight="1"
             android:background="@color/colorBackground"
             android:scaleType="fitCenter"

@@ -18,6 +18,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.impressed_1_0.MyApplication.Companion.global_device_id
@@ -106,6 +107,9 @@ class dashboard : AppCompatActivity() , SensorEventListener {
             heart_dialog()
         }
         location_edit.setOnClickListener {
+            location_select()
+        }
+        new_loc.setOnClickListener {
             new_loc_dialog()
         }
 
@@ -320,6 +324,8 @@ class dashboard : AppCompatActivity() , SensorEventListener {
             var location_info = Location(new_loc,new_heartWorth)
 
             database.child("biz_owners").child(biz_uid).child("locations").child(location_key).setValue(location_info)
+
+            global_location_key = location_key
 
 
             //dismiss dialog
@@ -808,7 +814,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         //login button click of custom layout
         mDialogView.confirm_next.setOnClickListener {
 
-            location_select()
+            device_location_select()
 
 
 
@@ -830,7 +836,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
     }
 
-    private fun location_select(){
+    private fun device_location_select(){
 
 
         //Inflate the dialog with custom view
@@ -840,6 +846,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         val mBuilder = AlertDialog.Builder(this@dashboard)
             .setView(mDialogView)
             .setTitle("")
+            .setCancelable(false)
         //show dialog
         val  mAlertDialog = mBuilder.show()
 
@@ -860,19 +867,23 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                 for (ds in dataSnapshot.children) {
 
                     var locName = ds.child("locationName").getValue(String::class.java)
+                    var locKey = ds.key
 
-
-
-                    val radioSet =  LayoutInflater.from(this@dashboard).inflate(R.layout.radio_set,null)
-                    val radioButton_holder = radioSet.findViewById<RadioButton>(R.id.radioButton)
-
+                    val radioButton = RadioButton(this@dashboard)
                     radioID += 1
-                    radioButton_holder.id = radioID
-                    radioButton_holder.text = locName.toString()
 
-                    mDialogView.radioSet_group.addView(radioSet)
+                    radioButton.layoutParams= LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
+                    radioButton.setText(locName)
+                    radioButton.id = radioID
+                    radioButton.tag = locKey
 
-                    Log.d("test",radioID.toString())
+
+
+                    mDialogView.radioSet_group.addView(radioButton)
+
+
 
 
 
@@ -894,45 +905,46 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         loc_select_ref.addValueEventListener(loc_select_listener)
         // read location database ends
 
-        // get checked id from radio group
-
-        mDialogView.radioSet_group.setOnCheckedChangeListener(
-            RadioGroup.OnCheckedChangeListener { group, checkedId ->
-                val radio: RadioButton = findViewById(checkedId)
-
-            })
 
         //next btn
         mDialogView.frame_next.setOnClickListener {
 
-            // TODO  change global_location_id then add device to database
-
             // get id from radio group
 
             var id: Int = mDialogView.radioSet_group.checkedRadioButtonId
+
+
             if(id!=-1){
-                val radio:RadioButton =findViewById(id)
+                val radio:RadioButton =mDialogView.radioSet_group.findViewById(id)
+                global_location_key = radio.tag.toString()
+
+                // add device to database
+
+            var currentDeviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+
+            var biz_uid = auth.currentUser!!.uid
+
+            // if not set new device info
+            var device_info = Devices(currentDeviceID,currentDeviceID, global_location_key)
+
+            database.child("biz_owners").child(biz_uid).child("devices").push().setValue(device_info)
+
+                //dismiss dialog
+                mAlertDialog.dismiss()
+
             }else{
 
                 // no radio selected
+
+                toast("กดเลือกสาขาด้วยครับ")
             }
 
 
-            // add device to database
-
-//            var currentDeviceID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-//
-//            var biz_uid = auth.currentUser!!.uid
-//
-//            // if not set new device info
-//            var device_info = Devices(currentDeviceID,currentDeviceID, global_location_key)
-//
-//            database.child("biz_owners").child(biz_uid).child("devices").push().setValue(device_info)
 
 
 
-            //dismiss dialog
-            mAlertDialog.dismiss()
+
+
 
 
         }
@@ -941,16 +953,117 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         // dialog with editText ends
 
 
-
-
-        //cancel button click of custom layout
-        mDialogView.frame_cancel.setOnClickListener {
-            //dismiss dialog
-            mAlertDialog.dismiss()
-        }
-
     }
 
+
+    private fun location_select(){
+
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.dialog_frame,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+            .setCancelable(false)
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        mDialogView.frame_title.text = "เลือกสาขาสำหรับเครื่องนี้"
+
+        // read location database then add radio set to dialog
+
+        var biz_uid = auth.currentUser!!.uid
+
+        var loc_select_ref  = database.child("biz_owners").child(biz_uid).child("locations")
+
+        val loc_select_listener = object : ValueEventListener {
+
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                var radioID = 0
+                for (ds in dataSnapshot.children) {
+
+                    var locName = ds.child("locationName").getValue(String::class.java)
+                    var locKey = ds.key
+
+                    val radioButton = RadioButton(this@dashboard)
+                    radioID += 1
+
+                    radioButton.layoutParams= LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
+                    radioButton.setText(locName)
+                    radioButton.id = radioID
+                    radioButton.tag = locKey
+
+
+
+                    mDialogView.radioSet_group.addView(radioButton)
+
+
+
+
+
+                }
+
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+        loc_select_ref.addValueEventListener(loc_select_listener)
+        // read location database ends
+
+
+        //next btn
+        mDialogView.frame_next.setOnClickListener {
+
+            // get id from radio group
+
+            var id: Int = mDialogView.radioSet_group.checkedRadioButtonId
+
+
+            if(id!=-1){
+                val radio:RadioButton =mDialogView.radioSet_group.findViewById(id)
+                global_location_key = radio.tag.toString()
+
+
+                //dismiss dialog
+                mAlertDialog.dismiss()
+
+            }else{
+
+                // no radio selected
+
+                toast("กดเลือกสาขาด้วยครับ")
+            }
+
+
+
+
+
+
+
+
+
+        }
+
+
+        // dialog with editText ends
+
+
+    }
 
 
 }
