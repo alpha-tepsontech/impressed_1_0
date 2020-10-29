@@ -135,20 +135,16 @@
             android:id="@+id/tx_del_CancelBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:background="@color/colorBackground"
-            android:fontFamily="@font/sukhumvit_medium"
-            android:text="ยกเลิก"
-            android:textColor="@color/colorLetterlight" />
+            style="@style/dialog_btn"
+            android:text="ยกเลิก" />
 
         <Button
             android:id="@+id/tx_del_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorBackground"
-            android:fontFamily="@font/sukhumvit_medium"
+            style="@style/dialog_btn"
             android:text="ลบ"
-            android:textColor="@color/colorLetterlight" />
+             />
     </LinearLayout>
 
 </LinearLayout>

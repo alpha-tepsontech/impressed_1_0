@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
@@ -65,22 +66,31 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
         mDialogView.redeem_title.text = "ยืนยันใช้ promotion"
         mDialogView.redeem_name.text = intent.getStringExtra("biz_redeem_name")
         mDialogView.redeem_amount.text = intent.getStringExtra("biz_promoWorth")
-        mDialogView.redeem_btn.text = "ยืนยัน"
+
         //login button click of custom layout
 
-        //cancel button click of custom layout
+        // button click of custom layout
         mDialogView.redeem_btn.setOnClickListener {
 
             // write tx to database
             val heartInsert = -intent.getStringExtra("biz_promoWorth").toInt()
 
-            val transaction_insert = Transaction(customer_logged_phone,heartInsert,0F)
+            val blank:Float = 0.0f
+
+            val transaction_insert = Transaction(customer_logged_phone,heartInsert,blank,blank,"redeem")
 
             database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
 
 
 
 
+
+            //dismiss dialog
+            startActivity(Intent(this,biz_dashboard::class.java))
+        }
+
+        //cancel button click of custom layout
+        mDialogView.redeem_cancel.setOnClickListener {
 
             //dismiss dialog
             startActivity(Intent(this,biz_dashboard::class.java))
@@ -99,10 +109,16 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.values[0] > 8) {
+        if (event != null && event.values[0] > 4) {
+            val redeem_name = intent.getStringExtra("biz_redeem_name")
+            val promo_worth = intent.getStringExtra("biz_promoWorth")
+
+
+
+
             val intent = Intent(this,customer_redeem::class.java)
-            intent.putExtra("redeem_name",intent.getStringExtra("redeem_name"))
-            intent.putExtra("promoWorth",intent.getStringExtra("promoWorth"))
+            intent.putExtra("redeem_name",redeem_name)
+            intent.putExtra("promoWorth",promo_worth)
             startActivity(intent)
 
         }

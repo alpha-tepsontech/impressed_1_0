@@ -25,13 +25,14 @@
         <Button
             android:id="@+id/forgot_pw_cancel_btn"
             android:text="Cancel"
-            style="@style/Base.Widget.AppCompat.Button.Colored"
+            style="@style/dialog_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/dialog_send"
             android:text="send password reset email"
-            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:padding="10dp"
+            style="@style/dialog_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

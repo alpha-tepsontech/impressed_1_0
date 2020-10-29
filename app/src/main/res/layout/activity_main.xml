@@ -100,6 +100,7 @@
             android:inputType="phone"
             android:textColor="@color/colorLetterlight"
             android:textSize="25dp"
+            android:maxLength="12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"

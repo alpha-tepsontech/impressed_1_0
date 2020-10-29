@@ -48,8 +48,8 @@
             android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="ทุกๆ"
+            android:layout_marginRight="5dp"
+            android:text="ทุก"
             android:textColor="@color/colorLetterDark" />
 
 
@@ -153,7 +153,7 @@
             android:layout_marginRight="10dp"
             android:gravity="center"
             android:text="x"
-            android:textColor="@color/colorAccentbright"
+            android:textColor="@color/colorHeart"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -162,8 +162,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="##"
-            android:textColor="@color/colorAccentbright"
+            android:text="0"
+            android:textColor="@color/colorHeart"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -186,6 +186,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="โปรโมชั่นทั้งหมด"
+        android:textColor="@color/colorLetterDark"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout11"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout11" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

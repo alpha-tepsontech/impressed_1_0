@@ -12,6 +12,15 @@
         android:gravity="center_vertical|end"
         android:orientation="horizontal"
         android:paddingRight="20dp">
+        <TextView
+            android:id="@+id/type"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:text="sale: "
+            android:textColor="@color/colorLetterDark" />
 
         <TextView
             android:id="@+id/tx_record"

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".numpad_dialog">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+        <LinearLayout
+            android:id="@+id/linearLayout13"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:paddingRight="10dp">
+
+            <ImageButton
+                android:id="@+id/otp_x_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@color/fui_transparent"
+                android:scaleType="fitEnd"
+                app:srcCompat="@drawable/x_icon" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/otp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="ใส่ OTP ได้เลยครับ"
+            android:inputType="number" />
+
+
+
+
+        <LinearLayout
+            android:id="@+id/grid_789"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/letter7"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="7"
+                android:textSize="25dp"
+                style="@style/dialog_btn"
+                />
+
+            <TextView
+                android:id="@+id/letter8"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="8"
+                android:textSize="25dp"
+                style="@style/dialog_btn"/>
+
+            <TextView
+                android:id="@+id/letter9"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="9"
+                android:textSize="25dp"
+                style="@style/dialog_btn"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/grid_456"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/letter4"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="4"
+                style="@style/dialog_btn"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/letter5"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="5"
+                style="@style/dialog_btn"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/letter6"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="6"
+                style="@style/dialog_btn"
+                android:textSize="25dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/grid_123"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/letter1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="1"
+                style="@style/dialog_btn"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/letter2"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="2"
+                style="@style/dialog_btn"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/letter3"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="3"
+                style="@style/dialog_btn"
+                android:textSize="25dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/grid_0decimal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/clear"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="C"
+                android:textColor="@android:color/black"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/letter0"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="0"
+                style="@style/dialog_btn"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/otp_enter"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="ENTER"
+                android:textColor="@android:color/black"
+                android:textSize="25dp" />
+
+
+
+        </LinearLayout>
+
+
+        <!--    <LinearLayout-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:orientation="horizontal"-->
+        <!--        android:gravity="center">-->
+
+        <!--        <Button-->
+        <!--            android:id="@+id/dialogCancelBtn"-->
+        <!--            android:text="Cancel"-->
+        <!--            style="@style/dialog_btn"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/dialogLoginBtn"-->
+        <!--            android:text="Enter"-->
+        <!--            style="@style/dialog_btn"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content" />-->
+        <!--    </LinearLayout>-->
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

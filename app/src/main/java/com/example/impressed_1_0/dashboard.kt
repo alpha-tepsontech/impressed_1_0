@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
 import com.example.impressed_1_0.MyApplication.Companion.global_device_id
 import com.example.impressed_1_0.MyApplication.Companion.global_device_key
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
@@ -45,7 +46,11 @@ import kotlinx.android.synthetic.main.promo_del_confirmation_dialog.view.*
 import kotlinx.android.synthetic.main.radio_set.*
 import kotlinx.android.synthetic.main.reauth.view.*
 
-
+// set elements vars
+private var heart_sum = 0
+private var sales_sum:Float = 0f
+private var upsales_sum:Float = 0f
+private var total_customer_sum:Int = 0
 // set sensor vars
 private var mSensorManager : SensorManager ?= null
 private var mAccelerometer : Sensor ?= null
@@ -93,6 +98,8 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
 
 
+
+
         if(auth.currentUser !== null) {
             dash_biz_email.text = auth.currentUser!!.email
         }
@@ -130,6 +137,13 @@ class dashboard : AppCompatActivity() , SensorEventListener {
             email_edit()
         }
 
+        del_loc.setOnClickListener {
+            location_del()
+        }
+
+        device_del.setOnClickListener {
+            device_del()
+        }
 
 
         // gravity sensor setup
@@ -170,8 +184,6 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                     global_device_key = deviceKey.toString()
                 }
 
-                Log.d("test", global_device_id.toString())
-                Log.d("test2",deviceID.toString())
 
                 // check for a new device
 
@@ -184,6 +196,8 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                 // call location_read after key is obtained
                 location_database_read()
                 promos_database_read()
+                transaction_database_read()
+                total_customer_read()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -243,7 +257,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
 
-        if (event != null && event.values[0] > 8) {
+        if (event != null && event.values[0] > 4) {
             startActivity(Intent(this,MainActivity::class.java))
 
         }
@@ -787,7 +801,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
     }
 
-    private fun toast(msg:String){
+fun toast(msg:String){
 
         Toast.makeText(
             baseContext, msg,
@@ -1035,9 +1049,13 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
 
             if(id!=-1){
+                //set location key
                 val radio:RadioButton =mDialogView.radioSet_group.findViewById(id)
                 global_location_key = radio.tag.toString()
 
+                // change location of this device
+
+                database.child("biz_owners").child(biz_uid).child("devices").child(global_device_key.toString()).child("locationKey").setValue(radio.tag.toString())
 
                 //dismiss dialog
                 mAlertDialog.dismiss()
@@ -1059,10 +1077,257 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
         }
 
+        //cancel button click of custom layout
+        mDialogView.frame_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
 
         // dialog with editText ends
 
 
+    }
+
+
+    private fun location_del(){
+
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.dialog_frame,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+            .setCancelable(false)
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        mDialogView.frame_title.text = "เลือกร้านที่ต้องการลบ"
+
+        // read location database then add radio set to dialog
+
+        var biz_uid = auth.currentUser!!.uid
+
+        var loc_select_ref  = database.child("biz_owners").child(biz_uid).child("locations")
+
+        val loc_select_listener = object : ValueEventListener {
+
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                var radioID = 0
+                for (ds in dataSnapshot.children) {
+
+                    var locName = ds.child("locationName").getValue(String::class.java)
+                    var locKey = ds.key
+
+                    val radioButton = RadioButton(this@dashboard)
+                    radioID += 1
+
+                    radioButton.layoutParams= LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
+                    radioButton.setText(locName)
+                    radioButton.id = radioID
+                    radioButton.tag = locKey
+
+
+
+
+                    mDialogView.radioSet_group.addView(radioButton)
+
+
+                }
+
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+        loc_select_ref.addValueEventListener(loc_select_listener)
+        // read location database ends
+
+
+        //next btn
+        mDialogView.frame_next.setOnClickListener {
+
+            // get id from radio group
+
+            var id: Int = mDialogView.radioSet_group.checkedRadioButtonId
+
+
+            if(id!=-1){
+                //set location key
+                val radio:RadioButton =mDialogView.radioSet_group.findViewById(id)
+
+                //dismiss dialog
+                mAlertDialog.dismiss()
+
+                // call confirm delete fun
+
+                loc_del_conf(radio.text.toString(),radio.tag.toString())
+
+            }else{
+
+                // no radio selected
+
+                toast("กดเลือกสาขาด้วยครับ")
+            }
+
+
+
+
+
+
+
+
+
+        }
+
+        //cancel button click of custom layout
+        mDialogView.frame_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+
+        // dialog with editText ends
+
+
+    }
+
+    private fun loc_del_conf(locName:String,lockey:String){
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.confirm_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        mDialogView.confirm_body.text = "ลบ "+locName+" และข้อมูลของสาขานี้ออกจาก account ของคุณ"
+        //login button click of custom layout
+        mDialogView.confirm_next.setOnClickListener {
+
+            var biz_uid = auth.currentUser!!.uid
+            database.child("biz_owners").child(biz_uid).child(lockey).removeValue()
+            database.child("biz_owners").child(biz_uid).child("locations").child(lockey).removeValue()
+
+
+
+
+
+
+            //dismiss dialog
+            mAlertDialog.dismiss()
+
+
+        }
+        //cancel button click of custom layout
+        mDialogView.confirm_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+        // dialog with editText ends
+
+
+    }
+
+   private fun device_del(){
+
+//TODO: implement device managment
+    }
+
+
+
+    private fun transaction_database_read(){
+
+        var transaction_ref  = database.child("transactions").child(global_location_key.toString()).orderByChild("type").equalTo("sale")
+
+        val transaction_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                //reset counter
+                sales_sum = 0f
+                upsales_sum = 0f
+                for (ds in dataSnapshot.children) {
+                    Log.d("test-dashboard",ds.toString())
+
+//                    heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
+//                    heart_monthly.text = heart_sum.toString()
+                    sales_sum += ds.child("amount").getValue(Float::class.java)!!
+                    sales_monthly.text = sales_sum.toString()
+                    upsales_sum += ds.child("upsale").getValue(Float::class.java)!!
+                    upsales_monthly.text = upsales_sum.toString()
+
+
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+        transaction_ref.addListenerForSingleValueEvent(transaction_listener)
+        // database ends
+
+
+    }
+
+    private fun total_customer_read() {
+        var total_customers_ref =
+            database.child("customers").orderByChild("loc_key").equalTo(global_location_key)
+
+        val total_customers_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                //reset counter
+                total_customer_sum = 0
+                for (ds in dataSnapshot.children)
+                    total_customer_sum += 1
+                total_customers.text = total_customer_sum.toString()
+
+
+            }
+
+
+
+
+        override fun onCancelled(databaseError: DatabaseError) {
+
+            // Getting Post failed, log a message
+            Log.w("error", databaseError.toException())
+            // [START_EXCLUDE]
+            Toast.makeText(
+                baseContext, "database failed",
+                Toast.LENGTH_SHORT
+            ).show()
+            // [END_EXCLUDE]
+        }
+    }
+
+
+        total_customers_ref.addListenerForSingleValueEvent(total_customers_listener)
+        // database ends
     }
 
 

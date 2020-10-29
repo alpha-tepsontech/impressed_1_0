@@ -9,6 +9,10 @@
     <color name="colorHeart">#ED2125</color>
     <color name="colorLetterDark">#2D2D2D</color>
     <color name="colorLightGray">#E8EBEE</color>
+    <color name="colorLightBlue">#6699CC</color>
+    <color name="colorDisabled">#CCCCCC</color>
+    <color name="colorWhite">#FFFFFF</color>
+
 
 
 </resources>

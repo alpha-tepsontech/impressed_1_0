@@ -43,13 +43,13 @@
         <Button
             android:id="@+id/newloc_cancel"
             android:text="Cancel"
-            style="@style/Base.Widget.AppCompat.Button.Colored"
+            style="@style/dialog_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/newloc_save"
             android:text="save"
-            style="@style/Base.Widget.AppCompat.Button.Colored"
+            style="@style/dialog_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

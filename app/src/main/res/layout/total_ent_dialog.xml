@@ -143,20 +143,17 @@
             android:id="@+id/total_save_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:background="@color/colorBackground"
-            android:fontFamily="@font/sukhumvit_medium"
+            style="@style/dialog_btn"
             android:text="บันทึก"
-            android:textColor="@color/colorLetterlight" />
+            />
 
         <Button
             android:id="@+id/upsale_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorBackground"
-            android:fontFamily="@font/sukhumvit_medium"
+            style="@style/dialog_btn"
             android:text="ซื้อเพ่ิม"
-            android:textColor="@color/colorLetterlight" />
+             />
     </LinearLayout>
 
 

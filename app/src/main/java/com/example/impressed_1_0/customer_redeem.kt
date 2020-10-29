@@ -11,6 +11,8 @@ import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import com.firebase.ui.auth.ui.InvisibleActivityBase
 import kotlinx.android.synthetic.main.redeem.view.*
 
 
@@ -54,11 +56,11 @@ class customer_redeem : AppCompatActivity(), SensorEventListener {
         mDialogView.redeem_title.text = "พลิกเครื่องให้แคชเชียร์เลยครับ"
         mDialogView.redeem_name.text = intent.getStringExtra("redeem_name")
         mDialogView.redeem_amount.text = intent.getStringExtra("promoWorth")
-        mDialogView.redeem_btn.text = "ยกเลิก"
+        mDialogView.redeem_btn.visibility = View.GONE
         //login button click of custom layout
 
         //cancel button click of custom layout
-        mDialogView.redeem_btn.setOnClickListener {
+        mDialogView.redeem_cancel.setOnClickListener {
             //dismiss dialog
             startActivity(Intent(this,customer::class.java))
         }
@@ -76,7 +78,7 @@ class customer_redeem : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.values[0] < -8) {
+        if (event != null && event.values[0] < -4) {
 
             val redeem_name = intent.getStringExtra("redeem_name")
             val promo_worth = intent.getStringExtra("promoWorth")

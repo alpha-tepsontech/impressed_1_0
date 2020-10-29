@@ -37,6 +37,18 @@ class MyApplication: Application() {
 }
 // set global val ends
 
+// set global fun
+
+        fun phoneFormat(rawPhone:String): String {
+
+            val rawPhone_drop = rawPhone.drop(3)
+
+                return "("+ rawPhone_drop.substring(0, 3) + ")-" + rawPhone_drop.substring(3,6) +"-"+ rawPhone_drop.substring(6);
+
+
+
+        }
+
 
 class launcher : AppCompatActivity() {
 

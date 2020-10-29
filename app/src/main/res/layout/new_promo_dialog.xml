@@ -50,21 +50,17 @@
             android:id="@+id/dialogCancelBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@color/colorBackground"
+            style="@style/dialog_btn"
             android:text="ยกเลิก"
-            android:textColor="@color/colorLetterlight"
-            android:textStyle="bold" />
+            />
 
         <Button
             android:id="@+id/dialogAddBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@color/colorBackground"
+            style="@style/dialog_btn"
             android:text="บันทึก"
-            android:textColor="@color/colorLetterlight"
-            android:textStyle="bold" />
+        />
     </LinearLayout>
 
 </LinearLayout>

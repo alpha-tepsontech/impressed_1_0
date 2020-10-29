@@ -98,11 +98,7 @@ class customer : AppCompatActivity(), SensorEventListener {
 
 
 
-
-
-
-
-        logged_phone.text = customer_logged_phone
+        logged_phone.text = phoneFormat(customer_logged_phone.toString())
         logged_name.text = customer_logged_name
 
         // set log out btn
@@ -129,7 +125,7 @@ class customer : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.values[0] < -8) {
+        if (event != null && event.values[0] < -4) {
             startActivity(Intent(this,biz_dashboard::class.java))
 
         }
@@ -189,6 +185,7 @@ class customer : AppCompatActivity(), SensorEventListener {
                 for (ds in dataSnapshot.children) {
                     heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
                     customer_heart_bank.text = heart_sum.toString()
+
                 }
 
                 promos_database_read()
@@ -227,7 +224,7 @@ class customer : AppCompatActivity(), SensorEventListener {
                 for (ds in dataSnapshot.children) {
 
                     var promoName = ds.child("promoName").getValue(String::class.java)
-                    Log.d("test",promoName)
+
                     var promoWorth = ds.child("promoWorth").getValue(Int::class.java)
 
 
@@ -243,10 +240,11 @@ class customer : AppCompatActivity(), SensorEventListener {
 
                     promoWorth_img_btn.setEnabled(false)
 
-                    if(heart_sum - promoWorth!! > 0){
-                        val active_color = ContextCompat.getColor(this@customer,R.color.colorHeart)
-                        promoWorth_img_btn.setBackgroundColor(active_color)
+                    if(heart_sum - promoWorth!! >= 0){
+//                        val active_color = ContextCompat.getColor(this@customer,R.color.colorHeart)
+                        promoWorth_img_btn.setBackgroundResource(R.drawable.heart_btn)
                         promoWorth_img_btn.setEnabled(true)
+                        promoName_holder.setBackgroundResource(R.drawable.enabled_border)
                     }
 
                     promoWorth_img_btn.setOnClickListener{
@@ -297,5 +295,6 @@ class customer : AppCompatActivity(), SensorEventListener {
             }
         // [END auth_unlink]
     }
+
 
 }

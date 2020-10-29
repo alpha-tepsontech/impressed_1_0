@@ -45,6 +45,10 @@ private var mAccelerometer : Sensor ?= null
 // set sensor vars ends
 
 
+private var sale_base:Float = 0F
+private var heart_sum = 0
+
+
 
 
 
@@ -62,6 +66,9 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_biz_dashboard)
+
+        // reset heart counter
+        heart_sum = 0
 
 
         // Initialize Firebase Auth
@@ -117,7 +124,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
             biz_email_display.text = auth.currentUser!!.email
         }
 
-        customer_phone.text = customer_logged_phone
+        customer_phone.text = phoneFormat(customer_logged_phone.toString())
         customer_name.text = customer_logged_name
 
         // initialize_database_ref
@@ -187,20 +194,15 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
 
 
+        // read values from database
 
-
-        // get promos
-
-        promos_database_read()
+        tx_database_read()
 
 
         // get tx records
 
         tx_record_read()
 
-        // read values from database
-
-        tx_database_read()
 
 
 
@@ -324,7 +326,14 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
                 var totalInput = total_input.text.toString().toFloat()
             var heartInsert = kotlin.math.floor(totalInput/heartWorth.toFloat()).toInt()
-            val transaction_insert = Transaction(customer_logged_phone,heartInsert,totalInput)
+                var upsale_record = 0f
+                if (sale_base > 0F) {
+                    upsale_record = totalInput - sale_base
+                } else{
+                    upsale_record = 0F
+                }
+
+                val transaction_insert = Transaction(customer_logged_phone,heartInsert,totalInput,upsale_record,"sale")
 
             database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
 
@@ -352,7 +361,12 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                 val total_base = total_input.text.toString()
 
                 total_input.text.clear()
-                total_input.setHint("ยอดเดิม $total_base บาทได้ $base_heart ดวง ซื้อเพ่ิม $upsale บาทได้เพิ่ม 1 ดวง")
+                total_input.setHint("ยอดเดิม $total_base บาทได้ $base_heart ดวง ซื้อเพิ่ม $upsale บาทได้เพิ่ม 1 ดวง")
+
+                // record sale base
+
+                sale_base = total_base.toFloat()
+
 
 
                 //dismiss dialog
@@ -384,7 +398,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.values[0] > 8) {
+        if (event != null && event.values[0] > 4) {
             startActivity(Intent(this,customer::class.java))
 
 
@@ -428,6 +442,9 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         val promos_listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
+                // clean out frame
+                biz_promo_frame.removeAllViews()
+
                 for (ds in dataSnapshot.children) {
 
                     var promoName = ds.child("promoName").getValue(String::class.java)
@@ -439,8 +456,32 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                     val promo_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.biz_promo_set,null)
                     val promoName_holder = promo_set.findViewById<TextView>(R.id.promoName_textview)
                     val promoWorth_holder = promo_set.findViewById<TextView>(R.id.promoWorth_textview)
+                    val promoWorth_img_btn = promo_set.findViewById<ImageButton>(R.id.heartButton)
                     promoName_holder.text = promoName
                     promoWorth_holder.text = promoWorth.toString()
+
+                    // check heart bank and set btn status
+
+                    promoWorth_img_btn.setEnabled(false)
+
+                    if(heart_sum - promoWorth!! >= 0){
+//                        val active_color = ContextCompat.getColor(this@customer,R.color.colorHeart)
+                        promoWorth_img_btn.setBackgroundResource(R.drawable.heart_btn)
+                        promoWorth_img_btn.setEnabled(true)
+                        promoName_holder.setBackgroundResource(R.drawable.enabled_border)
+                    }
+
+                    promoWorth_img_btn.setOnClickListener{
+
+                        val intent = Intent(this@biz_dashboard,biz_redeem::class.java)
+                        intent.putExtra("biz_redeem_name",promoName)
+                        intent.putExtra("biz_promoWorth",promoWorth.toString())
+                        startActivity(intent)
+
+
+                    }
+
+
                     biz_promo_frame.addView(promo_set)
 
 
@@ -482,7 +523,8 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                 for (ds in dataSnapshot.children) {
 
                     var txAmount = ds.child("amount").getValue(Float::class.java)
-
+                    var txType = ds.child("type").getValue(String::class.java)
+                    var txHeart = ds.child("heartBank").getValue(Int::class.java)
                     var txDay = ds.child("time").child("date").getValue(Int::class.java)
                     var txMonth = ds.child("time").child("month").getValue(Int::class.java)
                     var txYear_raw = ds.child("time").child("year").getValue(Int::class.java)
@@ -493,7 +535,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
 
 
-
+                    // set up sale tx
 
                     val tx_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.tx_record,null)
                     val tx_holder = tx_set.findViewById<TextView>(R.id.tx_record)
@@ -510,8 +552,35 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                     tx_hour_holder.text = txHour.toString()
                     tx_minute_holder.text = txMinute.toString()
 
+                    // end
 
-                    tx_scroll_view.addView(tx_set)
+
+                    // set up redeem tx
+
+                    val red_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.redeem_set,null)
+                    val red_holder = red_set.findViewById<TextView>(R.id.red_record)
+                    val red_day_holder = red_set.findViewById<TextView>(R.id.red_day)
+                    val red_month_holder = red_set.findViewById<TextView>(R.id.red_month)
+                    val red_year_holder = red_set.findViewById<TextView>(R.id.red_year)
+                    val red_hour_holder = red_set.findViewById<TextView>(R.id.red_hour)
+                    val red_minute_holder = red_set.findViewById<TextView>(R.id.red_minute)
+
+                    red_holder.text = txHeart.toString()
+                    red_day_holder.text = txDay.toString()
+                    red_month_holder.text = txMonth.toString()
+                    red_year_holder.text = txYear.toString()
+                    red_hour_holder.text = txHour.toString()
+                    red_minute_holder.text = txMinute.toString()
+
+                    //end
+
+
+                    if (txType == "sale") {
+                        tx_scroll_view.addView(tx_set)
+                    }else if (txType =="redeem"){
+                        tx_scroll_view.addView(red_set)
+                    }
+
 
                     // setup tx_del
                     var txKey = ds.key.toString()
@@ -533,6 +602,28 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                         }
 
                     }
+
+                    //ends
+
+                    // setup red_del
+                    val red_del_btn = red_set.findViewById<ImageButton>(R.id.red_del)
+
+                    red_del_btn.setOnClickListener{
+
+                        if (txKey != null) {
+                            tx_delete(txKey,
+                                txAmount!!,
+                                txDay!!,
+                                txMonth!!,
+                                txYear!!,
+                                txHour!!,
+                                txMinute!!
+                            )
+                        }
+
+                    }
+
+                    // ends
 
 
                 }
@@ -612,16 +703,27 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         val tx_listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 var amount_sum = 0.00F
-                var heart_sum = 0
+                var upsales_sum = 0f
+
+                // reset heart counter
+                heart_sum = 0
                 for (ds in dataSnapshot.children) {
 
                     amount_sum += ds.child("amount").getValue(Float::class.java)!!
                     heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
+                    upsales_sum += ds.child("upsale").getValue(Float::class.java)!!
 
                 }
 
                 customer_total.text = amount_sum.toString()
                 customer_heart.text = heart_sum.toString()
+                customer_upsale.text = upsales_sum.toString()
+
+                // get promos
+
+                promos_database_read()
+
+
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

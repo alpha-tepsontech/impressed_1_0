@@ -5,26 +5,21 @@ package com.example.impressed_1_0
 
 // import elements from verification_dialog view
 
+import android.app.Activity
 import android.app.AlertDialog
-import android.app.Application
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Surface
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
@@ -40,7 +35,9 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.Sensor
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
@@ -50,8 +47,8 @@ import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_customer.*
-import java.math.BigDecimal
+import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.android.synthetic.main.name_dialog.view.*
 import java.util.*
 
 // twillio sms
@@ -62,21 +59,9 @@ import java.util.*
 
 
 
-// [START User_class]
-data class User(
-    var phone: String? = "",
-    var name: String? = ""
-)
-// [END user_class]
 
-// start data class
-data class Transaction(
-    var phone: String? = "",
-    var heartBank: Int? = 0,
-    var amount:Float =0.0F,
-    var time:Date = Date()
-)
-// ends
+
+
 
 
 class MainActivity : AppCompatActivity() , SensorEventListener{
@@ -191,6 +176,10 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
             phnNoTxt.setSelection(phnNoTxt.text.length);
 
 
+            // clear edit text
+//            phnNoTxt.setText("")
+
+
 
         }
 
@@ -214,10 +203,21 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                 before: Int,
                 count: Int
             ) {
-                if (s.toString().trim { it <= ' ' }.length == 0) {
-                    log_in_btn.setEnabled(false)
-                } else {
+                if  (start == 2 && before ==0){
+
+                    phnNoTxt.append("-")
+
+                }
+                else if  (start == 6 && before ==0){
+
+                    phnNoTxt.append("-")
+
+                }else if (s.toString().trim { it <= ' ' }.length == 12){
                     log_in_btn.setEnabled(true)
+
+                }else{
+                    log_in_btn.setEnabled(false)
+
                 }
             }
 
@@ -279,7 +279,9 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
     private fun checkifexist(){
 
         val country_code = "+66"
-        val phnNo = country_code+phnNoTxt.text.toString()
+        val phnNoClean = phnNoTxt.text.toString().replace("-","")
+        val phnNo = country_code+phnNoClean
+
 
         // get data from database
         var customersref  = database.child("customers").orderByChild("phone").equalTo(phnNo)
@@ -331,16 +333,15 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
 
     private fun verify () {
-        Log.d("test","verify")
-        //Thread.sleep(2_000)
 
         verificationCallbacks()
         val country_code = "+66"
-        val phnNo = country_code+phnNoTxt.text.toString()
+        val phnNoClean = phnNoTxt.text.toString().replace("-","")
+        val phnNo = country_code+phnNoClean
 
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
             phnNo,
-            60,
+            120,
             TimeUnit.SECONDS,
             this,
             mCallbacks
@@ -351,9 +352,6 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         mCallbacks = object: PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
 
-                Log.d("test","vcompleted")
-
-
             }
 
             override fun onVerificationFailed(p0: FirebaseException) {
@@ -363,7 +361,6 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
 
             override fun onCodeSent(verfication: String, p1: PhoneAuthProvider.ForceResendingToken) {
-                Log.d("Test","Vsent")
                 // dialog with edittext start
                 //Inflate the dialog with custom view
                 val mDialogView = LayoutInflater.from(this@MainActivity).inflate(R.layout.verification_dialog,null)
@@ -371,26 +368,34 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                 //AlertDialogBuilder
                 val mBuilder = AlertDialog.Builder(this@MainActivity)
                     .setView(mDialogView)
-                    .setTitle("ยืนยันเบอร์โทรศัพท์")
+
                 //show dialog
                 val  mAlertDialog = mBuilder.show()
+
+//                mDialogView.otp.showSoftInputOnFocus = false
+
+
+
                 //login button click of custom layout
-                mDialogView.dialogLoginBtn.setOnClickListener {
+                mDialogView.otp_enter.setOnClickListener {
                     //dismiss dialog
                     mAlertDialog.dismiss()
 
                     //get text from EditTexts of custom layout
-                    verification_code = mDialogView.dialogNameEt.text.toString()
+                    verification_code = mDialogView.otp.text.toString()
 
                     // call authenticate to verify OTP
                     authenticate()
 
 
+
+
                 }
                 //cancel button click of custom layout
-                mDialogView.dialogCancelBtn.setOnClickListener {
+                mDialogView.otp_x_btn.setOnClickListener {
                     //dismiss dialog
                     mAlertDialog.dismiss()
+//                    closeKeyBoard()
                 }
 
                 // dialog with editText ends
@@ -405,7 +410,6 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
 
     private fun authenticate () {
-        Log.d("test","authenticate")
         val verifyNo = verification_code
 
         val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, verifyNo)
@@ -417,7 +421,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
     private fun linkAccount(credential: PhoneAuthCredential){
 
-        Log.d("test","inlink"+credential.toString())
+//        Log.d("test","inlink"+credential.toString())
 
         // show progress animation start
         progress.visibility = View.VISIBLE
@@ -450,10 +454,11 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
                     // Write user's name to the database
 
-                    val country_code = "+66"
-                    val phnNo = country_code+phnNoTxt.text.toString()
+                        val country_code = "+66"
+                        val phnNoClean = phnNoTxt.text.toString().replace("-","")
+                        val phnNo = country_code+phnNoClean
 
-                    val user = User(phnNo, name_input)
+                    val user = User(phnNo, name_input, global_location_key)
 
                     database.child("customers").push().setValue(user)
 
@@ -474,7 +479,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
                     }
                     //cancel button click of custom layout
-                    mDialogView.dialogCancelBtn.setOnClickListener {
+                    mDialogView.NameDialogCancelBtn.setOnClickListener {
                         //dismiss dialog
                         mAlertDialog.dismiss()
                     }
@@ -535,12 +540,13 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event != null && event.values[0] < -8) {
+        if (event != null && event.values[0] < -4) {
             startActivity(Intent(this,dashboard::class.java))
 
         }
 
     }
+
     override fun onResume() {
         super.onResume()
         mSensorManager!!.registerListener(this,mAccelerometer,
@@ -590,20 +596,13 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
     }
 
-//    private fun sendSMS(args:Array<String>){
-//        Twilio.init(
-//            System.getenv("TWILIO_ACCOUNT_SID"),
-//            System.getenv("TWILIO_AUTH_TOKEN")
-//        )
-//
-//        val message = Message.creator(
-//            PhoneNumber(System.getenv("MY_NUMBER")),
-//            PhoneNumber(System.getenv("TWILIO_NUMBER")),
-//            "Ahoy from Twilio"
-//        ).create()
-//
-//        print(message.sid)
-//    }
+
+
+    fun View.hideKeyboard() {
+        val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(windowToken, 0)
+    }
+
 
 
 }

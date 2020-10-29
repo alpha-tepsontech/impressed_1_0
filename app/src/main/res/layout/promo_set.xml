@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:layout_marginRight="10dp"
             android:layout_weight="8"
-            android:background="@drawable/edittext_border"
+            android:background="@drawable/disabled_border"
             android:fontFamily="@font/sukhumvit_bold"
             android:gravity="center"
             android:paddingLeft="10dp"
@@ -32,7 +32,7 @@
                 android:id="@+id/heartButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorBackground"
+                android:background="@drawable/diabled_btn"
                 android:paddingLeft="10dp"
                 android:paddingTop="5dp"
                 android:paddingRight="5dp"
@@ -50,7 +50,7 @@
                 android:paddingLeft="30dp"
                 android:paddingRight="20dp"
                 android:text="##"
-                android:textColor="@color/colorLetterlight"
+                android:textColor="@color/fui_bgGoogle"
                 android:textSize="20dp" />
 
 

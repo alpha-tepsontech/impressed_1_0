@@ -44,21 +44,17 @@
             android:id="@+id/reauth_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@color/colorBackground"
+            style="@style/dialog_btn"
             android:text="ยกเลิก"
-            android:textColor="@color/colorLetterlight"
-            android:textStyle="bold" />
+             />
 
         <Button
             android:id="@+id/reauth_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@color/colorBackground"
+            style="@style/dialog_btn"
             android:text="ต่อไป"
-            android:textColor="@color/colorLetterlight"
-            android:textStyle="bold" />
+             />
     </LinearLayout>
 
 </LinearLayout>

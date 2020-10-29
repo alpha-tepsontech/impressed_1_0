@@ -6,6 +6,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+<!--        transparent status bar-->
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
     </style>
 
     <style name="blueProgressBar" parent="Widget.AppCompat.ProgressBar">
@@ -16,6 +23,19 @@
     <style name="whiteProgressBar" parent="Widget.AppCompat.ProgressBar">
         <item name="android:indeterminateTintMode">src_atop</item>
         <item name="android:indeterminateTint">@color/colorLetterlight</item>
+    </style>
+
+    <style name="dialog_btn">
+        <item name = "android:background">@color/colorBackground</item>
+        <item name = "android:textColor">@color/colorLetterlight</item>
+        <item name = "android:textStyle">bold</item>
+        <item name = "android:layout_margin">5dp</item>
+        <item name = "android:fontFamily">@font/sukhumvit_bold</item>
+    </style>
+
+    <style name="disabled_btn">
+        <item name = "android:background">@color/colorLightGray</item>
+        <item name = "android:textColor">@color/colorWhite</item>
     </style>
 
 </resources>

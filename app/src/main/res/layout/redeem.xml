@@ -87,13 +87,19 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/redeem_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/dialog_btn"
+            android:text="ยกเลิก"
+            />
+        <Button
             android:id="@+id/redeem_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorBackground"
-            android:fontFamily="@font/sukhumvit_medium"
-            android:text="ยกเลิก"
-            android:textColor="@color/colorLetterlight" />
+            style="@style/dialog_btn"
+            android:text="ยืนยัน"
+            />
 
 
     </LinearLayout>
