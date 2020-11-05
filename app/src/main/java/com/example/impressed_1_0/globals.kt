@@ -1,6 +1,7 @@
 package com.example.impressed_1_0
 
 import android.app.AlertDialog
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -33,9 +34,17 @@ data class Promos(
 // ends
 
 // start data class
+data class Tresholds(
+    var TresholdName: String? = "",
+    var TresholdValue: Int? = 0
+)
+// ends
+
+// start data class
 data class UserData(
     var user_phone: String? = "",
-    var status: Int? = 0
+    var status: Int? = 0,
+    var date_joined: Date = Date()
 )
 // ends
 
@@ -60,7 +69,32 @@ data class Transaction(
 // ends
 
 
+// set global val
 
+class MyApplication: Application() {
+    companion object {
+        var customer_logged_name : String? = ""
+        var customer_logged_phone: String? = ""
+        var global_location_key:String? =""
+        var global_device_id:String? = ""
+        var global_device_key:String? = ""
+
+    }
+
+}
+// set global val ends
+
+// set global fun
+
+fun phoneFormat(rawPhone:String): String {
+
+    val rawPhone_drop = rawPhone.drop(3)
+
+    return "("+ rawPhone_drop.substring(0, 3) + ")-" + rawPhone_drop.substring(3,6) +"-"+ rawPhone_drop.substring(6);
+
+
+
+}
 
 
 

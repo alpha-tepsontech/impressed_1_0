@@ -87,6 +87,7 @@ class biz_auth : AppCompatActivity() {
 
             progressBar.visibility = View.VISIBLE
 
+
             // log in user
 
             if (!email_input.text.isEmpty() && !pw_input.text.isEmpty()) {
@@ -471,27 +472,36 @@ class biz_auth : AppCompatActivity() {
 
                     database.child("biz_owners").child(biz_uid).child("devices").push().setValue(device_info)
 
-                    var user_info = UserData(phnClean,0)
+                    var user_info = UserData(phnClean,1)
                     database.child("biz_owners").child(biz_uid).child("info").setValue(user_info)
 
                     // read setting from database
 
-                    var settings_ref  = database.child("settings").child("standard_promo")
+                    var settings_ref  = database.child("settings")
 
 
 
                     val device_listener = object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                Log.d("test_setting",dataSnapshot.toString())
 
-
-                            for (ds in dataSnapshot.children) {
+                            for (ds in dataSnapshot.child("standard_promo").children) {
                                 val standard_promo_key = ds.key
+
                                 val standard_promo_price: Int? = ds.getValue(Int::class.java)
                                 var promo_key = database.push().key.toString()
 
                                 var promo_insert = Promos(standard_promo_key,standard_promo_price)
 
                                 database.child("biz_owners").child(biz_uid).child(location_key).child("promos").child(promo_key).setValue(promo_insert)
+
+                            }
+                            for (dst in dataSnapshot.child("tresholds").children) {
+                                val treshold_key = dst.key.toString()
+
+                                val treshold_value: Int? = dst.getValue(Int::class.java)
+
+                                database.child("biz_owners").child(biz_uid).child("tresholds").child(treshold_key).setValue(treshold_value)
 
                             }
                         }

@@ -22,32 +22,7 @@ import com.google.firebase.auth.FirebaseAuthMultiFactorException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.ktx.Firebase
 
-// set global val
 
-class MyApplication: Application() {
-    companion object {
-        var customer_logged_name : String? = ""
-        var customer_logged_phone: String? = ""
-        var global_location_key:String? =""
-        var global_device_id:String? = ""
-        var global_device_key:String? = ""
-
-    }
-
-}
-// set global val ends
-
-// set global fun
-
-        fun phoneFormat(rawPhone:String): String {
-
-            val rawPhone_drop = rawPhone.drop(3)
-
-                return "("+ rawPhone_drop.substring(0, 3) + ")-" + rawPhone_drop.substring(3,6) +"-"+ rawPhone_drop.substring(6);
-
-
-
-        }
 
 
 class launcher : AppCompatActivity() {
