@@ -92,6 +92,12 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // jumper
+
+        startActivity(Intent(this,payment::class.java))
+
+        // ends
+
         // gravity sensor setup
         // get reference of the service
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -247,7 +253,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                 val dialogBuilder = AlertDialog.Builder(this)
 
                 // set message of alert dialog
-                dialogBuilder.setMessage("ใส่เบอร์โทรได้เลยครับ")
+                dialogBuilder.setMessage("ใส่เบอร์โทรศัพท์ได้เลยครับ")
                     // if the dialog is cancelable
                     .setCancelable(false)
                     // positive button text and action

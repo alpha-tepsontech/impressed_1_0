@@ -12,7 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".numpad_dialog"></activity>
+        <activity android:name=".payment"></activity>
+        <activity android:name=".choices" />
+        <activity android:name=".congrats" />
+        <activity android:name=".numpad_dialog" />
         <activity android:name=".biz_redeem" />
         <activity android:name=".customer_redeem" />
         <activity android:name=".sel_log_dialog" />
@@ -26,7 +29,7 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".biz_auth"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="stateHidden" />
