@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:visibility="visible"
     tools:context=".dashboard">
 
     <View
@@ -24,7 +25,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.6" >
+        app:layout_constraintWidth_percent="0.6">
 
     </View>
 
@@ -32,8 +33,9 @@
         android:id="@+id/imageView5"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/view2"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@+id/view2"
         app:layout_constraintTop_toTopOf="@+id/view2"
         app:srcCompat="@drawable/logo_thai_dark" />
@@ -45,8 +47,8 @@
         android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginBottom="10dp"
-        android:text="โปรโมชั่น"
         android:fontFamily="@font/sukhumvit_medium"
+        android:text="โปรโมชั่น"
         app:layout_constraintBottom_toTopOf="@+id/promo_scroll_view"
         app:layout_constraintStart_toStartOf="@+id/promo_scroll_view" />
 
@@ -155,6 +157,7 @@
             android:padding="5dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/plus_icon" />
+
         <ImageButton
             android:id="@+id/del_loc"
             android:layout_width="25dp"
@@ -392,52 +395,51 @@
 
     </LinearLayout>
 
-<!--    <LinearLayout-->
-<!--        android:id="@+id/linearLayout14"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="5dp"-->
-<!--        android:orientation="horizontal"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/linearLayout10"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/linearLayout13">-->
-<!--        <TextView-->
-<!--            android:id="@+id/textView7"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="5dp"-->
-<!--            android:fontFamily="@font/sukhumvit_medium"-->
-<!--            android:text="ใช้"-->
-<!--            android:textColor="@color/colorLetterlight" />-->
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/linearLayout14"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="5dp"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        app:layout_constraintStart_toStartOf="@+id/linearLayout10"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/linearLayout13">-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/textView7"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginRight="5dp"-->
+    <!--            android:fontFamily="@font/sukhumvit_medium"-->
+    <!--            android:text="ใช้"-->
+    <!--            android:textColor="@color/colorLetterlight" />-->
 
-<!--        <ImageView-->
-<!--            android:id="@+id/imageView8"-->
-<!--            android:layout_width="20dp"-->
-<!--            android:layout_height="20dp"-->
-<!--            android:layout_marginRight="5dp"-->
-<!--            app:srcCompat="@drawable/heart_light" />-->
-
-
-
-<!--        <TextView-->
-<!--            android:id="@+id/heart_monthly"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="5dp"-->
-<!--            android:fontFamily="@font/sukhumvit_medium"-->
-<!--            android:text="0"-->
-<!--            android:textColor="@color/colorLetterlight" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/textView10"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="10dp"-->
-<!--            android:fontFamily="@font/sukhumvit_medium"-->
-<!--            android:text="ดวง/เดือน"-->
-<!--            android:textColor="@color/colorLetterlight" />-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/imageView8"-->
+    <!--            android:layout_width="20dp"-->
+    <!--            android:layout_height="20dp"-->
+    <!--            android:layout_marginRight="5dp"-->
+    <!--            app:srcCompat="@drawable/heart_light" />-->
 
 
-<!--    </LinearLayout>-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/heart_monthly"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginRight="5dp"-->
+    <!--            android:fontFamily="@font/sukhumvit_medium"-->
+    <!--            android:text="0"-->
+    <!--            android:textColor="@color/colorLetterlight" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/textView10"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginRight="10dp"-->
+    <!--            android:fontFamily="@font/sukhumvit_medium"-->
+    <!--            android:text="ดวง/เดือน"-->
+    <!--            android:textColor="@color/colorLetterlight" />-->
+
+
+    <!--    </LinearLayout>-->
 
     <TextView
         android:id="@+id/log_out_btn"
@@ -461,5 +463,68 @@
         app:layout_constraintEnd_toEndOf="@+id/promo_scroll_view"
         app:layout_constraintStart_toStartOf="@+id/promo_scroll_view"
         app:layout_constraintTop_toTopOf="@+id/promo_scroll_view" />
+
+    <LinearLayout
+        android:id="@+id/reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/view8"
+        app:layout_constraintTop_toTopOf="@+id/view2">
+
+        <TextView
+            android:id="@+id/textView30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="เพื่อการใช้งานอย่างต่อเนื่อง โปรดชำระเงินภายใน"
+            android:textColor="@color/colorAccentbright" />
+
+
+        <TextView
+            android:id="@+id/tx_day"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/separator"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="/" />
+
+        <TextView
+            android:id="@+id/tx_month"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/separator"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="/" />
+
+        <TextView
+            android:id="@+id/tx_year"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/sukhumvit_bold"
+            android:gravity="center"
+            android:textColor="@color/colorLetterDark" />
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

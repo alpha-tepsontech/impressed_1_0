@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
         // jumper
 
-        startActivity(Intent(this,payment::class.java))
+//        startActivity(Intent(this,payment::class.java))
 
         // ends
 

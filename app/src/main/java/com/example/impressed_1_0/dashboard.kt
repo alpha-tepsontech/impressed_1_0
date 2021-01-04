@@ -25,6 +25,7 @@ import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
 import com.example.impressed_1_0.MyApplication.Companion.global_device_id
 import com.example.impressed_1_0.MyApplication.Companion.global_device_key
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
+import com.example.impressed_1_0.MyApplication.Companion.global_status
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -45,12 +46,21 @@ import kotlinx.android.synthetic.main.new_promo_dialog.view.dialogCancelBtn
 import kotlinx.android.synthetic.main.promo_del_confirmation_dialog.view.*
 import kotlinx.android.synthetic.main.radio_set.*
 import kotlinx.android.synthetic.main.reauth.view.*
+import java.util.*
 
 // set elements vars
 private var heart_sum = 0
 private var sales_sum:Float = 0f
 private var upsales_sum:Float = 0f
 private var total_customer_sum:Int = 0
+
+// set treshold vars
+
+private var sales_treshold:Float = 0f
+private var upsales_treshold:Float = 0f
+private var customers_treshold:Int = 0
+
+
 // set sensor vars
 private var mSensorManager : SensorManager ?= null
 private var mAccelerometer : Sensor ?= null
@@ -194,10 +204,12 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                 }
 
                 // call location_read after key is obtained
+
                 location_database_read()
                 promos_database_read()
                 transaction_database_read()
                 total_customer_read()
+                user_database_read()
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -216,6 +228,10 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         // database ends
 
     }
+
+
+
+
 
     private fun location_database_read(){
 
@@ -1264,7 +1280,6 @@ fun toast(msg:String){
                 sales_sum = 0f
                 upsales_sum = 0f
                 for (ds in dataSnapshot.children) {
-                    Log.d("test-dashboard",ds.toString())
 
 //                    heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
 //                    heart_monthly.text = heart_sum.toString()
@@ -1328,6 +1343,122 @@ fun toast(msg:String){
 
         total_customers_ref.addListenerForSingleValueEvent(total_customers_listener)
         // database ends
+    }
+
+
+
+    // payment filters
+
+
+    private fun user_database_read(){
+
+
+        // get device data from database
+
+        var biz_uid = auth.currentUser!!.uid
+
+        var user_ref  = database.child("biz_owners").child(biz_uid)
+
+        val user_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
+
+
+                for (ds_treshold in dataSnapshot.child("tresholds").children) {
+
+
+                    when(ds_treshold.key){
+                        "customers" ->  customers_treshold = ds_treshold.getValue(Int::class.java)!!
+                        "sales" -> sales_treshold = ds_treshold.getValue(Float::class.java)!!
+                        "upsales" -> upsales_treshold = ds_treshold.getValue(Float::class.java)!!
+                    }
+
+
+                }
+
+
+
+                // check account expiration date
+
+                if (dataSnapshot.child("info").child("date_exp").exists()) {
+
+                    for (ds_expiration in dataSnapshot.child("info").child("date_exp").children) {
+
+
+                        when (ds_expiration.key) {
+                            "time" -> Log.d(
+                                "test-exp",
+                                ds_expiration.getValue(Int::class.java).toString()
+                            )
+
+                        }
+
+
+                    }
+                }
+                //end if
+
+
+
+                // check status
+
+                for (ds_status in dataSnapshot.child("info").children) {
+
+                    if (ds_status.key == "status"){
+
+
+                        when(ds_status.getValue(Int::class.java)){
+                            // status: disabled
+                            0 ->  startActivity(Intent(this@dashboard,congrats::class.java))
+                            // status: trial
+                            1 ->  if (total_customer_sum > customers_treshold ||
+                                sales_sum > sales_treshold ||
+                                upsales_sum > upsales_treshold){
+
+                                //if trial ends set due date then change status
+
+                                var due_date: Date = Date()
+
+                                database.child("biz_owners").child(biz_uid).child("info").child("date_exp").setValue(due_date)
+
+                                database.child("biz_owners").child(biz_uid).child("info").child("status").setValue(2)
+                                //set global status
+                                global_status = 2
+                                startActivity(Intent(this@dashboard,congrats::class.java))
+
+                            }
+                            // status: pending payment - grace period = display reminder
+//                            2 ->
+                            // status: paid
+//                            3 -> // check paid date and current date if over send to payment choice
+                        }
+                    }
+
+
+
+
+                }
+
+
+
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("error",  databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "Failed to load.",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+
+        user_ref.addValueEventListener(user_listener)
+
+        // database ends
+
     }
 
 

@@ -13,8 +13,8 @@ class payment : AppCompatActivity() {
         val qr_image = findViewById(R.id.qr_image) as ImageView
 
         Picasso.get()
-            .load("https://raw.githubusercontent.com/bumptech/glide/master/static/glide_logo.png")
-            .resize(200,200)
+            .load("http://www.tepsontech.com/pratupjai/qr_jet.png")
+//            .resize(300,200)
             .into(qr_image)
 
 

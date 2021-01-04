@@ -33,12 +33,6 @@ data class Promos(
 )
 // ends
 
-// start data class
-data class Tresholds(
-    var TresholdName: String? = "",
-    var TresholdValue: Int? = 0
-)
-// ends
 
 // start data class
 data class UserData(
@@ -78,6 +72,7 @@ class MyApplication: Application() {
         var global_location_key:String? =""
         var global_device_id:String? = ""
         var global_device_key:String? = ""
+        var global_status:Int? = 1
 
     }
 
