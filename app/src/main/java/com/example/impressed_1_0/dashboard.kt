@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.graphics.Paint
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -46,6 +47,7 @@ import kotlinx.android.synthetic.main.new_promo_dialog.view.dialogCancelBtn
 import kotlinx.android.synthetic.main.promo_del_confirmation_dialog.view.*
 import kotlinx.android.synthetic.main.radio_set.*
 import kotlinx.android.synthetic.main.reauth.view.*
+import java.time.ZoneId
 import java.util.*
 
 // set elements vars
@@ -59,6 +61,10 @@ private var total_customer_sum:Int = 0
 private var sales_treshold:Float = 0f
 private var upsales_treshold:Float = 0f
 private var customers_treshold:Int = 0
+
+// set exp_time vars
+
+private var db_exp_time:Long = 0
 
 
 // set sensor vars
@@ -92,6 +98,11 @@ class dashboard : AppCompatActivity() , SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
+
+        // underline paynow button
+
+        paynow.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
@@ -1405,6 +1416,15 @@ fun toast(msg:String){
 
                 for (ds_status in dataSnapshot.child("info").children) {
 
+                    if (ds_status.key  == "date_exp"){
+
+                        if (ds_status.getValue(Long::class.java) !== null){
+                            db_exp_time = ds_status.getValue(Long::class.java)!!
+                        }
+
+                    }
+
+
                     if (ds_status.key == "status"){
 
 
@@ -1417,10 +1437,14 @@ fun toast(msg:String){
                                 upsales_sum > upsales_treshold){
 
                                 //if trial ends set due date then change status
+                                val time = System.currentTimeMillis() / 1000L
+                                val exp_time = time+(86400*5)
 
-                                var due_date: Date = Date()
+//                                val exp_date = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss").withZone(ZoneId.systemDefault())
+//                                    .format(java.time.Instant.ofEpochSecond(exp_time))
 
-                                database.child("biz_owners").child(biz_uid).child("info").child("date_exp").setValue(due_date)
+
+                                database.child("biz_owners").child(biz_uid).child("info").child("date_exp").setValue(exp_time)
 
                                 database.child("biz_owners").child(biz_uid).child("info").child("status").setValue(2)
                                 //set global status
@@ -1428,10 +1452,34 @@ fun toast(msg:String){
                                 startActivity(Intent(this@dashboard,congrats::class.java))
 
                             }
-                            // status: pending payment - grace period = display reminder
-//                            2 ->
-                            // status: paid
-//                            3 -> // check paid date and current date if over send to payment choice
+                            // status: pending payment - grace period = display reminder & detect expiration date
+                            2 -> {
+
+                                // check exp date
+                                if (db_exp_time < System.currentTimeMillis() / 1000L){
+
+                                        database.child("biz_owners").child(biz_uid).child("info").child("status").setValue(0)
+                                        //set global status
+                                        global_status = 0
+                                        startActivity(Intent(this@dashboard,congrats::class.java))
+                                    }
+
+                                // display warning
+
+                                    reminder.visibility = View.VISIBLE
+                                    val exp_date = java.time.format.DateTimeFormatter.ofPattern("dd/MM/YY").withZone(ZoneId.systemDefault())
+                                    .format(java.time.Instant.ofEpochSecond(db_exp_time))
+                                    exp_display.text = exp_date
+
+                                    paynow.visibility = View.VISIBLE
+
+
+                                }
+                            3 ->  {exp.visibility = View.VISIBLE
+                                val exp_date = java.time.format.DateTimeFormatter.ofPattern("dd/MM/YY").withZone(ZoneId.systemDefault())
+                                .format(java.time.Instant.ofEpochSecond(db_exp_time))
+                                exp_date_display.text = exp_date}
+
                         }
                     }
 
