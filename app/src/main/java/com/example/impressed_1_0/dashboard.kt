@@ -99,9 +99,14 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
-        // underline paynow button
+        // underline paynow button.
 
         paynow.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+
+        // set onclick for paynow button
+        paynow.setOnClickListener{
+            startActivity(Intent(this,choices::class.java))
+        }
 
 
         // Initialize Firebase Auth
@@ -1274,9 +1279,162 @@ fun toast(msg:String){
 
     }
 
-   private fun device_del(){
+    private fun device_del(){
 
-//TODO: implement device managment
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.dialog_frame,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+            .setCancelable(false)
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        mDialogView.frame_title.text = "เลือกเครื่องที่ต้องการลบ"
+
+        // read location database then add radio set to dialog
+
+        var biz_uid = auth.currentUser!!.uid
+
+        var dev_select_ref  = database.child("biz_owners").child(biz_uid).child("devices")
+
+        val dev_select_listener = object : ValueEventListener {
+
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                var radioID = 0
+                for (ds in dataSnapshot.children) {
+
+                    var devName = ds.child("deviceName").getValue(String::class.java)
+                    var devKey = ds.key
+
+                    val radioButton = RadioButton(this@dashboard)
+                    radioID += 1
+
+                    radioButton.layoutParams= LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
+                    radioButton.setText(devName)
+                    radioButton.id = radioID
+                    radioButton.tag = devKey
+
+
+
+
+                    mDialogView.radioSet_group.addView(radioButton)
+
+
+                }
+
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+        dev_select_ref.addValueEventListener(dev_select_listener)
+        // read location database ends
+
+
+        //next btn
+        mDialogView.frame_next.setOnClickListener {
+
+            // get id from radio group
+
+            var id: Int = mDialogView.radioSet_group.checkedRadioButtonId
+
+
+            if(id!=-1){
+                //set location key
+                val radio:RadioButton =mDialogView.radioSet_group.findViewById(id)
+
+                //dismiss dialog
+                mAlertDialog.dismiss()
+
+                // call confirm delete fun
+
+                dev_del_conf(radio.text.toString(),radio.tag.toString())
+
+            }else{
+
+                // no radio selected
+
+                toast("กดเลือกสาขาด้วยครับ")
+            }
+
+
+
+
+
+
+
+
+
+        }
+
+        //cancel button click of custom layout
+        mDialogView.frame_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+
+        // dialog with editText ends
+
+
+    }
+
+
+    private fun dev_del_conf(devName:String,devkey:String){
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.confirm_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        mDialogView.confirm_body.text = "ลบ "+devName+" ออกจาก account ของคุณ"
+        //login button click of custom layout
+        mDialogView.confirm_next.setOnClickListener {
+
+            var biz_uid = auth.currentUser!!.uid
+            database.child("biz_owners").child(biz_uid).child("devices").child(devkey).removeValue()
+
+
+
+
+
+
+
+            //dismiss dialog
+            mAlertDialog.dismiss()
+
+
+        }
+        //cancel button click of custom layout
+        mDialogView.confirm_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+        // dialog with editText ends
+
+
     }
 
 
@@ -1430,7 +1588,18 @@ fun toast(msg:String){
 
                         when(ds_status.getValue(Int::class.java)){
                             // status: disabled
-                            0 ->  startActivity(Intent(this@dashboard,congrats::class.java))
+                            0 ->  {
+
+                                val intent = Intent(this@dashboard,congrats::class.java)
+                                intent.putExtra("sales", sales_sum)
+                                intent.putExtra("upsales", upsales_sum)
+                                intent.putExtra("customers", total_customer_sum)
+
+                                startActivity(intent)
+
+
+                            }
+
                             // status: trial
                             1 ->  if (total_customer_sum > customers_treshold ||
                                 sales_sum > sales_treshold ||
@@ -1449,7 +1618,14 @@ fun toast(msg:String){
                                 database.child("biz_owners").child(biz_uid).child("info").child("status").setValue(2)
                                 //set global status
                                 global_status = 2
-                                startActivity(Intent(this@dashboard,congrats::class.java))
+
+                                // send to congrats
+                                val intent = Intent(this@dashboard,congrats::class.java)
+                                intent.putExtra("sales", sales_sum)
+                                intent.putExtra("upsales", upsales_sum)
+                                intent.putExtra("customers", total_customer_sum)
+
+                                startActivity(intent)
 
                             }
                             // status: pending payment - grace period = display reminder & detect expiration date
@@ -1461,24 +1637,75 @@ fun toast(msg:String){
                                         database.child("biz_owners").child(biz_uid).child("info").child("status").setValue(0)
                                         //set global status
                                         global_status = 0
-                                        startActivity(Intent(this@dashboard,congrats::class.java))
+
+                                    // send to congrats
+
+                                    val intent = Intent(this@dashboard,congrats::class.java)
+                                    intent.putExtra("sales", sales_sum)
+                                    intent.putExtra("upsales", upsales_sum)
+                                    intent.putExtra("customers", total_customer_sum)
+
+                                    startActivity(intent)
+
+
                                     }
 
                                 // display warning
 
                                     reminder.visibility = View.VISIBLE
-                                    val exp_date = java.time.format.DateTimeFormatter.ofPattern("dd/MM/YY").withZone(ZoneId.systemDefault())
-                                    .format(java.time.Instant.ofEpochSecond(db_exp_time))
+//                                    val exp_date = java.time.format.DateTimeFormatter.ofPattern("dd/MM/YY").withZone(ZoneId.systemDefault())
+//                                    .format(java.time.Instant.ofEpochSecond(db_exp_time))
+
+                                val sdf = java.text.SimpleDateFormat("dd/MM/yyyy")
+                                val date = java.util.Date(db_exp_time * 1000)
+                                val exp_date = sdf.format(date)
+
                                     exp_display.text = exp_date
 
                                     paynow.visibility = View.VISIBLE
 
 
                                 }
-                            3 ->  {exp.visibility = View.VISIBLE
-                                val exp_date = java.time.format.DateTimeFormatter.ofPattern("dd/MM/YY").withZone(ZoneId.systemDefault())
-                                .format(java.time.Instant.ofEpochSecond(db_exp_time))
-                                exp_date_display.text = exp_date}
+                            3 ->  {
+
+                                // check exp date
+                                if (db_exp_time < System.currentTimeMillis() / 1000L){
+
+                                    //if trial ends set due date then change status
+                                    val time = System.currentTimeMillis() / 1000L
+                                    val exp_time = time+(86400*5)
+
+//                                val exp_date = java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss").withZone(ZoneId.systemDefault())
+//                                    .format(java.time.Instant.ofEpochSecond(exp_time))
+
+
+                                    database.child("biz_owners").child(biz_uid).child("info").child("date_exp").setValue(exp_time)
+
+                                    database.child("biz_owners").child(biz_uid).child("info").child("status").setValue(2)
+                                    //set global status
+                                    global_status = 2
+                                }
+
+
+
+                                exp.visibility = View.VISIBLE
+//                                val exp_date = java.time.format.DateTimeFormatter.ofPattern("dd/MM/YY").withZone(ZoneId.systemDefault())
+//                                .format(java.time.Instant.ofEpochSecond(db_exp_time))
+
+
+                                val sdf = java.text.SimpleDateFormat("dd/MM/yyyy")
+                                val date = java.util.Date(db_exp_time * 1000)
+                                val exp_date = sdf.format(date)
+
+                                exp_date_display.text = exp_date
+
+
+
+
+
+
+
+                            }
 
                         }
                     }

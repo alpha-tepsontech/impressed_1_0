@@ -38,7 +38,7 @@ data class Promos(
 data class UserData(
     var user_phone: String? = "",
     var status: Int? = 0,
-    var date_joined: Date = Date()
+    var date_joined: Long  = System.currentTimeMillis() / 1000L
 )
 // ends
 
@@ -57,7 +57,7 @@ data class Transaction(
     var amount:Float =0.0F,
     var upsale:Float =0.0F,
     var type:String? = "",
-    var time: Date = Date()
+    var time: Long = System.currentTimeMillis() / 1000L
 
 )
 // ends

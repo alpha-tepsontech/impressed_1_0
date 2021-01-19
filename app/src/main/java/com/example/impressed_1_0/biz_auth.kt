@@ -483,7 +483,7 @@ class biz_auth : AppCompatActivity() {
 
                     val device_listener = object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                Log.d("test_setting",dataSnapshot.toString())
+
 
                             for (ds in dataSnapshot.child("standard_promo").children) {
                                 val standard_promo_key = ds.key
@@ -505,30 +505,30 @@ class biz_auth : AppCompatActivity() {
 
                             }
 
-                            for (dsp1 in dataSnapshot.child("pricings").child("tier_1").children) {
+                            for (dsp1 in dataSnapshot.child("pricing").child("tier_1").children) {
                                 val tier1_key = dsp1.key.toString()
 
                                 val tier1_value: String? = dsp1.getValue(String::class.java)
 
-                                database.child("biz_owners").child(biz_uid).child("pricings").child("tier_1").child(tier1_key).setValue(tier1_value)
+                                database.child("biz_owners").child(biz_uid).child("pricing").child("tier_1").child(tier1_key).setValue(tier1_value)
 
                             }
-//                            for (dsp2 in dataSnapshot.child("pricing").child("tier_2").children) {
-//                                val tier2_key = dsp2.key.toString()
-//
-//                                val tier2_value: Int? = dsp2.getValue(Int::class.java)
-//
-//                                database.child("biz_owners").child(biz_uid).child("pricing").child("tier_2").child(tier2_key).setValue(tier2_value)
-//
-//                            }
-//                            for (dsp3 in dataSnapshot.child("pricing").child("tier_3").children) {
-//                                val tier3_key = dsp3.key.toString()
-//
-//                                val tier3_value: Int? = dsp3.getValue(Int::class.java)
-//
-//                                database.child("biz_owners").child(biz_uid).child("pricing").child("tier_3").child(tier3_key).setValue(tier3_value)
-//
-//                            }
+                            for (dsp2 in dataSnapshot.child("pricing").child("tier_2").children) {
+                                val tier2_key = dsp2.key.toString()
+
+                                val tier2_value: String? = dsp2.getValue(String::class.java)
+
+                                database.child("biz_owners").child(biz_uid).child("pricing").child("tier_2").child(tier2_key).setValue(tier2_value)
+
+                            }
+                            for (dsp3 in dataSnapshot.child("pricing").child("tier_3").children) {
+                                val tier3_key = dsp3.key.toString()
+
+                                val tier3_value: String? = dsp3.getValue(String::class.java)
+
+                                database.child("biz_owners").child(biz_uid).child("pricing").child("tier_3").child(tier3_key).setValue(tier3_value)
+
+                            }
                         }
 
                         override fun onCancelled(databaseError: DatabaseError) {

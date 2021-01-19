@@ -36,6 +36,7 @@ import kotlinx.android.synthetic.main.activity_biz_dashboard.log_out_btn
 import kotlinx.android.synthetic.main.activity_biz_dashboard.total_input
 import kotlinx.android.synthetic.main.total_ent_dialog.view.*
 import kotlinx.android.synthetic.main.tx_del_dialog.view.*
+import java.lang.Math.abs
 
 
 // set sensor vars
@@ -47,7 +48,7 @@ private var mAccelerometer : Sensor ?= null
 
 private var sale_base:Float = 0F
 private var heart_sum = 0
-
+private var heart_used = 0
 
 
 
@@ -327,7 +328,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                 var totalInput = total_input.text.toString().toFloat()
             var heartInsert = kotlin.math.floor(totalInput/heartWorth.toFloat()).toInt()
                 var upsale_record = 0f
-                if (sale_base > 0F) {
+                if (sale_base > 0F && totalInput > sale_base) {
                     upsale_record = totalInput - sale_base
                 } else{
                     upsale_record = 0F
@@ -525,13 +526,21 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                     var txAmount = ds.child("amount").getValue(Float::class.java)
                     var txType = ds.child("type").getValue(String::class.java)
                     var txHeart = ds.child("heartBank").getValue(Int::class.java)
-                    var txDay = ds.child("time").child("date").getValue(Int::class.java)
-                    var txMonth = ds.child("time").child("month").getValue(Int::class.java)
-                    var txYear_raw = ds.child("time").child("year").getValue(Int::class.java)
-                    var txYear = 1900+ txYear_raw!!
+                    var txTimeRaw = ds.child("time").getValue(Long::class.java)!!
 
-                    var txHour = ds.child("time").child("hours").getValue(Int::class.java)
-                    var txMinute = ds.child("time").child("minutes").getValue(Int::class.java)
+
+                    val sdf = java.text.SimpleDateFormat("dd/MM/yyyy '@' HH:mm")
+                    val date = java.util.Date(txTimeRaw * 1000)
+                    val txTime = sdf.format(date)
+
+
+//                    var txDay = ds.child("time").child("date").getValue(Int::class.java)
+//                    var txMonth = ds.child("time").child("month").getValue(Int::class.java)
+//                    var txYear_raw = ds.child("time").child("year").getValue(Int::class.java)
+//                    var txYear = 1900+ txYear_raw!!
+//
+//                    var txHour = ds.child("time").child("hours").getValue(Int::class.java)
+//                    var txMinute = ds.child("time").child("minutes").getValue(Int::class.java)
 
 
 
@@ -539,18 +548,24 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
                     val tx_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.tx_record,null)
                     val tx_holder = tx_set.findViewById<TextView>(R.id.tx_record)
-                    val tx_day_holder = tx_set.findViewById<TextView>(R.id.tx_day)
-                    val tx_month_holder = tx_set.findViewById<TextView>(R.id.tx_month)
-                    val tx_year_holder = tx_set.findViewById<TextView>(R.id.tx_year)
-                    val tx_hour_holder = tx_set.findViewById<TextView>(R.id.tx_hour)
-                    val tx_minute_holder = tx_set.findViewById<TextView>(R.id.tx_minute)
+                    val tx_time_holder = tx_set.findViewById<TextView>(R.id.tx_time)
+
+
+
+//                    val tx_day_holder = tx_set.findViewById<TextView>(R.id.tx_day)
+//                    val tx_month_holder = tx_set.findViewById<TextView>(R.id.tx_month)
+//                    val tx_year_holder = tx_set.findViewById<TextView>(R.id.tx_year)
+//                    val tx_hour_holder = tx_set.findViewById<TextView>(R.id.tx_hour)
+//                    val tx_minute_holder = tx_set.findViewById<TextView>(R.id.tx_minute)
 
                     tx_holder.text = txAmount.toString()
-                    tx_day_holder.text = txDay.toString()
-                    tx_month_holder.text = txMonth.toString()
-                    tx_year_holder.text = txYear.toString()
-                    tx_hour_holder.text = txHour.toString()
-                    tx_minute_holder.text = txMinute.toString()
+                    tx_time_holder.text = txTime.toString()
+
+//                    tx_day_holder.text = txDay.toString()
+//                    tx_month_holder.text = txMonth.toString()
+//                    tx_year_holder.text = txYear.toString()
+//                    tx_hour_holder.text = txHour.toString()
+//                    tx_minute_holder.text = txMinute.toString()
 
                     // end
 
@@ -566,11 +581,11 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                     val red_minute_holder = red_set.findViewById<TextView>(R.id.red_minute)
 
                     red_holder.text = txHeart.toString()
-                    red_day_holder.text = txDay.toString()
-                    red_month_holder.text = txMonth.toString()
-                    red_year_holder.text = txYear.toString()
-                    red_hour_holder.text = txHour.toString()
-                    red_minute_holder.text = txMinute.toString()
+//                    red_day_holder.text = txDay.toString()
+//                    red_month_holder.text = txMonth.toString()
+//                    red_year_holder.text = txYear.toString()
+//                    red_hour_holder.text = txHour.toString()
+//                    red_minute_holder.text = txMinute.toString()
 
                     //end
 
@@ -593,11 +608,11 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                         if (txKey != null) {
                             tx_delete(txKey,
                                 txAmount!!,
-                                txDay!!,
-                                txMonth!!,
-                                txYear!!,
-                                txHour!!,
-                                txMinute!!
+                                txTime!!
+//                                txMonth!!,
+//                                txYear!!,
+//                                txHour!!,
+//                                txMinute!!
                             )
                         }
 
@@ -613,11 +628,11 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                         if (txKey != null) {
                             tx_delete(txKey,
                                 txAmount!!,
-                                txDay!!,
-                                txMonth!!,
-                                txYear!!,
-                                txHour!!,
-                                txMinute!!
+                                txTime!!
+//                                txMonth!!,
+//                                txYear!!,
+//                                txHour!!,
+//                                txMinute!!
                             )
                         }
 
@@ -647,7 +662,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
     }
 
-    private fun tx_delete(txKey:String,txAmount:Float,txDay:Int,txMonth:Int,txYear:Int,txHour:Int,txMinute:Int){
+    private fun tx_delete(txKey:String,txAmount:Float,txTime:String){
 
 
         //Inflate the dialog with custom view
@@ -661,11 +676,11 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         val  mAlertDialog = mBuilder.show()
 
         mDialogView.tx_del_amount.text = txAmount.toString()
-        mDialogView.tx_del_day.text = txDay.toString()
-        mDialogView.tx_del_month.text = txMonth.toString()
-        mDialogView.tx_del_year.text = txYear.toString()
-        mDialogView.tx_del_hour.text = txHour.toString()
-        mDialogView.tx_del_minute.text = txMinute.toString()
+        mDialogView.tx_del_time.text = txTime.toString()
+//        mDialogView.tx_del_month.text = txMonth.toString()
+//        mDialogView.tx_del_year.text = txYear.toString()
+//        mDialogView.tx_del_hour.text = txHour.toString()
+//        mDialogView.tx_del_minute.text = txMinute.toString()
 
         //login button click of custom layout
         mDialogView.tx_del_btn.setOnClickListener {
@@ -705,19 +720,25 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                 var amount_sum = 0.00F
                 var upsales_sum = 0f
 
-                // reset heart counter
+                // reset heart counters
                 heart_sum = 0
+                heart_used = 0
                 for (ds in dataSnapshot.children) {
 
                     amount_sum += ds.child("amount").getValue(Float::class.java)!!
                     heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
                     upsales_sum += ds.child("upsale").getValue(Float::class.java)!!
 
+                    if(ds.child("type").getValue(String::class.java)!! == "redeem"){
+                        heart_used +=ds.child("heartBank").getValue(Int::class.java)!!
+                    }
+
                 }
 
                 customer_total.text = amount_sum.toString()
                 customer_heart.text = heart_sum.toString()
                 customer_upsale.text = upsales_sum.toString()
+                customer_heart_used.text = abs(heart_used).toString()
 
                 // get promos
 

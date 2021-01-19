@@ -43,7 +43,7 @@
             android:textColor="@color/colorLetterDark" />
 
         <TextView
-            android:id="@+id/tx_day"
+            android:id="@+id/tx_time"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
@@ -51,73 +51,7 @@
             android:gravity="center"
             android:textColor="@color/colorLetterDark" />
 
-        <TextView
-            android:id="@+id/separator"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/sukhumvit_bold"
-            android:gravity="center"
-            android:text="/"
-            android:textColor="@color/colorLetterDark" />
 
-        <TextView
-            android:id="@+id/tx_month"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/sukhumvit_bold"
-            android:gravity="center"
-            android:textColor="@color/colorLetterDark" />
-
-        <TextView
-            android:id="@+id/separator"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/sukhumvit_bold"
-            android:gravity="center"
-            android:text="/"
-            android:textColor="@color/colorLetterDark" />
-
-        <TextView
-            android:id="@+id/tx_year"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/sukhumvit_bold"
-            android:gravity="center"
-            android:textColor="@color/colorLetterDark" />
-
-        <TextView
-            android:id="@+id/tx_hour"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/sukhumvit_bold"
-            android:gravity="center"
-            android:textColor="@color/colorLetterDark" />
-
-        <TextView
-            android:id="@+id/separator_time"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/sukhumvit_bold"
-            android:gravity="center"
-            android:text=":"
-            android:textColor="@color/colorLetterDark" />
-
-        <TextView
-            android:id="@+id/tx_minute"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/sukhumvit_bold"
-            android:gravity="center"
-            android:textColor="@color/colorLetterDark" />
 
 
         <ImageButton
