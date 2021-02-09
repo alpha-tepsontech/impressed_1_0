@@ -512,7 +512,9 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         //read data
 
 
-        var tx_ref  = database.child("transactions").child(global_location_key.toString()).orderByChild(customer_logged_phone.toString()).limitToLast(4)
+        var tx_ref  = database.child("transactions").child(global_location_key.toString()).orderByChild("phone").equalTo(
+            customer_logged_phone.toString()).limitToLast(4)
+
 
         val tx_listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -574,14 +576,11 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
                     val red_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.redeem_set,null)
                     val red_holder = red_set.findViewById<TextView>(R.id.red_record)
-                    val red_day_holder = red_set.findViewById<TextView>(R.id.red_day)
-                    val red_month_holder = red_set.findViewById<TextView>(R.id.red_month)
-                    val red_year_holder = red_set.findViewById<TextView>(R.id.red_year)
-                    val red_hour_holder = red_set.findViewById<TextView>(R.id.red_hour)
-                    val red_minute_holder = red_set.findViewById<TextView>(R.id.red_minute)
+                    val red_time_holder = red_set.findViewById<TextView>(R.id.red_day)
+
 
                     red_holder.text = txHeart.toString()
-//                    red_day_holder.text = txDay.toString()
+                    red_time_holder.text = txTime.toString()
 //                    red_month_holder.text = txMonth.toString()
 //                    red_year_holder.text = txYear.toString()
 //                    red_hour_holder.text = txHour.toString()

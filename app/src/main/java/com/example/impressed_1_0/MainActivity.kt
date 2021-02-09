@@ -303,14 +303,23 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                 else if(phonecheck !== null) {
 
                     for (ds in dataSnapshot.children) {
-                        val phonerecorded = ds.child("phone").getValue(String::class.java)
-                        val namerecorded = ds.child("name").getValue(String::class.java)
 
-                        if (phonerecorded == phnNo) {
-                            customer_logged_phone = phonerecorded
-                            customer_logged_name = namerecorded
-                            startActivity(Intent(this@MainActivity, customer::class.java))
+                        // check if belong to this location
 
+                        if (ds.child("loc_key").getValue(String::class.java) == global_location_key) {
+
+
+                            val phonerecorded = ds.child("phone").getValue(String::class.java)
+                            val namerecorded = ds.child("name").getValue(String::class.java)
+
+                            if (phonerecorded == phnNo) {
+                                customer_logged_phone = phonerecorded
+                                customer_logged_name = namerecorded
+                                startActivity(Intent(this@MainActivity, customer::class.java))
+
+                            }
+                        }else{
+                            verify()
                         }
 
                     }
@@ -378,7 +387,35 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                 //show dialog
                 val  mAlertDialog = mBuilder.show()
 
-//                mDialogView.otp.showSoftInputOnFocus = false
+
+                // enable btn if text field is not empty - start
+
+                mDialogView.otp.addTextChangedListener(object : TextWatcher {
+                    override fun onTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) { if (s.toString().trim { it <= ' ' }.length == 6){
+                            mDialogView.otp_enter.setEnabled(true)
+
+                        }else{
+                            mDialogView.otp_enter.setEnabled(false)
+
+                        }
+                    }
+
+                    override fun beforeTextChanged(
+                        s: CharSequence, start: Int, count: Int,
+                        after: Int
+                    ) { // TODO Auto-generated method stub
+                    }
+
+                    override fun afterTextChanged(s: Editable) { // TODO Auto-generated method stub
+                    }
+                })
+
+                // enable btn if text field is not empty - ends
 
 
 
@@ -401,9 +438,24 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                 mDialogView.otp_x_btn.setOnClickListener {
                     //dismiss dialog
                     mAlertDialog.dismiss()
-//                    closeKeyBoard()
+
+                    // hide keyboard
+
+                    val imm = this@MainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
                 }
 
+                mDialogView.otp_x_btn.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
+//                    hideKeyboard()
+                    val imm = this@MainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+                }
+
+                // disable touch outside
+
+                mAlertDialog.setCanceledOnTouchOutside(false)
                 // dialog with editText ends
 
                 super.onCodeSent(verfication, p1)

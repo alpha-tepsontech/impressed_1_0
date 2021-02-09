@@ -27,11 +27,14 @@
 
     <EditText
         android:id="@+id/otp"
+        style="@android:style/Widget.DeviceDefault.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:hint="ใส่ OTP ได้เลยครับ"
-        android:inputType="number" />
+        android:inputType="number"
+        android:maxLength="6"
+        app:backgroundTint="@color/colorBackground" />
 
 
 
@@ -199,18 +202,18 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <Button
-            android:id="@+id/dialogCancelBtn"
-            android:text="Cancel"
-            style="@style/dialog_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+<!--        <Button-->
+<!--            android:id="@+id/dialogCancelBtn"-->
+<!--            android:text="Cancel"-->
+<!--            style="@style/dialog_btn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content" />-->
         <Button
             android:id="@+id/otp_enter"
-            android:text="Enter"
             style="@style/dialog_btn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="ตกลง" />
     </LinearLayout>
 
 </LinearLayout>

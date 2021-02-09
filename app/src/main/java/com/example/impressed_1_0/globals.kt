@@ -1,5 +1,6 @@
 package com.example.impressed_1_0
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Application
 import android.content.Context
@@ -7,6 +8,8 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.name_dialog.view.*
 import java.util.*
@@ -73,6 +76,10 @@ class MyApplication: Application() {
         var global_device_id:String? = ""
         var global_device_key:String? = ""
         var global_status:Int? = 1
+        var global_sales = 0
+        var global_upsales = 0
+        var global_customers = 0
+        var global_exp_date:Long = 0
 
     }
 
@@ -91,5 +98,44 @@ fun phoneFormat(rawPhone:String): String {
 
 }
 
+fun moneyFormat(rawNumber:String): String {
+
+    if(rawNumber.length >3) {
+        return rawNumber.substring(
+            0,
+            rawNumber.length - 3
+        ) + "," + rawNumber.substring(rawNumber.length - 3, rawNumber.length);
+    }else return rawNumber
 
 
+}
+
+// hide softkeyboard pack
+
+fun Fragment.hideKeyboard() {
+    view?.let { activity?.hideKeyboard(it) }
+    Log.d("test","fragment-hidekeyboard")
+}
+
+fun Activity.hideKeyboard() {
+    hideKeyboard(currentFocus ?: View(this))
+
+    Log.d("test","activity-hidekeyboard")
+}
+
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+
+    Log.d("test","Context-hidekeyboard")
+}
+
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
+
+    Log.d("test","view-hidekeyboard")
+}
+
+
+// end

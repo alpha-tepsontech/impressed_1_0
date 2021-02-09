@@ -23,10 +23,14 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
+import com.example.impressed_1_0.MyApplication.Companion.global_customers
 import com.example.impressed_1_0.MyApplication.Companion.global_device_id
 import com.example.impressed_1_0.MyApplication.Companion.global_device_key
+import com.example.impressed_1_0.MyApplication.Companion.global_exp_date
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
+import com.example.impressed_1_0.MyApplication.Companion.global_sales
 import com.example.impressed_1_0.MyApplication.Companion.global_status
+import com.example.impressed_1_0.MyApplication.Companion.global_upsales
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -36,6 +40,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_biz_auth.*
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.android.synthetic.main.activity_dashboard.view.*
 import kotlinx.android.synthetic.main.confirm_dialog.view.*
 import kotlinx.android.synthetic.main.dialog_frame.view.*
 import kotlinx.android.synthetic.main.email_update.view.*
@@ -65,7 +70,7 @@ private var customers_treshold:Int = 0
 // set exp_time vars
 
 private var db_exp_time:Long = 0
-
+private var db_confirm_time:Long = 0
 
 // set sensor vars
 private var mSensorManager : SensorManager ?= null
@@ -105,6 +110,10 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
         // set onclick for paynow button
         paynow.setOnClickListener{
+            startActivity(Intent(this,choices::class.java))
+        }
+
+        paynow2.setOnClickListener{
             startActivity(Intent(this,choices::class.java))
         }
 
@@ -224,8 +233,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                 location_database_read()
                 promos_database_read()
                 transaction_database_read()
-                total_customer_read()
-                user_database_read()
+
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -529,6 +537,11 @@ class dashboard : AppCompatActivity() , SensorEventListener {
             //show dialog
             val  mAlertDialog = mBuilder.show()
 
+            // disable touch outside
+
+            mAlertDialog.setCanceledOnTouchOutside(false)
+
+
             // check null
 
 
@@ -631,6 +644,10 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                         .setTitle("")
                     //show dialog
                     val  mAlertDialog = mBuilder.show()
+
+                    // disable touch outside
+
+                    mAlertDialog.setCanceledOnTouchOutside(false)
 
                     // populate edit texts
 
@@ -1454,8 +1471,12 @@ fun toast(msg:String){
 //                    heart_monthly.text = heart_sum.toString()
                     sales_sum += ds.child("amount").getValue(Float::class.java)!!
                     sales_monthly.text = sales_sum.toString()
+                    // set global var
+                    global_sales = sales_sum.toInt()
                     upsales_sum += ds.child("upsale").getValue(Float::class.java)!!
                     upsales_monthly.text = upsales_sum.toString()
+                    // global var
+                    global_upsales = upsales_sum.toInt()
 
 
                 }
@@ -1475,6 +1496,9 @@ fun toast(msg:String){
         transaction_ref.addListenerForSingleValueEvent(transaction_listener)
         // database ends
 
+        total_customer_read()
+
+
 
     }
 
@@ -1487,8 +1511,10 @@ fun toast(msg:String){
                 //reset counter
                 total_customer_sum = 0
                 for (ds in dataSnapshot.children)
+
                     total_customer_sum += 1
                 total_customers.text = total_customer_sum.toString()
+                global_customers = total_customer_sum
 
 
             }
@@ -1512,6 +1538,11 @@ fun toast(msg:String){
 
         total_customers_ref.addListenerForSingleValueEvent(total_customers_listener)
         // database ends
+
+        user_database_read()
+
+
+
     }
 
 
@@ -1550,27 +1581,7 @@ fun toast(msg:String){
 
                 // check account expiration date
 
-                if (dataSnapshot.child("info").child("date_exp").exists()) {
 
-                    for (ds_expiration in dataSnapshot.child("info").child("date_exp").children) {
-
-
-                        when (ds_expiration.key) {
-                            "time" -> Log.d(
-                                "test-exp",
-                                ds_expiration.getValue(Int::class.java).toString()
-                            )
-
-                        }
-
-
-                    }
-                }
-                //end if
-
-
-
-                // check status
 
                 for (ds_status in dataSnapshot.child("info").children) {
 
@@ -1578,11 +1589,21 @@ fun toast(msg:String){
 
                         if (ds_status.getValue(Long::class.java) !== null){
                             db_exp_time = ds_status.getValue(Long::class.java)!!
+                            global_exp_date = db_exp_time
                         }
 
                     }
 
+                    if (ds_status.key  == "date_confirm"){
 
+                        if (ds_status.getValue(Long::class.java) !== null){
+                            db_confirm_time = ds_status.getValue(Long::class.java)!!
+
+                        }
+
+                    }
+
+                // check status
                     if (ds_status.key == "status"){
 
 
@@ -1591,9 +1612,8 @@ fun toast(msg:String){
                             0 ->  {
 
                                 val intent = Intent(this@dashboard,congrats::class.java)
-                                intent.putExtra("sales", sales_sum)
-                                intent.putExtra("upsales", upsales_sum)
-                                intent.putExtra("customers", total_customer_sum)
+                                intent.putExtra("lock", true)
+
 
                                 startActivity(intent)
 
@@ -1689,6 +1709,7 @@ fun toast(msg:String){
 
 
                                 exp.visibility = View.VISIBLE
+                                paynow2.visibility = View.VISIBLE
 //                                val exp_date = java.time.format.DateTimeFormatter.ofPattern("dd/MM/YY").withZone(ZoneId.systemDefault())
 //                                .format(java.time.Instant.ofEpochSecond(db_exp_time))
 
@@ -1704,6 +1725,48 @@ fun toast(msg:String){
 
 
 
+
+                            }
+                            // pending payment confirmation
+                            4 -> {
+
+                                // check exp date and confirm time
+                                if (db_confirm_time < System.currentTimeMillis() / 1000L && db_exp_time < System.currentTimeMillis() / 1000L ){
+
+                                    //Inflate the dialog with custom view
+                                    val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.dialog_frame,null)
+
+                                    //AlertDialogBuilder
+                                    val mBuilder = AlertDialog.Builder(this@dashboard)
+                                        .setView(mDialogView)
+                                        .setTitle("")
+                                        .setCancelable(false)
+                                    //show dialog
+                                    val  mAlertDialog = mBuilder.show()
+
+                                    mDialogView.frame_title.text = "กรุณาติดต่อทีมงานประทับใจเพื่อยืนยันการชำระเงิน"
+
+                                    //next btn
+                                    mDialogView.frame_next.visibility = View.INVISIBLE
+
+                                    // cancel btn
+                                    mDialogView.frame_cancel.visibility = View.INVISIBLE
+
+
+
+                                }
+
+
+                                // display warning
+                                textView30.text = "รอยืนยันการโอนเงินกับประทับใจ"
+                                reminder.visibility = View.VISIBLE
+
+                                val sdf = java.text.SimpleDateFormat("dd/MM/yyyy")
+                                val date = java.util.Date(db_exp_time * 1000)
+                                val exp_date = sdf.format(date)
+
+                                exp_date_display.text = exp_date
+                                exp.visibility = View.VISIBLE
 
                             }
 

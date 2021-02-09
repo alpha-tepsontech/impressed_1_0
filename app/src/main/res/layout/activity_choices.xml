@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/sukhumvit_bold"
-        android:text="ุ6 เดือน"
+        android:text="tier_2_name"
         android:textColor="@color/colorLetterDark"
         app:layout_constraintEnd_toEndOf="@+id/view7"
         app:layout_constraintStart_toStartOf="@+id/view7"
@@ -71,7 +71,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tier_2_name">
 
         <TextView
-            android:id="@+id/monthly"
+            android:id="@+id/monthly_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -93,7 +93,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/nextBtn"
+        android:id="@+id/tier_2_nextBtn"
         style="@style/dialog_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -107,8 +107,8 @@
         android:id="@+id/view5"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
         android:layout_marginTop="40dp"
         android:background="@color/colorWhite"
         app:layout_constraintHeight_percent="0.75"
@@ -117,12 +117,12 @@
         app:layout_constraintWidth_percent="0.25" />
 
     <TextView
-        android:id="@+id/tier_2_name"
+        android:id="@+id/tier_3_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/sukhumvit_bold"
-        android:text="12 เดือน"
+        android:text="tier_3_name"
         android:textColor="@color/colorLetterDark"
         app:layout_constraintEnd_toEndOf="@+id/view5"
         app:layout_constraintStart_toStartOf="@+id/view5"
@@ -139,7 +139,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tier_2_name">
 
         <TextView
-            android:id="@+id/monthly"
+            android:id="@+id/monthly_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -221,7 +221,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/sukhumvit_bold"
-        android:text="รายเดือน"
+        android:text="tier_1_name"
         android:textColor="@color/colorLetterDark"
         app:layout_constraintEnd_toEndOf="@+id/view6"
         app:layout_constraintStart_toStartOf="@+id/view6"
@@ -239,7 +239,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tier_1_name">
 
         <TextView
-            android:id="@+id/monthly"
+            android:id="@+id/monthly_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"

@@ -510,6 +510,18 @@
         android:visibility="invisible"/>
 
 
+    <TextView
+        android:id="@+id/paynow2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:text="paynow"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textStyle="bold|italic"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/promo_scroll_view"
+        app:layout_constraintTop_toTopOf="@+id/exp" />
 
     <LinearLayout
         android:id="@+id/exp"

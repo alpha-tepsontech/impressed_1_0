@@ -108,7 +108,7 @@
         android:id="@+id/linearlayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@+id/view8"
         app:layout_constraintStart_toStartOf="@+id/view8"
@@ -118,7 +118,19 @@
             android:id="@+id/textView30"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="กรุณาส่งสลิปเข้า" />
+            android:text="กรุณาส่งสลิปและ" />
+
+        <TextView
+            android:id="@+id/textView31"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="เบอร์โทรศัพท์" />
+
+        <TextView
+            android:id="@+id/textView32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="เข้า" />
 
         <ImageView
             android:id="@+id/line_icon"
@@ -132,7 +144,7 @@
             android:id="@+id/textView31"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text= " @pratupjai" />
+            android:text=" @pratupjai" />
 
 
     </LinearLayout>
@@ -151,85 +163,26 @@
             android:id="@+id/textView30"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ภายในวันที่" />
+            android:text="ประทับใจจะยื่นยันการโอนใน 2 วันทำการ" />
 
 
-        <TextView
-            android:id="@+id/tx_day"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:gravity="center" />
 
-        <TextView
-            android:id="@+id/separator"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="/" />
 
-        <TextView
-            android:id="@+id/tx_month"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:gravity="center" />
-
-        <TextView
-            android:id="@+id/separator"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="/"/>
-
-        <TextView
-            android:id="@+id/tx_year"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/sukhumvit_bold"
-            android:gravity="center"
-            android:textColor="@color/colorLetterDark" />
-
-        <TextView
-            android:id="@+id/tx_time"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="เวลา"
-            />
-
-        <TextView
-            android:id="@+id/tx_hour"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:gravity="center"/>
-
-        <TextView
-            android:id="@+id/separator_time"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text=":" />
-
-        <TextView
-            android:id="@+id/tx_minute"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-             />
 
 
     </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/exp_date_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@+id/view8"
+        app:layout_constraintStart_toStartOf="@+id/view8"
+        app:layout_constraintTop_toBottomOf="@+id/linearlayout2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_biz_auth.*
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
@@ -15,6 +16,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.android.gms.tasks.Task
@@ -226,7 +228,7 @@ class biz_auth : AppCompatActivity() {
 
     private fun phoneDialog(){
 
-        // dialog box asking name start
+        // dialog box asking phone number start
 
         //Inflate the dialog with custom view
         val mDialogView = LayoutInflater.from(this@biz_auth).inflate(R.layout.newphone_dialog,null)
@@ -318,8 +320,6 @@ class biz_auth : AppCompatActivity() {
 
        val phnNo = phnClean
 
-        Log.d("test",phnNo)
-
         verificationCallbacks()
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
             phnNo,
@@ -353,6 +353,35 @@ class biz_auth : AppCompatActivity() {
                 //show dialog
                 val  mAlertDialog = mBuilder.show()
 
+                // enable btn if text field is not empty - start
+
+                mDialogView.otp.addTextChangedListener(object : TextWatcher {
+                    override fun onTextChanged(
+                        s: CharSequence,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) { if (s.toString().trim { it <= ' ' }.length == 6){
+                        mDialogView.otp_enter.setEnabled(true)
+
+                    }else{
+                        mDialogView.otp_enter.setEnabled(false)
+
+                    }
+                    }
+
+                    override fun beforeTextChanged(
+                        s: CharSequence, start: Int, count: Int,
+                        after: Int
+                    ) { // TODO Auto-generated method stub
+                    }
+
+                    override fun afterTextChanged(s: Editable) { // TODO Auto-generated method stub
+                    }
+                })
+
+                // enable btn if text field is not empty - ends
+
                 //login button click of custom layout
                 mDialogView.otp_enter.setOnClickListener {
                     //dismiss dialog
@@ -373,6 +402,10 @@ class biz_auth : AppCompatActivity() {
                 mDialogView.otp_x_btn.setOnClickListener {
                     //dismiss dialog
                     mAlertDialog.dismiss()
+                    // hide keyboard
+
+                    val imm = this@biz_auth.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
 
                 }
 
@@ -404,7 +437,6 @@ class biz_auth : AppCompatActivity() {
                     val credential = EmailAuthProvider.getCredential(email_input.text.toString(),
                         pw_input.text.toString())
 
-                    Log.d("test-email-credential",credential.toString())
 
                     linkEmail(credential)
                 } else {
@@ -446,7 +478,6 @@ class biz_auth : AppCompatActivity() {
                 if (task.isSuccessful) {
 
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d("test", "createUserWithEmail&unlinkphone:success")
                     Toast.makeText(this, "success", Toast.LENGTH_SHORT).show()
 
                     // read standard promo from settings table
