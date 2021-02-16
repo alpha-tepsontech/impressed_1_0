@@ -16,9 +16,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.DatabaseReference
@@ -44,6 +46,7 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
 
     // phone verification
     lateinit var mCallbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
+    lateinit var mAuth: FirebaseAuth
     var verification_code = ""
     var verificationId = ""
     var phnClean:String = ""
@@ -64,6 +67,9 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
 
         // initialize_database_ref
         database = Firebase.database.reference
+
+        // firebase auth
+        mAuth = FirebaseAuth.getInstance()
         // init ends
 
 
@@ -160,7 +166,7 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
             }
 
             override fun onVerificationFailed(p0: FirebaseException) {
-                progress.visibility = View.INVISIBLE
+//                progress.visibility = View.INVISIBLE
             }
 
 
@@ -246,9 +252,48 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
 
         val credential: PhoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, verifyNo)
 
-        redeem()
+        linkAccount(credential)
 
     }
+
+    private fun linkAccount(credential: PhoneAuthCredential){
+
+//        Log.d("test","inlink"+credential.toString())
+
+        // show progress animation start
+        progress.visibility = View.VISIBLE
+        // show progress animation ends
+
+        mAuth.currentUser!!.linkWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+
+                    // show progress animation start
+                    progress.visibility = View.INVISIBLE
+
+                    redeem()
+
+
+
+
+                    // dialog box asking name ends
+
+                } else {
+                    Log.w("test", "linkWithCredential:failure", task.exception)
+                    Toast.makeText(baseContext, task.exception.toString(),
+                        Toast.LENGTH_LONG).show()
+
+
+                    progress.visibility = View.INVISIBLE
+
+                }
+
+
+            }
+           }
+
+
+
 
     private fun redeem(){
                     // write tx to database

@@ -1744,13 +1744,13 @@ fun toast(msg:String){
                                     //show dialog
                                     val  mAlertDialog = mBuilder.show()
 
-                                    mDialogView.frame_title.text = "กรุณาติดต่อทีมงานประทับใจเพื่อยืนยันการชำระเงิน"
+                                    mDialogView.frame_title.text = "กรุณาติดต่อ LINE@Pratupjai เพื่อยืนยันการชำระเงิน"
 
                                     //next btn
-                                    mDialogView.frame_next.visibility = View.INVISIBLE
+                                    mDialogView.frame_next.visibility = View.GONE
 
                                     // cancel btn
-                                    mDialogView.frame_cancel.visibility = View.INVISIBLE
+                                    mDialogView.frame_cancel.visibility = View.GONE
 
 
 

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.name_dialog.view.*
 import java.util.*
@@ -139,3 +140,5 @@ fun View.hideKeyboard() {
 
 
 // end
+
+

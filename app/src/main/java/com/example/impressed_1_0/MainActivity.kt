@@ -298,6 +298,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                 var phonecheck = dataSnapshot.getValue()
 
                 if (phonecheck == null){
+
                     verify()
                 }
                 else if(phonecheck !== null) {
@@ -313,12 +314,15 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                             val namerecorded = ds.child("name").getValue(String::class.java)
 
                             if (phonerecorded == phnNo) {
+
+
                                 customer_logged_phone = phonerecorded
                                 customer_logged_name = namerecorded
                                 startActivity(Intent(this@MainActivity, customer::class.java))
 
                             }
                         }else{
+                            // TODO:check logic here
                             verify()
                         }
 
@@ -349,6 +353,8 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
     private fun verify () {
 
+        Log.d("test-catch","otp sent")
+
         verificationCallbacks()
         val country_code = "+66"
         val phnNoClean = phnNoTxt.text.toString().replace("-","")
@@ -370,7 +376,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
             }
 
             override fun onVerificationFailed(p0: FirebaseException) {
-                Log.d("test","Vfailed")
+
                 progress.visibility = View.INVISIBLE
             }
 
@@ -423,6 +429,11 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                 mDialogView.otp_enter.setOnClickListener {
                     //dismiss dialog
                     mAlertDialog.dismiss()
+
+                    // hide keyboard
+
+                    val imm = this@MainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
 
                     //get text from EditTexts of custom layout
                     verification_code = mDialogView.otp.text.toString()
@@ -501,6 +512,45 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                         .setTitle("ขอชื่อเล่นด้วยครับ")
                     //show dialog
                     val  mAlertDialog = mBuilder.show()
+
+                    // disable touch outside
+
+                    mAlertDialog.setCanceledOnTouchOutside(false)
+
+                    // enable btn if text field is not empty - start
+
+                    mDialogView.dialogNameEt.addTextChangedListener(object : TextWatcher {
+                        override fun onTextChanged(
+                            s: CharSequence,
+                            start: Int,
+                            before: Int,
+                            count: Int
+                        ) { if (s.toString().trim { it <= ' ' }.length > 0){
+                            mDialogView.dialogLoginBtn.setEnabled(true)
+
+                        }else{
+                            mDialogView.dialogLoginBtn.setEnabled(false)
+
+                        }
+                        }
+
+                        override fun beforeTextChanged(
+                            s: CharSequence, start: Int, count: Int,
+                            after: Int
+                        ) { // TODO Auto-generated method stub
+                        }
+
+                        override fun afterTextChanged(s: Editable) { // TODO Auto-generated method stub
+                        }
+                    })
+
+                    // enable btn if text field is not empty - ends
+
+
+                    // show progress animation start
+                    progress.visibility = View.INVISIBLE
+
+
                     //login button click of custom layout
                     mDialogView.dialogLoginBtn.setOnClickListener {
                         //dismiss dialog
@@ -540,6 +590,12 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                     mDialogView.NameDialogCancelBtn.setOnClickListener {
                         //dismiss dialog
                         mAlertDialog.dismiss()
+                        // hide keyboard
+
+                        val imm = this@MainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+
+                        unlink("phone")
                     }
 
                     // dialog box asking name ends
@@ -654,12 +710,20 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
     }
 
+    private fun unlink(providerId: String) {
 
-
-    fun View.hideKeyboard() {
-        val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(windowToken, 0)
+        // [START auth_unlink]
+        mAuth.currentUser!!.unlink(providerId)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                }
+            }
+        // [END auth_unlink]
     }
+
+
+
+
 
 
 
