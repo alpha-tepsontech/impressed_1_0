@@ -29,7 +29,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:hint="password ปัจจุบัน"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:backgroundTint="@color/colorBackground"/>
 
     </LinearLayout>
 
@@ -50,11 +51,22 @@
 
         <Button
             android:id="@+id/reauth_next"
+            style="@style/dialog_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/dialog_btn"
+            android:background="@color/colorDisabled"
+            android:enabled="false"
             android:text="ต่อไป"
-             />
+            android:textColor="@color/colorWhite" />
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBarHorizontal"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:theme="@style/blueProgressBar"
+        android:visibility="invisible" />
 
 </LinearLayout>

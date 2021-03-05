@@ -2,11 +2,13 @@ package com.example.impressed_1_0
 
 // set up sensor events
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -20,6 +22,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
@@ -51,7 +54,9 @@ import kotlinx.android.synthetic.main.new_promo_dialog.view.*
 import kotlinx.android.synthetic.main.new_promo_dialog.view.dialogCancelBtn
 import kotlinx.android.synthetic.main.promo_del_confirmation_dialog.view.*
 import kotlinx.android.synthetic.main.radio_set.*
+import kotlinx.android.synthetic.main.reauth.*
 import kotlinx.android.synthetic.main.reauth.view.*
+import kotlinx.android.synthetic.main.verification_dialog.view.*
 import java.time.ZoneId
 import java.util.*
 
@@ -70,7 +75,7 @@ private var customers_treshold:Int = 0
 // set exp_time vars
 
 private var db_exp_time:Long = 0
-private var db_confirm_time:Long = 0
+private var db_requested_time:Long = 0
 
 // set sensor vars
 private var mSensorManager : SensorManager ?= null
@@ -148,7 +153,11 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
             heart_dialog()
         }
+
         location_edit.setOnClickListener {
+            location_edit()
+        }
+        location_select.setOnClickListener {
             location_select()
         }
         new_loc.setOnClickListener {
@@ -328,6 +337,46 @@ class dashboard : AppCompatActivity() , SensorEventListener {
             .setTitle("")
         //show dialog
         val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
+
+
+        // enable btn if text field is not empty - start
+
+        mDialogView.dialog_heart_value.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) { if (s.toString().trim { it <= ' ' }.length > 0){
+                mDialogView.heart_save.setEnabled(true)
+                mDialogView.heart_save.setBackgroundColor(resources.getColor(R.color.colorBackground))
+
+            }else{
+                mDialogView.heart_save.setEnabled(false)
+                mDialogView.heart_save.setBackgroundColor(resources.getColor(R.color.colorDisabled))
+
+            }
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) { // TODO Auto-generated method stub
+            }
+
+            override fun afterTextChanged(s: Editable) { // TODO Auto-generated method stub
+            }
+        })
+
+        // enable btn if text field is not empty - ends
+
+
+
+
         //login button click of custom layout
         mDialogView.heart_save.setOnClickListener {
 
@@ -347,7 +396,6 @@ class dashboard : AppCompatActivity() , SensorEventListener {
             mAlertDialog.dismiss()
         }
 
-        // dialog with editText ends
 
     }
 
@@ -364,6 +412,83 @@ class dashboard : AppCompatActivity() , SensorEventListener {
             .setTitle("")
         //show dialog
         val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
+
+        // enable btn if text field is not empty - start
+
+        mDialogView.dialog_newlocation.addTextChangedListener(object : TextWatcher {
+            @SuppressLint("ResourceAsColor")
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) { if (s.toString().trim { it <= ' ' }.length > 0){
+                mDialogView.dialog_heart_worth.setEnabled(true)
+                mDialogView.dialog_heart_worth.backgroundTintList = ColorStateList.valueOf(R.color.colorBackground)
+
+
+
+            }else{
+                mDialogView.dialog_heart_worth.setEnabled(false)
+                mDialogView.dialog_heart_worth.backgroundTintList = ColorStateList.valueOf(R.color.colorLightGray)
+            }
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) { // TODO Auto-generated method stub
+            }
+
+            override fun afterTextChanged(s: Editable) { // TODO Auto-generated method stub
+            }
+        })
+
+        // enable btn if text field is not empty - ends
+
+
+        // enable btn if text field is not empty - start
+
+        mDialogView.dialog_heart_worth.addTextChangedListener(object : TextWatcher {
+            @SuppressLint("ResourceAsColor")
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) { if (s.toString().trim { it <= ' ' }.length > 0){
+                mDialogView.newloc_save.setEnabled(true)
+                mDialogView.newloc_save.setBackgroundColor(resources.getColor(R.color.colorBackground))
+
+
+
+            }else{
+                mDialogView.newloc_save.setEnabled(false)
+                mDialogView.newloc_save.setBackgroundColor(resources.getColor(R.color.colorDisabled))
+            }
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) { // TODO Auto-generated method stub
+            }
+
+            override fun afterTextChanged(s: Editable) { // TODO Auto-generated method stub
+            }
+        })
+
+        // enable btn if text field is not empty - ends
+
+
+
+
+
+
         //login button click of custom layout
         mDialogView.newloc_save.setOnClickListener {
 
@@ -381,9 +506,50 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
             global_location_key = location_key
 
+            // get startdard promos
+
+            // read setting from database
+
+            var settings_ref  = database.child("settings")
+
+
+
+            val device_listener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
+                    for (ds in dataSnapshot.child("standard_promo").children) {
+                        val standard_promo_key = ds.key
+
+                        val standard_promo_price: Int? = ds.getValue(Int::class.java)
+                        var promo_key = database.push().key.toString()
+
+                        var promo_insert = Promos(standard_promo_key,standard_promo_price)
+
+                        database.child("biz_owners").child(biz_uid).child(location_key).child("promos").child(promo_key).setValue(promo_insert)
+
+                    }
+
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+
+                    Toast.makeText(baseContext, "Database Failed.",
+                        Toast.LENGTH_SHORT).show()
+                    // [END_EXCLUDE]
+                }
+            }
+
+
+            settings_ref.addListenerForSingleValueEvent(device_listener)
+
+            //end of setting database read
+
 
             //dismiss dialog
             mAlertDialog.dismiss()
+
+            location_select()
 
         }
         //cancel button click of custom layout
@@ -411,6 +577,45 @@ class dashboard : AppCompatActivity() , SensorEventListener {
             .setTitle("")
         //show dialog
         val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
+
+        // enable btn if text field is not empty - start
+
+        mDialogView.dialog_newdevice.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int
+            ) { if (s.toString().trim { it <= ' ' }.length > 0){
+                mDialogView.newdevice_save.setEnabled(true)
+                mDialogView.newdevice_save.setBackgroundColor(resources.getColor(R.color.colorBackground))
+
+            }else{
+                mDialogView.newdevice_save.setEnabled(false)
+                mDialogView.newdevice_save.setBackgroundColor(resources.getColor(R.color.colorDisabled))
+
+            }
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int, count: Int,
+                after: Int
+            ) { // TODO Auto-generated method stub
+            }
+
+            override fun afterTextChanged(s: Editable) { // TODO Auto-generated method stub
+            }
+        })
+
+        // enable btn if text field is not empty - ends
+
+
+
+
         //login button click of custom layout
         mDialogView.newdevice_save.setOnClickListener {
 
@@ -603,6 +808,10 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         //show dialog
         val  mAlertDialog = mBuilder.show()
 
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
+
         mDialogView.promo_del_name.text = promoName
         //login button click of custom layout
         mDialogView.del_conf_DelBtn.setOnClickListener {
@@ -714,6 +923,12 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         //show dialog
         val  mAlertDialog = mBuilder.show()
 
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
+
+
+
 
         // enable btn if text field is not empty - start
 
@@ -727,10 +942,12 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                 before: Int,
                 count: Int
             ) {
-                if (s.toString().trim { it <= ' ' }.length == 0) {
-                    mDialogView.reauth_next.setEnabled(false)
-                } else {
+                if (s.toString().trim { it <= ' ' }.length > 5) {
                     mDialogView.reauth_next.setEnabled(true)
+                    mDialogView.reauth_next.setBackgroundColor(resources.getColor(R.color.colorBackground))
+                } else {
+                    mDialogView.reauth_next.setEnabled(false)
+                    mDialogView.reauth_next.setBackgroundColor(resources.getColor(R.color.colorDisabled))
                 }
             }
 
@@ -758,6 +975,10 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         //button click of custom layout
         mDialogView.reauth_next.setOnClickListener {
 
+            // show  progress bar
+
+            mDialogView.progressBarHorizontal.visibility = View.VISIBLE
+
             val pw_input = mDialogView.reauth_pw.text.toString()
 
             // sign user in
@@ -766,6 +987,11 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         // Sign in success
+                        // hide  progress bar
+
+                        mDialogView.progressBarHorizontal.visibility = View.INVISIBLE
+
+
                         //dismiss dialog
                         mAlertDialog.dismiss()
 
@@ -782,13 +1008,15 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                             .setTitle("")
                         //show dialog
                         val mAlertDialog = mBuilder.show()
+
+                        // disable touch outside
+
+                        mAlertDialog.setCanceledOnTouchOutside(false)
                         //login button click of custom layout
                         mDialogView.newemail_save.setOnClickListener {
 
                             mDialogView.dialog_progressbar.visibility = View.VISIBLE
 
-                            mDialogView.newemail_save.setEnabled(false)
-                            mDialogView.newemail_cancel.setEnabled(false)
 
                             val newemail_input = mDialogView.dialog_newemail.text.toString()
                             val newpw_input = mDialogView.dialog_newpw.text.toString()
@@ -825,13 +1053,48 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                                 }
                                 }
 
+                        mDialogView.newemail_cancel.setOnClickListener {
+
+                            // dismiss dialog on cancel
+
+                            mAlertDialog.dismiss()
+                        }
+
 
 
 
                         }else{
+                        // reauth failed
 
-                        // sign in failed
-                        toast(task.exception.toString())
+                        mAlertDialog.dismiss()
+
+                        // Inflate the dialog with custom view
+                        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.confirm_dialog,null)
+
+                        //AlertDialogBuilder
+                        val mBuilder = AlertDialog.Builder(this@dashboard)
+                            .setView(mDialogView)
+                            .setTitle("ตรวจสอบ password ไม่ผ่าน")
+                        //show dialog
+                        val  mAlertDialog = mBuilder.show()
+                        mDialogView.confirm_title.text = "error code:"
+                        mDialogView.confirm_body.text = task.exception?.message
+                        mDialogView.confirm_next.text = "ย้อนกลับ"
+                        mDialogView.confirm_cancel.visibility = View.GONE
+                        //login button click of custom layout
+                        mDialogView.confirm_next.setOnClickListener {
+                            //dismiss dialog
+                            mAlertDialog.dismiss()
+
+                            }
+                        //cancel button click of custom layout
+                        mDialogView.confirm_cancel.setOnClickListener {
+                            //dismiss dialog
+                            mAlertDialog.dismiss()
+                        }
+
+                        // dialog with editText ends
+
                     }
 
 
@@ -871,6 +1134,9 @@ fun toast(msg:String){
             .setTitle("")
         //show dialog
         val  mAlertDialog = mBuilder.show()
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
 
         mDialogView.confirm_title.text = "พบเคร่ื่องใหม่"
         mDialogView.confirm_body.text = "เพ่ิมเครื่องนี้ใน account ของคุณ?"
@@ -912,6 +1178,10 @@ fun toast(msg:String){
             .setCancelable(false)
         //show dialog
         val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
 
         mDialogView.frame_title.text = "เลือกสาขาสำหรับเครื่องนี้"
 
@@ -1018,6 +1288,58 @@ fun toast(msg:String){
 
     }
 
+    private fun location_edit(){
+
+
+
+        // dialog with edittext start
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.new_device_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("ตั้งชื่อสาขานี้")
+
+
+        mDialogView.icon.setImageResource(R.drawable.location_icon)
+        mDialogView.dialog_newdevice.setHint("ใส่ชื่อสาขาใหม่")
+
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
+
+
+        //login button click of custom layout
+        mDialogView.newdevice_save.setOnClickListener {
+
+            var biz_uid = auth.currentUser!!.uid
+
+            var new_loc_name = mDialogView.dialog_newdevice.text.toString()
+
+            database.child("biz_owners").child(biz_uid).child("locations").child(global_location_key.toString()).child("locationName").setValue(new_loc_name)
+
+
+
+
+            //dismiss dialog
+            mAlertDialog.dismiss()
+
+
+        }
+        //cancel button click of custom layout
+        mDialogView.newdevice_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+        // dialog with editText ends
+
+    }
+
 
     private fun location_select(){
 
@@ -1032,6 +1354,10 @@ fun toast(msg:String){
             .setCancelable(false)
         //show dialog
         val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
 
         mDialogView.frame_title.text = "เลือกสาขาสำหรับเครื่องนี้"
 
@@ -1061,6 +1387,10 @@ fun toast(msg:String){
                     radioButton.setText(locName)
                     radioButton.id = radioID
                     radioButton.tag = locKey
+
+                    if(locKey == global_location_key){
+                        radioButton.isChecked = true
+                    }
 
 
 
@@ -1109,6 +1439,10 @@ fun toast(msg:String){
                 //dismiss dialog
                 mAlertDialog.dismiss()
 
+//                //restart activity
+//                finish()
+//                startActivity(getIntent())
+
             }else{
 
                 // no radio selected
@@ -1142,19 +1476,6 @@ fun toast(msg:String){
     private fun location_del(){
 
 
-        //Inflate the dialog with custom view
-        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.dialog_frame,null)
-
-        //AlertDialogBuilder
-        val mBuilder = AlertDialog.Builder(this@dashboard)
-            .setView(mDialogView)
-            .setTitle("")
-            .setCancelable(false)
-        //show dialog
-        val  mAlertDialog = mBuilder.show()
-
-        mDialogView.frame_title.text = "เลือกร้านที่ต้องการลบ"
-
         // read location database then add radio set to dialog
 
         var biz_uid = auth.currentUser!!.uid
@@ -1167,6 +1488,65 @@ fun toast(msg:String){
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                 var radioID = 0
+
+
+
+
+                if(dataSnapshot.childrenCount < 2){
+
+
+
+                    // Inflate the dialog with custom view
+                    val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.confirm_dialog,null)
+
+                    //AlertDialogBuilder
+                    val mBuilder = AlertDialog.Builder(this@dashboard)
+                        .setView(mDialogView)
+                        .setTitle("ลบ location ไม่สำเร็จ")
+                    //show dialog
+                    val  mAlertDialog = mBuilder.show()
+
+                    // disable touch outside
+
+                    mAlertDialog.setCanceledOnTouchOutside(false)
+
+
+                    mDialogView.confirm_title.visibility = View.GONE
+                    mDialogView.confirm_body.text = "ระบบต้องการอย่างน้อย 1 location"
+                    mDialogView.confirm_next.text = "ย้อนกลับ"
+                    //login button click of custom layout
+                    mDialogView.confirm_next.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+
+                    }
+                    //cancel button click of custom layout
+                    mDialogView.confirm_cancel.visibility = View.GONE
+
+                    // dialog with editText ends
+
+                    return
+
+
+
+                }
+                //Inflate the dialog with custom view
+                val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.dialog_frame,null)
+
+                //AlertDialogBuilder
+                val mBuilder = AlertDialog.Builder(this@dashboard)
+                    .setView(mDialogView)
+                    .setTitle("")
+                    .setCancelable(false)
+                //show dialog
+                val  mAlertDialog = mBuilder.show()
+
+                // disable touch outside
+
+                mAlertDialog.setCanceledOnTouchOutside(false)
+
+                mDialogView.frame_title.text = "เลือกสาขาที่ต้องการลบ"
+
                 for (ds in dataSnapshot.children) {
 
                     var locName = ds.child("locationName").getValue(String::class.java)
@@ -1182,6 +1562,10 @@ fun toast(msg:String){
                     radioButton.id = radioID
                     radioButton.tag = locKey
 
+                    if(locKey == global_location_key){
+                        radioButton.isChecked = true
+                    }
+
 
 
 
@@ -1189,6 +1573,44 @@ fun toast(msg:String){
 
 
                 }
+
+                //next btn
+                mDialogView.frame_next.setOnClickListener {
+
+                    // get id from radio group
+
+                    var id: Int = mDialogView.radioSet_group.checkedRadioButtonId
+
+
+
+                    if(id!=-1){
+                        //set location key
+                        val radio:RadioButton =mDialogView.radioSet_group.findViewById(id)
+
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+
+                        // call confirm delete fun
+
+                        loc_del_conf(radio.text.toString(),radio.tag.toString())
+
+                    }else{
+
+                        // no radio selected
+
+                        toast("กดเลือกสาขาด้วยครับ")
+                    }
+
+                }
+
+                //cancel button click of custom layout
+                mDialogView.frame_cancel.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
+                }
+
+
+                // dialog with editText ends
 
 
             }
@@ -1203,54 +1625,11 @@ fun toast(msg:String){
             }
         }
 
-        loc_select_ref.addValueEventListener(loc_select_listener)
+        loc_select_ref.addListenerForSingleValueEvent(loc_select_listener)
         // read location database ends
 
 
-        //next btn
-        mDialogView.frame_next.setOnClickListener {
 
-            // get id from radio group
-
-            var id: Int = mDialogView.radioSet_group.checkedRadioButtonId
-
-
-            if(id!=-1){
-                //set location key
-                val radio:RadioButton =mDialogView.radioSet_group.findViewById(id)
-
-                //dismiss dialog
-                mAlertDialog.dismiss()
-
-                // call confirm delete fun
-
-                loc_del_conf(radio.text.toString(),radio.tag.toString())
-
-            }else{
-
-                // no radio selected
-
-                toast("กดเลือกสาขาด้วยครับ")
-            }
-
-
-
-
-
-
-
-
-
-        }
-
-        //cancel button click of custom layout
-        mDialogView.frame_cancel.setOnClickListener {
-            //dismiss dialog
-            mAlertDialog.dismiss()
-        }
-
-
-        // dialog with editText ends
 
 
     }
@@ -1266,6 +1645,10 @@ fun toast(msg:String){
             .setTitle("")
         //show dialog
         val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
 
         mDialogView.confirm_body.text = "ลบ "+locName+" และข้อมูลของสาขานี้ออกจาก account ของคุณ"
         //login button click of custom layout
@@ -1283,6 +1666,8 @@ fun toast(msg:String){
             //dismiss dialog
             mAlertDialog.dismiss()
 
+            location_select()
+
 
         }
         //cancel button click of custom layout
@@ -1299,18 +1684,6 @@ fun toast(msg:String){
     private fun device_del(){
 
 
-        //Inflate the dialog with custom view
-        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.dialog_frame,null)
-
-        //AlertDialogBuilder
-        val mBuilder = AlertDialog.Builder(this@dashboard)
-            .setView(mDialogView)
-            .setTitle("")
-            .setCancelable(false)
-        //show dialog
-        val  mAlertDialog = mBuilder.show()
-
-        mDialogView.frame_title.text = "เลือกเครื่องที่ต้องการลบ"
 
         // read location database then add radio set to dialog
 
@@ -1322,6 +1695,64 @@ fun toast(msg:String){
 
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                if(dataSnapshot.childrenCount < 2){
+
+
+
+                    // Inflate the dialog with custom view
+                    val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.confirm_dialog,null)
+
+                    //AlertDialogBuilder
+                    val mBuilder = AlertDialog.Builder(this@dashboard)
+                        .setView(mDialogView)
+                        .setTitle("ลบ device ไม่สำเร็จ")
+                    //show dialog
+                    val  mAlertDialog = mBuilder.show()
+
+                    // disable touch outside
+
+                    mAlertDialog.setCanceledOnTouchOutside(false)
+
+
+                    mDialogView.confirm_title.visibility = View.GONE
+                    mDialogView.confirm_body.text = "ระบบต้องการอย่างน้อย 1 device"
+                    mDialogView.confirm_next.text = "ย้อนกลับ"
+                    //login button click of custom layout
+                    mDialogView.confirm_next.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+
+                    }
+                    //cancel button click of custom layout
+                    mDialogView.confirm_cancel.visibility = View.GONE
+
+                    // dialog with editText ends
+
+                    return
+
+
+
+                }
+
+                //Inflate the dialog with custom view
+                val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.dialog_frame,null)
+
+                //AlertDialogBuilder
+                val mBuilder = AlertDialog.Builder(this@dashboard)
+                    .setView(mDialogView)
+                    .setTitle("")
+                    .setCancelable(false)
+                //show dialog
+                val  mAlertDialog = mBuilder.show()
+
+                // disable touch outside
+
+                mAlertDialog.setCanceledOnTouchOutside(false)
+
+
+                mDialogView.frame_title.text = "เลือกเครื่องที่ต้องการลบ"
+
 
                 var radioID = 0
                 for (ds in dataSnapshot.children) {
@@ -1340,12 +1771,62 @@ fun toast(msg:String){
                     radioButton.tag = devKey
 
 
+                    // check button if this device
+                    if(devName == global_device_id){
+                        radioButton.isChecked = true
+                    }
+
+
 
 
                     mDialogView.radioSet_group.addView(radioButton)
 
 
                 }
+                //next btn
+                mDialogView.frame_next.setOnClickListener {
+
+                    // get id from radio group
+
+                    var id: Int = mDialogView.radioSet_group.checkedRadioButtonId
+
+
+                    if(id!=-1){
+                        //set location key
+                        val radio:RadioButton =mDialogView.radioSet_group.findViewById(id)
+
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+
+                        // call confirm delete fun
+
+                        dev_del_conf(radio.text.toString(),radio.tag.toString())
+
+                    }else{
+
+                        // no radio selected
+
+                        toast("กดเลือก device ด้วยครับ")
+                    }
+
+
+
+
+
+
+
+
+
+                }
+
+                //cancel button click of custom layout
+                mDialogView.frame_cancel.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
+                }
+
+
+                // dialog with editText ends
 
 
             }
@@ -1364,50 +1845,7 @@ fun toast(msg:String){
         // read location database ends
 
 
-        //next btn
-        mDialogView.frame_next.setOnClickListener {
 
-            // get id from radio group
-
-            var id: Int = mDialogView.radioSet_group.checkedRadioButtonId
-
-
-            if(id!=-1){
-                //set location key
-                val radio:RadioButton =mDialogView.radioSet_group.findViewById(id)
-
-                //dismiss dialog
-                mAlertDialog.dismiss()
-
-                // call confirm delete fun
-
-                dev_del_conf(radio.text.toString(),radio.tag.toString())
-
-            }else{
-
-                // no radio selected
-
-                toast("กดเลือกสาขาด้วยครับ")
-            }
-
-
-
-
-
-
-
-
-
-        }
-
-        //cancel button click of custom layout
-        mDialogView.frame_cancel.setOnClickListener {
-            //dismiss dialog
-            mAlertDialog.dismiss()
-        }
-
-
-        // dialog with editText ends
 
 
     }
@@ -1424,6 +1862,10 @@ fun toast(msg:String){
             .setTitle("")
         //show dialog
         val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
 
         mDialogView.confirm_body.text = "ลบ "+devName+" ออกจาก account ของคุณ"
         //login button click of custom layout
@@ -1594,10 +2036,10 @@ fun toast(msg:String){
 
                     }
 
-                    if (ds_status.key  == "date_confirm"){
+                    if (ds_status.key  == "date_requested"){
 
                         if (ds_status.getValue(Long::class.java) !== null){
-                            db_confirm_time = ds_status.getValue(Long::class.java)!!
+                            db_requested_time = ds_status.getValue(Long::class.java)!!
 
                         }
 
@@ -1731,7 +2173,7 @@ fun toast(msg:String){
                             4 -> {
 
                                 // check exp date and confirm time
-                                if (db_confirm_time < System.currentTimeMillis() / 1000L && db_exp_time < System.currentTimeMillis() / 1000L ){
+                                if (db_requested_time < System.currentTimeMillis() / 1000L && db_exp_time < System.currentTimeMillis() / 1000L ){
 
                                     //Inflate the dialog with custom view
                                     val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.dialog_frame,null)
@@ -1743,6 +2185,10 @@ fun toast(msg:String){
                                         .setCancelable(false)
                                     //show dialog
                                     val  mAlertDialog = mBuilder.show()
+
+                                    // disable touch outside
+
+                                    mAlertDialog.setCanceledOnTouchOutside(false)
 
                                     mDialogView.frame_title.text = "กรุณาติดต่อ LINE@Pratupjai เพื่อยืนยันการชำระเงิน"
 

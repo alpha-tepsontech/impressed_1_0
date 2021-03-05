@@ -1,6 +1,7 @@
 package com.example.impressed_1_0
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,10 @@ class congrats : AppCompatActivity() {
         sales_display.text = global_sales.toString()
         upsales_display.text = global_upsales.toString()
         customers_display.text = global_customers.toString()
+
+
+        // lock orientation while on this activity
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
 
 
         // lock back btn

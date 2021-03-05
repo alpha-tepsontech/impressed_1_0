@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
+import android.os.CountDownTimer
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,6 +20,7 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
+import com.example.impressed_1_0.MyApplication.Companion.global_verified
 import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
@@ -30,6 +32,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.confirm_dialog.view.*
 import kotlinx.android.synthetic.main.forgot_pw_dialog.*
 import kotlinx.android.synthetic.main.forgot_pw_dialog.view.*
 import kotlinx.android.synthetic.main.name_dialog.view.*
@@ -140,16 +143,49 @@ class biz_auth : AppCompatActivity() {
 
         signup.setOnClickListener {
 
-            if (!email_input.text.isEmpty() && !pw_input.text.isEmpty()) {
+            if(pw_input.text.length < 6){
 
-                // show progressbar
-//                progressBar.visibility = View.VISIBLE
+
+                // Inflate the dialog with custom view
+                val mDialogView = LayoutInflater.from(this@biz_auth).inflate(R.layout.confirm_dialog,null)
+
+                //AlertDialogBuilder
+                val mBuilder = AlertDialog.Builder(this@biz_auth)
+                    .setView(mDialogView)
+                    .setTitle("กรุณาเลือก password ใหม่")
+                //show dialog
+                val  mAlertDialog = mBuilder.show()
+                mDialogView.confirm_title.text = "error code:"
+                mDialogView.confirm_body.text = "ความยาว password อย่างน้อย 6 ตัวอักษร"
+                mDialogView.confirm_next.text = "ลองอีกครั้ง"
+                //login button click of custom layout
+                mDialogView.confirm_next.setOnClickListener {
+                    //dismiss dialog
+                    mAlertDialog.dismiss()
+
+                    // hide keyboard
+
+                    val imm = this@biz_auth.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+
+
+
+                }
+                //cancel button click of custom layout
+                mDialogView.confirm_cancel.visibility = View.GONE
+
+                // dialog with editText ends
+
+                progressBar.visibility = View.INVISIBLE
+
+            } else if (!email_input.text.isEmpty() && !pw_input.text.isEmpty()) {
+
+
                 // verify phone number
                 phoneDialog()
 
 
             } else {
-                Log.d("test", "empty_editText")
                 Toast.makeText(this, "Please enter email & password", Toast.LENGTH_SHORT).show()
 
                 //hide progressBar
@@ -237,8 +273,16 @@ class biz_auth : AppCompatActivity() {
         val mBuilder = AlertDialog.Builder(this@biz_auth)
             .setView(mDialogView)
             .setTitle("ขอเบอร์โทรติดต่อด้วยครับ")
+
+
         //show dialog
         val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
+
+        // set text
 
         val phnNoTxt = mDialogView.newPhoneEt
 
@@ -295,6 +339,11 @@ class biz_auth : AppCompatActivity() {
             //dismiss dialog
             mAlertDialog.dismiss()
 
+            // hide keyboard
+
+            val imm = this@biz_auth.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+
 
             val country_code = "+66"
             val phnNoClean = phnNoTxt.text.toString().replace("-","")
@@ -302,7 +351,7 @@ class biz_auth : AppCompatActivity() {
 
 
 
-            phnVerify()
+            OTPprep()
 
 
 
@@ -311,9 +360,59 @@ class biz_auth : AppCompatActivity() {
         mDialogView.NameDialogCancelBtn.setOnClickListener {
             //dismiss dialog
             mAlertDialog.dismiss()
+            // hide keyboard
+
+            val imm = this@biz_auth.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
         }
 
         // dialog box asking phone ends
+    }
+
+
+    // ask if ready to get OTP
+    private fun OTPprep(){
+
+        // keyboard prevention
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@biz_auth).inflate(R.layout.confirm_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@biz_auth)
+            .setView(mDialogView)
+            .setTitle("ยืนยันตัวตน")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
+
+
+        mDialogView.confirm_body.text = "ประทับใจจะส่งรหัส OTP ไปที่เบอร์โทรศัพท์ที่ลงทะเบียนไว้ พร้อมแล้วกดส่งรหัสเลยครับ"
+        mDialogView.confirm_next.text = "ส่งรหัส OTP"
+        //login button click of custom layout
+        mDialogView.confirm_next.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+
+            // show progress bar
+
+            progressBar.visibility = View.VISIBLE
+
+            phnVerify()
+
+
+        }
+        //cancel button click of custom layout
+        mDialogView.confirm_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+        // dialog with editText ends
+
     }
 
     private fun phnVerify(){
@@ -323,7 +422,7 @@ class biz_auth : AppCompatActivity() {
         verificationCallbacks()
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
             phnNo,
-            120,
+            30,
             TimeUnit.SECONDS,
             this,
             mCallbacks
@@ -337,11 +436,14 @@ class biz_auth : AppCompatActivity() {
             }
 
             override fun onVerificationFailed(p0: FirebaseException) {
-                progress.visibility = View.INVISIBLE
+                progressBar.visibility = View.INVISIBLE
             }
 
 
             override fun onCodeSent(verfication: String, p1: PhoneAuthProvider.ForceResendingToken) {
+
+                progressBar.visibility = View.INVISIBLE
+
                 // dialog with edittext start
                 //Inflate the dialog with custom view
                 val mDialogView = LayoutInflater.from(this@biz_auth).inflate(R.layout.verification_dialog,null)
@@ -349,9 +451,34 @@ class biz_auth : AppCompatActivity() {
                 //AlertDialogBuilder
                 val mBuilder = AlertDialog.Builder(this@biz_auth)
                     .setView(mDialogView)
+                    .setTitle("รหัสถูกส่งไปที่ : "+ phoneFormat(phnClean))
 
                 //show dialog
                 val  mAlertDialog = mBuilder.show()
+
+                // disable touch outside
+
+                mAlertDialog.setCanceledOnTouchOutside(false)
+
+
+                // start countdown for resend button
+
+                object : CountDownTimer(30000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+
+                        mDialogView.otp_resend.text = "resend OTP ("+(millisUntilFinished / 1000).toString()+")"
+                    }
+                    override fun onFinish() {
+                        mDialogView.otp_resend.text = "resend OTP"
+                        mDialogView.otp_resend.isEnabled = true
+                        mDialogView.otp_resend.setBackgroundColor(resources.getColor(R.color.colorBackground))
+                    }
+                }.start()
+
+                // countdown button ends
+
+
+
 
                 // enable btn if text field is not empty - start
 
@@ -386,6 +513,16 @@ class biz_auth : AppCompatActivity() {
                 mDialogView.otp_enter.setOnClickListener {
                     //dismiss dialog
                     mAlertDialog.dismiss()
+
+                    // show progress bar
+
+                    progressBar.visibility = View.VISIBLE
+
+                    // hide keyboard
+
+                    val imm = this@biz_auth.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+
 
                     //get text from EditTexts of custom layout
                     verification_code = mDialogView.otp.text.toString()
@@ -432,6 +569,14 @@ class biz_auth : AppCompatActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+
+                    // progress bar
+
+                    progressBar.visibility = View.VISIBLE
+
+                    // set OTP gate keeper
+
+                    global_verified = true
                     // Sign in success, update UI with the signed-in user's information
 
                     val credential = EmailAuthProvider.getCredential(email_input.text.toString(),
@@ -440,14 +585,51 @@ class biz_auth : AppCompatActivity() {
 
                     linkEmail(credential)
                 } else {
-                    // Sign in failed, display a message and update the UI
-                    Log.w("test", "signInWithCredential:failure", task.exception)
-                    if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                        // The verification code entered was invalid
+
+
+
+                    // if OTP auth failed
+                    // Inflate the dialog with custom view
+                    val mDialogView = LayoutInflater.from(this@biz_auth).inflate(R.layout.confirm_dialog,null)
+
+                    //AlertDialogBuilder
+                    val mBuilder = AlertDialog.Builder(this@biz_auth)
+                        .setView(mDialogView)
+                        .setTitle("ตรวจสอบ OTP ไม่สำเร็จ")
+                    //show dialog
+                    val  mAlertDialog = mBuilder.show()
+                    mDialogView.confirm_title.text = "error code:"
+                    mDialogView.confirm_body.text = task.exception?.message
+                    mDialogView.confirm_next.text = "ลองอีกครั้ง"
+                    //login button click of custom layout
+                    mDialogView.confirm_next.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+
+                        // hide keyboard
+
+                        val imm = this@biz_auth.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+
+                        OTPprep()
+
+
                     }
+                    //cancel button click of custom layout
+                    mDialogView.confirm_cancel.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+                    }
+
+                    // dialog with editText ends
+
+                    progressBar.visibility = View.INVISIBLE
+
+
+                }
                 }
             }
-    }
+
 
 
     private fun linkEmail(credential: AuthCredential){
@@ -455,14 +637,33 @@ class biz_auth : AppCompatActivity() {
         auth.currentUser!!.linkWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Log.d("test", "linkWithCredential:success")
+
                     signup()
 
 
                 } else {
-                    Log.w("test", "linkWithCredential:failure", task.exception)
-                    Toast.makeText(baseContext, task.exception.toString(),
-                        Toast.LENGTH_SHORT).show()
+                    // if OTP auth failed
+                    // Inflate the dialog with custom view
+                    val mDialogView = LayoutInflater.from(this@biz_auth).inflate(R.layout.confirm_dialog,null)
+
+                    //AlertDialogBuilder
+                    val mBuilder = AlertDialog.Builder(this@biz_auth)
+                        .setView(mDialogView)
+                        .setTitle("sign in ไม่สำเร็จ")
+                    //show dialog
+                    val  mAlertDialog = mBuilder.show()
+                    mDialogView.confirm_title.text = "error code:"
+                    mDialogView.confirm_body.text = task.exception?.message
+                    mDialogView.confirm_next.visibility = View.GONE
+                    mDialogView.confirm_cancel.text = "ย้อนกลับ"
+
+                    //cancel button click of custom layout
+                    mDialogView.confirm_cancel.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+                    }
+
+                    // dialog with editText ends
 
                 }
 
@@ -471,6 +672,10 @@ class biz_auth : AppCompatActivity() {
     }
 
     private fun signup(){
+        // show progress bar
+
+        progressBar.visibility = View.VISIBLE
+
         // to unlink email use "password"
         auth.currentUser!!.unlink("phone")
 
@@ -583,13 +788,28 @@ class biz_auth : AppCompatActivity() {
 
 
                 } else {
-                    // If sign in fails, display a message to the user.
+                    // if OTP auth failed
+                    // Inflate the dialog with custom view
+                    val mDialogView = LayoutInflater.from(this@biz_auth).inflate(R.layout.confirm_dialog,null)
 
-                    Log.w("test", "createUserWithEmail&unlinkphone:failure", task.exception)
-                    Toast.makeText(
-                        baseContext, task.exception.toString(),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    //AlertDialogBuilder
+                    val mBuilder = AlertDialog.Builder(this@biz_auth)
+                        .setView(mDialogView)
+                        .setTitle("sign in ไม่สำเร็จ")
+                    //show dialog
+                    val  mAlertDialog = mBuilder.show()
+                    mDialogView.confirm_title.text = "error code:"
+                    mDialogView.confirm_body.text = task.exception?.message
+                    mDialogView.confirm_next.visibility = View.GONE
+                    mDialogView.confirm_cancel.text = "ย้อนกลับ"
+
+                    //cancel button click of custom layout
+                    mDialogView.confirm_cancel.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+                    }
+
+                    // dialog with editText ends
 
                     progressBar.visibility = View.INVISIBLE
                 }

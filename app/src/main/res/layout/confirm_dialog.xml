@@ -12,7 +12,7 @@
         android:id="@+id/confirm_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/sukhumvit_medium"
+        android:fontFamily="@font/sukhumvit_bold"
         android:gravity="center"
         android:text="" />
 

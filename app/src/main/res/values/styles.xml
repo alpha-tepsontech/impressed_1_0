@@ -38,4 +38,10 @@
         <item name = "android:textColor">@color/colorWhite</item>
     </style>
 
+    <style name="whiteText">
+        <item name = "android:textColor">@color/colorWhite</item>
+        <item name = "android:textColor">@color/colorLetterlight</item>
+        <item name = "android:fontFamily">@font/sukhumvit_medium</item>
+    </style>
+
 </resources>

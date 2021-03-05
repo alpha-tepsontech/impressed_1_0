@@ -142,10 +142,22 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/edit_btn"
             android:padding="5dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/edit_light" />
+
+
+        <ImageButton
+            android:id="@+id/location_select"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edit_btn"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/loc_select" />
 
         <ImageButton
             android:id="@+id/new_loc"

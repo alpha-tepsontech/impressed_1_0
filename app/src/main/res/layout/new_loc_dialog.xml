@@ -29,7 +29,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:hint="ชื่อสาขาใหม่"
-            android:inputType="textCapWords" />
+            android:inputType="textCapWords"
+            android:backgroundTint="@color/colorBackground"/>
 
         <ImageView
             android:id="@+id/imageView11"
@@ -48,12 +49,15 @@
 
         <EditText
             android:id="@+id/dialog_heart_worth"
+            style="@style/Widget.AppCompat.AutoCompleteTextView"
             android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
+            android:enabled="false"
             android:gravity="center"
             android:hint=""
-            android:inputType="textCapWords" />
+            android:backgroundTint="@color/colorLightGray"
+            android:inputType="number" />
 
     </LinearLayout>
 
@@ -74,11 +78,13 @@
 
         <Button
             android:id="@+id/newloc_save"
+            style="@style/dialog_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/dialog_btn"
+            android:background="@color/colorDisabled"
+            android:enabled="false"
             android:text="บันทึก"
-            />
+            android:textColor="@color/colorWhite" />
     </LinearLayout>
 
 </LinearLayout>

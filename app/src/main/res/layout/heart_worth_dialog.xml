@@ -37,7 +37,9 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+            android:backgroundTint="@color/colorBackground"
+            />
 
         <TextView
             android:id="@+id/unit"
@@ -57,18 +59,22 @@
 
         <Button
             android:id="@+id/heart_cancel"
-            android:text="Cancel"
+            android:text="ยกเลิก"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             style="@style/dialog_btn"/>
+
         <Button
             android:id="@+id/heart_save"
-            android:text="save"
-            android:layout_margin="5dp"
             style="@style/dialog_btn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@color/colorDisabled"
+            android:enabled="false"
+            android:text="บันทึก"
+            android:textColor="@color/colorWhite" />
     </LinearLayout>
 
 </LinearLayout>

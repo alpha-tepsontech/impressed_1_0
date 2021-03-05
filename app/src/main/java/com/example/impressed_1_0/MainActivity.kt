@@ -35,12 +35,14 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.Sensor
+import android.os.CountDownTimer
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
+import com.example.impressed_1_0.MyApplication.Companion.global_verified
 
 // import firebase database
 
@@ -48,6 +50,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.android.synthetic.main.confirm_dialog.view.*
 import kotlinx.android.synthetic.main.name_dialog.view.*
 import java.util.*
 
@@ -92,6 +95,8 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // set OTP gate keeper
+        global_verified = false
         // jumper
 
 //        startActivity(Intent(this,payment::class.java))
@@ -289,45 +294,30 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         val phnNo = country_code+phnNoClean
 
 
-        // get data from database
-        var customersref  = database.child("customers").orderByChild("phone").equalTo(phnNo)
+        // get all customers from this location
+        var customersref  = database.child("customers").orderByChild("loc_key").equalTo(global_location_key)
 
         val customer_phone_listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                var phonecheck = dataSnapshot.getValue()
-
-                if (phonecheck == null){
-
-                    verify()
-                }
-                else if(phonecheck !== null) {
-
                     for (ds in dataSnapshot.children) {
 
-                        // check if belong to this location
+                        // check if phone is matched with database
 
-                        if (ds.child("loc_key").getValue(String::class.java) == global_location_key) {
+                        if (ds.child("phone").getValue(String::class.java) == phnNo) {
 
-
-                            val phonerecorded = ds.child("phone").getValue(String::class.java)
-                            val namerecorded = ds.child("name").getValue(String::class.java)
-
-                            if (phonerecorded == phnNo) {
-
-
-                                customer_logged_phone = phonerecorded
-                                customer_logged_name = namerecorded
+                                customer_logged_phone = phnNo
+                                customer_logged_name = ds.child("name").getValue(String::class.java)
                                 startActivity(Intent(this@MainActivity, customer::class.java))
+                            // stop further codes
+                            return
 
-                            }
-                        }else{
-                            // TODO:check logic here
-                            verify()
+
                         }
 
                     }
-                }
+                // if not found phone with this loc_key call verify()
+                OTPprep()
 
             }
 
@@ -346,23 +336,73 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
     }
 
+    // ask if ready to get OTP
+    private fun OTPprep(){
 
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@MainActivity).inflate(R.layout.confirm_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@MainActivity)
+            .setView(mDialogView)
+            .setTitle("ยืนยันตัวตน")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
+
+
+        mDialogView.confirm_body.text = "ประทับใจจะส่งรหัส OTP ไปที่เบอร์โทรศัพท์ที่ลงทะเบียนไว้ พร้อมแล้วกดส่งรหัสเลยครับ"
+        mDialogView.confirm_next.text = "ส่งรหัส OTP"
+
+        progress.visibility = View.INVISIBLE
+
+        //login button click of custom layout
+        mDialogView.confirm_next.setOnClickListener {
+
+            progress.visibility = View.VISIBLE
+
+            //dismiss dialog
+            mAlertDialog.dismiss()
+            verify()
+
+
+        }
+        //cancel button click of custom layout
+        mDialogView.confirm_cancel.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+            progress.visibility = View.INVISIBLE
+        }
+
+        // dialog with editText ends
+
+    }
 
 
 
 
     private fun verify () {
 
-        Log.d("test-catch","otp sent")
 
         verificationCallbacks()
         val country_code = "+66"
         val phnNoClean = phnNoTxt.text.toString().replace("-","")
         val phnNo = country_code+phnNoClean
 
+        if (phnNo.length !== 13){
+            Toast.makeText(baseContext,"please check phone number:  "+phnNo.toString(),
+                Toast.LENGTH_LONG).show()
+            // stop code
+            return
+        }
+
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
             phnNo,
-            120,
+            30,
             TimeUnit.SECONDS,
             this,
             mCallbacks
@@ -389,9 +429,32 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                 //AlertDialogBuilder
                 val mBuilder = AlertDialog.Builder(this@MainActivity)
                     .setView(mDialogView)
+                    .setTitle("รหัสถูกส่งไปที่ : "+ phnNoTxt.text)
 
                 //show dialog
                 val  mAlertDialog = mBuilder.show()
+
+                // disable touch outside
+
+                mAlertDialog.setCanceledOnTouchOutside(false)
+
+                // start countdown for resend button
+
+                object : CountDownTimer(30000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+
+                        mDialogView.otp_resend.text = "resend OTP ("+(millisUntilFinished / 1000).toString()+")"
+                    }
+                    override fun onFinish() {
+                        mDialogView.otp_resend.text = "resend OTP"
+                        mDialogView.otp_resend.isEnabled = true
+                        mDialogView.otp_resend.setBackgroundColor(resources.getColor(R.color.colorBackground))
+                    }
+                }.start()
+
+                // countdown button ends
+
+                progress.visibility = View.INVISIBLE
 
 
                 // enable btn if text field is not empty - start
@@ -499,7 +562,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         mAuth.currentUser!!.linkWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-//                    Log.d("test", "linkWithCredential:success")
+
 
                     // dialog box asking name start
 
@@ -577,6 +640,7 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
                         customer_logged_phone = phnNo
                         customer_logged_name = name_input
+                        global_verified = true
 
 
                     // hide progress animation start
@@ -601,9 +665,40 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                     // dialog box asking name ends
 
                 } else {
-                    Log.w("test", "linkWithCredential:failure", task.exception)
-                    Toast.makeText(baseContext, task.exception.toString(),
-                        Toast.LENGTH_LONG).show()
+                    // if OTP auth failed
+                    // Inflate the dialog with custom view
+                    val mDialogView = LayoutInflater.from(this@MainActivity).inflate(R.layout.confirm_dialog,null)
+
+                    //AlertDialogBuilder
+                    val mBuilder = AlertDialog.Builder(this@MainActivity)
+                        .setView(mDialogView)
+                        .setTitle("ตรวจสอบ OTP ไม่สำเร็จ")
+                    //show dialog
+                    val  mAlertDialog = mBuilder.show()
+                    mDialogView.confirm_title.text = "error code:"
+                    mDialogView.confirm_body.text = task.exception?.message
+                    mDialogView.confirm_next.text = "ลองอีกครั้ง"
+                    //login button click of custom layout
+                    mDialogView.confirm_next.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+
+                        // hide keyboard
+
+                        val imm = this@MainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+
+                        verify()
+
+
+                    }
+                    //cancel button click of custom layout
+                    mDialogView.confirm_cancel.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+                    }
+
+                    // dialog with editText ends
 
 
                     progress.visibility = View.INVISIBLE

@@ -208,6 +208,20 @@
 <!--            style="@style/dialog_btn"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content" />-->
+
+        <Button
+            android:id="@+id/otp_resend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorDisabled"
+            android:enabled="false"
+            android:fontFamily="sans-serif"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="resend otp"
+            android:textColor="@color/fui_bgGoogle"
+            android:textSize="10sp" />
+
         <Button
             android:id="@+id/otp_enter"
             style="@style/dialog_btn"

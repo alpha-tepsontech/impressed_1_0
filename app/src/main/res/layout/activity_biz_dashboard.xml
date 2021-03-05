@@ -87,7 +87,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:text="x"
-            android:textColor="@color/colorAccentbright"
+            android:textColor="@color/colorHeart"
             tools:layout_editor_absoluteX="901dp"
             tools:layout_editor_absoluteY="103dp" />
 
@@ -96,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
-            android:textColor="@color/colorAccentbright"
+            android:textColor="@color/colorHeart"
             tools:layout_editor_absoluteX="909dp"
             tools:layout_editor_absoluteY="103dp" />
 
@@ -356,7 +356,8 @@
             android:layout_marginBottom="3dp"
             android:layout_weight="1"
             android:background="@color/colorLightGray"
-            app:srcCompat="@android:drawable/ic_input_delete" />
+            android:scaleType="center"
+            app:srcCompat="@drawable/backsp" />
 
         <Button
             android:id="@+id/total_ent"
@@ -364,6 +365,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:background="@color/colorLightGray"
+            android:fontFamily="@font/sukhumvit_bold"
             android:text="บันทึก"
             android:textColor="@color/colorLetterDark" />
     </LinearLayout>

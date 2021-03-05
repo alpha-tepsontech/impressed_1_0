@@ -81,6 +81,7 @@ class MyApplication: Application() {
         var global_upsales = 0
         var global_customers = 0
         var global_exp_date:Long = 0
+        var global_verified = false
 
     }
 

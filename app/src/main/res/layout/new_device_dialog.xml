@@ -16,7 +16,7 @@
         android:layout_marginBottom="20dp">
 
         <ImageView
-            android:id="@+id/imageView11"
+            android:id="@+id/icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_weight="1"
@@ -29,6 +29,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:hint="ชื่อเครื่องใหม่"
+            android:backgroundTint="@color/colorBackground"
             android:inputType="textCapWords" />
 
     </LinearLayout>
@@ -49,11 +50,12 @@
 
         <Button
             android:id="@+id/newdevice_save"
+            style="@style/dialog_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/dialog_btn"
+            android:background="@color/colorDisabled"
             android:text="บันทึก"
-            />
+            android:textColor="@color/colorWhite" />
     </LinearLayout>
 
 </LinearLayout>

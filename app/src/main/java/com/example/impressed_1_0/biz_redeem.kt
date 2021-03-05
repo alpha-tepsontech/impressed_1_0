@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -19,6 +20,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
+import com.example.impressed_1_0.MyApplication.Companion.global_verified
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -26,7 +28,10 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_customer_redeem.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.progress
+import kotlinx.android.synthetic.main.confirm_dialog.view.*
 import kotlinx.android.synthetic.main.redeem.view.*
 import kotlinx.android.synthetic.main.verification_dialog.view.*
 import java.util.concurrent.TimeUnit
@@ -50,6 +55,7 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
     var verification_code = ""
     var verificationId = ""
     var phnClean:String = ""
+    var verified = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,8 +79,6 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
         // init ends
 
 
-
-
         //Inflate the dialog with custom view
         val mDialogView = LayoutInflater.from(this@biz_redeem).inflate(R.layout.redeem,null)
 
@@ -93,8 +97,16 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
 
         // button click of custom layout
         mDialogView.redeem_btn.setOnClickListener {
+            // dismiss dialog
+            mAlertDialog.dismiss()
 
-        phnVerify()
+            if(global_verified == true){
+
+                redeem()
+
+            }else{
+                OTPprep()
+            }
         }
 
         //cancel button click of custom layout
@@ -127,6 +139,7 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
             val intent = Intent(this,customer_redeem::class.java)
             intent.putExtra("redeem_name",redeem_name)
             intent.putExtra("promoWorth",promo_worth)
+            intent.putExtra("verified",verified)
             startActivity(intent)
 
         }
@@ -146,13 +159,47 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
     // gravity sensor code ends
 
 
+    private fun OTPprep(){
+
+
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@biz_redeem).inflate(R.layout.confirm_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@biz_redeem)
+            .setView(mDialogView)
+            .setTitle("ยืนยันตัวตน")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        mDialogView.confirm_body.text = "ประทับใจจะส่งรหัส OTP ไปที่เบอร์โทรศัพท์ที่ลงทะเบียนไว้ พร้อมแล้วกดส่งรหัสเลยครับ"
+        mDialogView.confirm_next.text = "ส่งรหัส OTP"
+        //login button click of custom layout
+        mDialogView.confirm_next.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+            phnVerify()
+
+
+        }
+        //cancel button click of custom layout
+        mDialogView.confirm_cancel.setOnClickListener {
+            //dismiss dialog
+            finish()
+        }
+
+        // dialog with editText ends
+
+    }
+
+
     private fun phnVerify(){
 
         val phnNo = customer_logged_phone!!
         verificationCallbacks()
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
             phnNo,
-            120,
+            30,
             TimeUnit.SECONDS,
             this,
             mCallbacks
@@ -171,6 +218,13 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
 
 
             override fun onCodeSent(verfication: String, p1: PhoneAuthProvider.ForceResendingToken) {
+
+
+                // hide progress bar
+
+                progress.visibility = View.INVISIBLE
+                otpText.visibility = View.INVISIBLE
+
                 // dialog with edittext start
                 //Inflate the dialog with custom view
                 val mDialogView = LayoutInflater.from(this@biz_redeem).inflate(R.layout.verification_dialog,null)
@@ -178,9 +232,30 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
                 //AlertDialogBuilder
                 val mBuilder = AlertDialog.Builder(this@biz_redeem)
                     .setView(mDialogView)
+                    .setTitle("รหัสถูกส่งไปที่ : "+ phoneFormat(customer_logged_phone!!))
 
                 //show dialog
                 val  mAlertDialog = mBuilder.show()
+
+                // disable touch outside
+
+                mAlertDialog.setCanceledOnTouchOutside(false)
+
+                // start countdown for resend button
+
+                object : CountDownTimer(30000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+
+                        mDialogView.otp_resend.text = "resend OTP ("+(millisUntilFinished / 1000).toString()+")"
+                    }
+                    override fun onFinish() {
+                        mDialogView.otp_resend.text = "resend OTP"
+                        mDialogView.otp_resend.isEnabled = true
+                        mDialogView.otp_resend.setBackgroundColor(resources.getColor(R.color.colorBackground))
+                    }
+                }.start()
+
+                // countdown button ends
 
                 // enable btn if text field is not empty - start
 
@@ -262,6 +337,7 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
 
         // show progress animation start
         progress.visibility = View.VISIBLE
+        otpText.visibility = View.VISIBLE
         // show progress animation ends
 
         mAuth.currentUser!!.linkWithCredential(credential)
@@ -270,6 +346,10 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
 
                     // show progress animation start
                     progress.visibility = View.INVISIBLE
+                    otpText.visibility = View.INVISIBLE
+
+                    // unlink phone number
+                    unlink("phone")
 
                     redeem()
 
@@ -279,12 +359,40 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
                     // dialog box asking name ends
 
                 } else {
-                    Log.w("test", "linkWithCredential:failure", task.exception)
-                    Toast.makeText(baseContext, task.exception.toString(),
-                        Toast.LENGTH_LONG).show()
+                    // if OTP auth failed
+                    // Inflate the dialog with custom view
+                    val mDialogView = LayoutInflater.from(this@biz_redeem).inflate(R.layout.confirm_dialog,null)
+
+                    //AlertDialogBuilder
+                    val mBuilder = AlertDialog.Builder(this@biz_redeem)
+                        .setView(mDialogView)
+                        .setTitle("ตรวจสอบ OTP ไม่สำเร็จ")
+                    //show dialog
+                    val  mAlertDialog = mBuilder.show()
+                    mDialogView.confirm_title.text = "error code:"
+                    mDialogView.confirm_body.text = task.exception?.message
+                    mDialogView.confirm_next.text = "ลองอีกครั้ง"
+                    //login button click of custom layout
+                    mDialogView.confirm_next.setOnClickListener {
+                        //dismiss dialog
+                        mAlertDialog.dismiss()
+
+                        // hide keyboard
+
+                        val imm = this@biz_redeem.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+
+                        phnVerify()
 
 
-                    progress.visibility = View.INVISIBLE
+                    }
+                    //cancel button click of custom layout
+                    mDialogView.confirm_cancel.setOnClickListener {
+                        //dismiss dialog
+                        startActivity(Intent(this,customer::class.java))
+                    }
+
+                    // dialog with editText ends
 
                 }
 
@@ -311,6 +419,20 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
 
             //dismiss dialog
             startActivity(Intent(this,biz_dashboard::class.java))
+    }
+
+
+    private fun unlink(providerId: String) {
+
+        // [START auth_unlink]
+        mAuth.currentUser!!.unlink(providerId)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+
+
+                }
+            }
+        // [END auth_unlink]
     }
 
 }

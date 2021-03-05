@@ -1,6 +1,7 @@
 package com.example.impressed_1_0
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
@@ -43,10 +44,15 @@ class payment : AppCompatActivity() {
         database = Firebase.database.reference
         // init ends
 
+        // lock orientation while on this activity
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+
 
         // set total price
 
-        amount.text = intent.getStringExtra("total")
+        val total = intent.getStringExtra("total")
+        amount.text = total
+        val total_clean = total.replace(",","")
         // show exp date time
 
         val time = System.currentTimeMillis() / 1000L
@@ -71,9 +77,11 @@ class payment : AppCompatActivity() {
             val time = System.currentTimeMillis() / 1000L
             val exp_time = time+(86400*3)
 
+            var payment_key = database.push().key.toString()
 
-
-            database.child("biz_owners").child(biz_uid).child("info").child("date_confirm").setValue(exp_time)
+            database.child("biz_owners").child(biz_uid).child("info").child("date_requested").setValue(time)
+            database.child("biz_owners").child(biz_uid).child("info").child("payments").child(payment_key).child("expected_amount").setValue(total_clean)
+            database.child("biz_owners").child(biz_uid).child("info").child("payments").child(payment_key).child("request_time").setValue(time)
 
             database.child("biz_owners").child(biz_uid).child("info").child("status").setValue(4)
             //set global status

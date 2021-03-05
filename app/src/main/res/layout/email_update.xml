@@ -29,7 +29,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:hint="อีเมล์ใหม่"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:backgroundTint="@color/colorBackground"/>
 
     </LinearLayout>
 
@@ -54,7 +55,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:hint="password ใหม่"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:backgroundTint="@color/colorBackground"/>
 
     </LinearLayout>
 

@@ -7,4 +7,26 @@
     android:background="@color/colorBackground"
     tools:context=".biz_redeem">
 
+    <ProgressBar
+        android:id="@+id/progress"
+        style="@style/whiteProgressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/otpText"
+        style="@style/whiteText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="OTP in progress..."
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
