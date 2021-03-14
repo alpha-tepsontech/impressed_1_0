@@ -341,37 +341,7 @@
 
 
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/linearLayout11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/view6"
-        app:layout_constraintStart_toStartOf="@+id/view6"
-        app:layout_constraintTop_toBottomOf="@+id/tier_1_name">
 
-        <TextView
-            android:id="@+id/monthly_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/sukhumvit_bold"
-            android:text="000"
-            android:textColor="@color/colorLetterDark" />
-
-        <TextView
-            android:id="@+id/textView33"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/sukhumvit_bold"
-            android:text="บาท/เดือน/เครื่อง"
-            android:textColor="@color/colorLetterDark" />
-
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout111"

@@ -10,11 +10,11 @@
         android:id="@+id/input_view"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
-        app:layout_constraintWidth_percent="0.4"
         android:background="@color/colorBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.4" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
@@ -157,7 +157,74 @@
             android:text="บาท"
             android:textColor="@color/colorLetterlight"
             android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="มีอายุ"
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/heart_life_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="###"
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="วัน"
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+
+        app:layout_constraintStart_toStartOf="@+id/linearLayout6"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="หมดอายุครั้งต่อไปอีก"
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/customer_heart_countdown_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="##"
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="วัน"
+            android:textColor="@color/colorLetterlight"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -352,18 +419,29 @@
         <ImageButton
             android:id="@+id/total_del"
             android:layout_width="fill_parent"
-            android:layout_height="120dp"
+            android:layout_height="fill_parent"
             android:layout_marginBottom="3dp"
             android:layout_weight="1"
             android:background="@color/colorLightGray"
             android:scaleType="center"
-            app:srcCompat="@drawable/backsp" />
+            app:srcCompat="@drawable/back_icon" />
+
+        <ImageButton
+            android:id="@+id/total_del"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="3dp"
+            android:layout_weight="1"
+            android:background="@color/colorLightGray"
+            android:scaleType="center"
+            app:srcCompat="@drawable/back_icon" />
+
 
         <Button
             android:id="@+id/total_ent"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.6"
             android:background="@color/colorLightGray"
             android:fontFamily="@font/sukhumvit_bold"
             android:text="บันทึก"

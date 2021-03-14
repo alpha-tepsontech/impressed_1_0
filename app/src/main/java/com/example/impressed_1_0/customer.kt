@@ -22,6 +22,7 @@ import android.media.Image
 import android.telephony.PhoneNumberUtils
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -47,7 +48,8 @@ private var mAccelerometer : Sensor ?= null
 // set sensor vars ends
 
 private var heart_sum = 0
-
+private var heart_life:Int = 0
+private var heart_exp_warning:Long = 0L
 class customer : AppCompatActivity(), SensorEventListener {
 
 
@@ -154,10 +156,11 @@ class customer : AppCompatActivity(), SensorEventListener {
 
         val location_listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var read = dataSnapshot.getValue()
-                Log.d("test",read.toString())
+
                 store_name.text = dataSnapshot.child("locationName").getValue().toString()
                 customer_heart_display.text = dataSnapshot.child("heartWorth").getValue().toString()
+                customer_heart_life_display.text = dataSnapshot.child("heartLife").getValue().toString()
+                heart_life = dataSnapshot.child("heartLife").getValue(String::class.java)!!.toInt()
 
             }
 
@@ -182,11 +185,58 @@ class customer : AppCompatActivity(), SensorEventListener {
 
         val transaction_listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                // clear out timer
+
+                heart_exp_warning = 0
+
                 for (ds in dataSnapshot.children) {
+                    val heart_time = ds.child("time").getValue(Long::class.java)!!
+                    val time = System.currentTimeMillis() / 1000L
+
+                    val exp_time = heart_time+(heart_life*86400)
+
+
+                    // only unexpired is counted
+                    if(exp_time>time){
                     heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
-                    customer_heart_bank.text = heart_sum.toString()
+                        // only the lowest value get update
+                        if(exp_time<heart_exp_warning|| heart_exp_warning == 0L){
+                            heart_exp_warning = exp_time
+
+                    }
+
+
+                    }
+
+
 
                 }
+
+
+                customer_heart_bank.text = heart_sum.toString()
+                val time = System.currentTimeMillis() / 1000L
+                val time_left = heart_exp_warning-time
+
+                // display time left in hours if less than a day
+                if(time_left<86400 && time_left > 0) {
+
+                    val heart_exp = (heart_exp_warning-time)/3600
+                    customer_heart_countdown_display.text = heart_exp.toString()
+                    heart_time_unit.text = "ชม."
+                    heart_life_exp.visibility = View.VISIBLE
+
+                }else {
+                    //display time left in days unit
+
+                    val heart_exp = (heart_exp_warning-time)/86400
+                    customer_heart_countdown_display.text = heart_exp.toString()
+                    heart_life_exp.visibility = View.VISIBLE
+                }
+
+
+
+
 
                 promos_database_read()
 
@@ -206,7 +256,14 @@ class customer : AppCompatActivity(), SensorEventListener {
         // database ends
 
 
+
     }
+
+    // heart_exp database read
+
+
+
+
 
     private fun promos_database_read(){
 
@@ -214,7 +271,6 @@ class customer : AppCompatActivity(), SensorEventListener {
 
         var biz_uid = auth.currentUser!!.uid
 
-        Log.d("test",biz_uid.toString())
 
         var promos_ref  = database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).child("promos").orderByChild("promoWorth")
 

@@ -68,7 +68,7 @@ class choices : AppCompatActivity() {
                 // count devices
 
                 for (ds in dataSnapshot.child("devices").children){
-                    device_count += 1
+                    device_count = dataSnapshot.child("devices").childrenCount.toInt()
 
                 }
 

@@ -32,8 +32,10 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_biz_dashboard.customer_heart_countdown_display
 import kotlinx.android.synthetic.main.activity_biz_dashboard.log_out_btn
 import kotlinx.android.synthetic.main.activity_biz_dashboard.total_input
+import kotlinx.android.synthetic.main.activity_customer.*
 import kotlinx.android.synthetic.main.total_ent_dialog.view.*
 import kotlinx.android.synthetic.main.tx_del_dialog.view.*
 import java.lang.Math.abs
@@ -49,6 +51,8 @@ private var mAccelerometer : Sensor ?= null
 private var sale_base:Float = 0F
 private var heart_sum = 0
 private var heart_used = 0
+private var heart_life:Int = 0
+private var heart_exp_warning:Long = 0L
 
 
 
@@ -62,7 +66,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
     // firebase realtime database setup
     private lateinit var database: DatabaseReference
 
-    var heartWorth:Int = 0
+    var heartWorth = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -175,16 +179,16 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
 
 //                biz_location_display.text = dataSnapshot.child("locationName").getValue().toString()
-                heartWorth = dataSnapshot.child("heartWorth").getValue().toString().toInt()
-                heart_display.text = heartWorth.toString()
+                heartWorth = dataSnapshot.child("heartWorth").getValue(String::class.java)!!
+                heart_display.text = heartWorth
+                heart_life = dataSnapshot.child("heartLife").getValue(String::class.java)!!.toInt()
+                heart_life_display.text = heart_life.toString()
 
            }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w("error", "loadPost:onCancelled", databaseError.toException())
                 // [START_EXCLUDE]
-                Toast.makeText(baseContext, "Failed to load post.",
+                Toast.makeText(baseContext, "Database failed",
                     Toast.LENGTH_SHORT).show()
                 // [END_EXCLUDE]
             }
@@ -312,7 +316,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
             val base_heart = kotlin.math.floor(total_input.text.toString().toFloat()/heartWorth.toString().toFloat())
 
-            val upsale = heartWorth-total_input.text.toString().toFloat()%heartWorth.toString().toFloat()
+            val upsale = heartWorth.toInt()-total_input.text.toString().toFloat()%heartWorth.toString().toFloat()
 
             mDialogView.heart_amount.text = base_heart.toString()
 
@@ -725,19 +729,38 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                 for (ds in dataSnapshot.children) {
 
                     amount_sum += ds.child("amount").getValue(Float::class.java)!!
-                    heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
                     upsales_sum += ds.child("upsale").getValue(Float::class.java)!!
 
                     if(ds.child("type").getValue(String::class.java)!! == "redeem"){
                         heart_used +=ds.child("heartBank").getValue(Int::class.java)!!
                     }
 
+                    // get heart sum and exp warning
+
+                    val heart_time = ds.child("time").getValue(Long::class.java)!!
+                    val time = System.currentTimeMillis() / 1000L
+
+                    val exp_time = heart_time+(heart_life*86400)
+
+                    if(exp_time>time){
+                        heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
+                    }
+
+                    if(exp_time<heart_exp_warning|| heart_exp_warning == 0L){
+                        heart_exp_warning = exp_time
+                    }
                 }
+
+
 
                 customer_total.text = amount_sum.toString()
                 customer_heart.text = heart_sum.toString()
                 customer_upsale.text = upsales_sum.toString()
                 customer_heart_used.text = abs(heart_used).toString()
+
+                val time = System.currentTimeMillis() / 1000L
+                val heart_exp = (heart_exp_warning-time)/86400
+                customer_heart_countdown_display.text = heart_exp.toString()
 
                 // get promos
 

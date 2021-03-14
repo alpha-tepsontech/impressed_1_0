@@ -67,6 +67,65 @@
             android:layout_height="wrap_content"
             android:text="บาท"
             android:textColor="@color/colorLetterDark" />
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="/ มีอายุ"
+            android:textColor="@color/colorLetterDark" />
+
+
+        <TextView
+            android:id="@+id/customer_heart_life_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="##"
+            android:textColor="@color/colorLetterDark" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="วัน"
+            android:textColor="@color/colorLetterDark" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/heart_life_exp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/linearLayout11"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout11">
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="หมดอายุครั้งต่อไปอีก"
+            android:textColor="@color/colorLetterDark" />
+
+
+        <TextView
+            android:id="@+id/customer_heart_countdown_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="##"
+            android:textColor="@color/colorLetterDark" />
+
+
+        <TextView
+            android:id="@+id/heart_time_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="วัน"
+            android:textColor="@color/colorLetterDark" />
 
     </LinearLayout>
 
@@ -194,8 +253,8 @@
         android:layout_marginTop="10dp"
         android:text="โปรโมชั่นทั้งหมด"
         android:textColor="@color/colorLetterDark"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout11"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout11" />
+        app:layout_constraintStart_toStartOf="@+id/linearLayout21"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout21" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

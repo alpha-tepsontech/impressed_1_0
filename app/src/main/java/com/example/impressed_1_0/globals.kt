@@ -18,7 +18,8 @@ import java.util.*
 // start data class
 data class Location(
     var locationName: String? = "",
-    var heartWorth: Int? = 0
+    var heartWorth: Int? = 0,
+    var heartLife:Int? =0
 )
 // ends
 

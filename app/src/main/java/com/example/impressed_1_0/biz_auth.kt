@@ -700,9 +700,6 @@ class biz_auth : AppCompatActivity() {
 
                     var location_key = database.push().key.toString()
 
-                    var location_info = Location("สาขาแรก",100)
-
-                    database.child("biz_owners").child(biz_uid).child("locations").child(location_key).setValue(location_info)
 
                     var device_info = Devices(deviceID,deviceID,location_key)
 
@@ -726,7 +723,6 @@ class biz_auth : AppCompatActivity() {
 
                                 val standard_promo_price: Int? = ds.getValue(Int::class.java)
                                 var promo_key = database.push().key.toString()
-
                                 var promo_insert = Promos(standard_promo_key,standard_promo_price)
 
                                 database.child("biz_owners").child(biz_uid).child(location_key).child("promos").child(promo_key).setValue(promo_insert)
@@ -738,6 +734,26 @@ class biz_auth : AppCompatActivity() {
                                 val treshold_value: Int? = dst.getValue(Int::class.java)
 
                                 database.child("biz_owners").child(biz_uid).child("tresholds").child(treshold_key).setValue(treshold_value)
+
+                            }
+
+                                Log.d("test",dataSnapshot.toString())
+
+                            for (dsh in dataSnapshot.children) {
+
+                                if(dsh.key == "heart_life"){
+
+                                    val heart_life_value: Int? = dsh.getValue(Int::class.java)
+                                    var location_info = Location("สาขาแรก",100,heart_life_value)
+
+                                    Log.d("test","locationKey is  "+location_key.toString())
+
+                                    database.child("biz_owners").child(biz_uid).child("locations").child(location_key).setValue(location_info)
+                                }
+
+
+
+
 
                             }
 

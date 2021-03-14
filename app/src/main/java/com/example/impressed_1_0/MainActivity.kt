@@ -553,7 +553,6 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
     private fun linkAccount(credential: PhoneAuthCredential){
 
-//        Log.d("test","inlink"+credential.toString())
 
         // show progress animation start
         progress.visibility = View.VISIBLE
@@ -562,6 +561,10 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         mAuth.currentUser!!.linkWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+
+                    // unlink first
+
+                    unlink("phone")
 
 
                     // dialog box asking name start
@@ -633,7 +636,9 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
                     database.child("customers").push().setValue(user)
 
-                    val transaction_insert = Transaction(phnNo,0)
+                    // sign up reward
+
+                        val transaction_insert = Transaction(phnNo,0,0F,0F,"reward")
                     database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
 
                         // set global variables

@@ -79,7 +79,7 @@ class payment : AppCompatActivity() {
 
             var payment_key = database.push().key.toString()
 
-            database.child("biz_owners").child(biz_uid).child("info").child("date_requested").setValue(time)
+            database.child("biz_owners").child(biz_uid).child("info").child("requested_time_limit").setValue(exp_time)
             database.child("biz_owners").child(biz_uid).child("info").child("payments").child(payment_key).child("expected_amount").setValue(total_clean)
             database.child("biz_owners").child(biz_uid).child("info").child("payments").child(payment_key).child("request_time").setValue(time)
 
