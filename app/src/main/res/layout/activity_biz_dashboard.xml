@@ -427,14 +427,14 @@
             app:srcCompat="@drawable/back_icon" />
 
         <ImageButton
-            android:id="@+id/total_del"
+            android:id="@+id/coupon_btn"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginBottom="3dp"
             android:layout_weight="1"
             android:background="@color/colorLightGray"
             android:scaleType="center"
-            app:srcCompat="@drawable/back_icon" />
+            app:srcCompat="@drawable/coupon" />
 
 
         <Button
@@ -444,7 +444,7 @@
             android:layout_weight="0.6"
             android:background="@color/colorLightGray"
             android:fontFamily="@font/sukhumvit_bold"
-            android:text="บันทึก"
+            android:text="Enter"
             android:textColor="@color/colorLetterDark" />
     </LinearLayout>
 
@@ -655,7 +655,7 @@
         android:layout_height="120dp"
         app:layout_constraintBottom_toTopOf="@+id/total_input"
         app:layout_constraintEnd_toEndOf="@+id/total_input"
-        app:layout_constraintWidth_percent="0.35">
+        app:layout_constraintWidth_percent="0.4">
 
         <LinearLayout
             android:id="@+id/tx_scroll_view"

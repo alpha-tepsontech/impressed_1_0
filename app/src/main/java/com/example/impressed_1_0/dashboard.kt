@@ -48,10 +48,14 @@ import kotlinx.android.synthetic.main.confirm_dialog.view.*
 import kotlinx.android.synthetic.main.dialog_frame.view.*
 import kotlinx.android.synthetic.main.email_update.view.*
 import kotlinx.android.synthetic.main.heart_worth_dialog.view.*
+import kotlinx.android.synthetic.main.new_coupon_dialog.view.*
 import kotlinx.android.synthetic.main.new_device_dialog.view.*
 import kotlinx.android.synthetic.main.new_loc_dialog.view.*
 import kotlinx.android.synthetic.main.new_promo_dialog.view.*
+import kotlinx.android.synthetic.main.new_promo_dialog.view.dialogAddBtn
 import kotlinx.android.synthetic.main.new_promo_dialog.view.dialogCancelBtn
+import kotlinx.android.synthetic.main.new_promo_dialog.view.new_promo_name
+import kotlinx.android.synthetic.main.new_promo_dialog.view.promo_worth
 import kotlinx.android.synthetic.main.promo_del_confirmation_dialog.view.*
 import kotlinx.android.synthetic.main.radio_set.*
 import kotlinx.android.synthetic.main.reauth.*
@@ -59,6 +63,8 @@ import kotlinx.android.synthetic.main.reauth.view.*
 import kotlinx.android.synthetic.main.verification_dialog.view.*
 import java.time.ZoneId
 import java.util.*
+import kotlin.math.floor
+import kotlin.math.roundToInt
 
 // set elements vars
 private var heart_sum = 0
@@ -131,6 +137,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
         // show progress bar
         dash_progress.visibility = View.VISIBLE
+
 
         // call device_read to get all the elements from the database
         device_database_read()
@@ -249,6 +256,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
                 location_database_read()
                 promos_database_read()
+//                coupons_database_read()
                 transaction_database_read()
 
             }
@@ -700,12 +708,11 @@ class dashboard : AppCompatActivity() , SensorEventListener {
     private fun promos_database_read(){
 
 
-
         //read data
 
         var biz_uid = auth.currentUser!!.uid
 
-        var promos_ref  = database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).child("promos").orderByChild("promoWorth")
+        var promos_ref  = database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).orderByChild("promoWorth")
 
         val promos_listener = object : ValueEventListener {
 
@@ -716,7 +723,7 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                 promo_frame.removeAllViews()
 
 
-                for (ds in dataSnapshot.children) {
+                for (ds in dataSnapshot.child("promos").children) {
 
                     var promoName = ds.child("promoName").getValue(String::class.java)
 
@@ -754,8 +761,67 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
 
                     }
+
                 val line_view = LayoutInflater.from(this@dashboard).inflate(R.layout.line,null)
                 promo_frame.addView(line_view)
+
+
+                for (dsc in dataSnapshot.child("coupons").children) {
+
+                    if(dataSnapshot.child("coupons").childrenCount<0){
+
+                       promo_frame.removeView(line_view)
+
+                    }
+
+                    var promoName = dsc.child("promoName").getValue(String::class.java)
+
+                    var promoWorth = dsc.child("promoWorth").getValue(Int::class.java)
+
+                    var promoKey = dsc.key.toString()
+
+                    var couponLife = dsc.child("couponLife").getValue(Int::class.java)
+
+                    var couponPrice = dsc.child("price").getValue(Float::class.java)
+
+
+
+
+                    val btn_set = LayoutInflater.from(this@dashboard).inflate(R.layout.coupon_btn_set,null)
+                    val promoName_holder = btn_set.findViewById<TextView>(R.id.promoName_textview)
+                    val promoWorth_holder = btn_set.findViewById<TextView>(R.id.promoWorth_textview)
+                    val couponLife_holder = btn_set.findViewById<TextView>(R.id.coupon_life_display)
+                    val couponPrice_holder = btn_set.findViewById<TextView>(R.id.coupon_price_display)
+
+                    promoName_holder.text = promoName
+                    promoWorth_holder.text = promoWorth.toString()
+                    couponLife_holder.text = couponLife.toString()
+                    couponPrice_holder.text = couponPrice!!.roundToInt().toString()
+                    promo_frame.addView(btn_set)
+
+                    val promo_del_btn = btn_set.findViewById<ImageButton>(R.id.promo_del_btn)
+
+                    promo_del_btn.setOnClickListener{
+
+                        coupon_delete(promoKey,promoName.toString())
+
+
+                    }
+                    val promo_edit_btn = btn_set.findViewById<ImageButton>(R.id.promo_edit_btn)
+
+                    promo_edit_btn.setOnClickListener{
+
+
+                        coupon_edit(promoKey,promoName.toString(),promoWorth,couponLife,couponPrice)
+
+
+                    }
+
+
+
+                }
+//                val line_view = LayoutInflater.from(this@dashboard).inflate(R.layout.line,null)
+//                promo_frame.addView(line_view)
 
                 dash_progress.visibility = View.INVISIBLE
             }
@@ -775,6 +841,93 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         // database ends
 
     }
+
+//    private fun coupons_database_read(){
+//
+//
+//
+//        //read data
+//
+//        var biz_uid = auth.currentUser!!.uid
+//
+//        var promos_ref  = database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).child("coupons").orderByChild("price")
+//
+//        val promos_listener = object : ValueEventListener {
+//
+//
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//
+//
+//                for (ds in dataSnapshot.children) {
+//
+//                    // get seperation line
+////
+////                    if (dataSnapshot.childrenCount > 0 ){
+////
+////                        line.visibility = View.VISIBLE
+////
+////                    }
+//
+//                    var promoName = ds.child("promoName").getValue(String::class.java)
+//
+//                    var promoWorth = ds.child("promoWorth").getValue(Int::class.java)
+//
+//                    var promoKey = ds.key.toString()
+//
+//                    var couponLife = ds.child("couponLife").getValue(Int::class.java)
+//
+//                    var couponPrice = ds.child("price").getValue(Float::class.java)
+//
+//
+//
+//
+//                    val btn_set = LayoutInflater.from(this@dashboard).inflate(R.layout.coupon_btn_set,null)
+//                    val promoName_holder = btn_set.findViewById<TextView>(R.id.promoName_textview)
+//                    val promoWorth_holder = btn_set.findViewById<TextView>(R.id.promoWorth_textview)
+//                    promoName_holder.text = promoName
+//                    promoWorth_holder.text = promoWorth.toString()
+//                    promo_frame.addView(btn_set)
+//
+//                    val promo_del_btn = btn_set.findViewById<ImageButton>(R.id.promo_del_btn)
+//
+//                    promo_del_btn.setOnClickListener{
+//
+//                        coupon_delete(promoKey,promoName.toString())
+//
+//
+//                    }
+//                    val promo_edit_btn = btn_set.findViewById<ImageButton>(R.id.promo_edit_btn)
+//
+//                    promo_edit_btn.setOnClickListener{
+//
+//                        coupon_edit(promoKey,promoName.toString(),promoWorth,couponLife,couponPrice)
+//
+//
+//                    }
+//
+//
+//
+//                }
+//
+//
+//                dash_progress.visibility = View.INVISIBLE
+//            }
+//
+//            override fun onCancelled(databaseError: DatabaseError) {
+//                // Getting Post failed, log a message
+//                Log.w("error",databaseError.toException())
+//                // [START_EXCLUDE]
+//                Toast.makeText(baseContext, "database failed",
+//                    Toast.LENGTH_SHORT).show()
+//                // [END_EXCLUDE]
+//                dash_progress.visibility = View.INVISIBLE
+//            }
+//        }
+//
+//        promos_ref.addValueEventListener(promos_listener)
+//        // database ends
+//
+//    }
 
 
     private fun new_promo_selector(){
@@ -833,6 +986,8 @@ class dashboard : AppCompatActivity() , SensorEventListener {
                 1->write_new_coupon()
 
             }
+
+            mAlertDialog.dismiss()
 
         }
 
@@ -1043,13 +1198,95 @@ class dashboard : AppCompatActivity() , SensorEventListener {
 
                 }
 
+    // coupon del and edit functions
+
+
+
+
+    private fun coupon_edit(promoKey:String, promoName: String, promoWorth: Int?,couponLife:Int?,couponPrice:Float?){
+
+
+        // dialog with edittext start
+        //Inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.new_coupon_dialog,null)
+
+        //AlertDialogBuilder
+        val mBuilder = AlertDialog.Builder(this@dashboard)
+            .setView(mDialogView)
+            .setTitle("แก้ไข coupon")
+        //show dialog
+        val  mAlertDialog = mBuilder.show()
+
+        // disable touch outside
+
+        mAlertDialog.setCanceledOnTouchOutside(false)
+
+        // populate edit texts
+
+        mDialogView.new_promo_name.setText(promoName)
+
+        mDialogView.promo_worth.setText(promoWorth.toString())
+
+        mDialogView.coupon_life.setText(couponLife.toString())
+
+        mDialogView.coupon_price.setText(couponPrice.toString())
+
+
+
+
+        // button click of custom layout
+        mDialogView.dialogAddBtn.setOnClickListener {
+
+            var promoName = mDialogView.new_promo_name.text.toString()
+            var promoWorth = mDialogView.promo_worth.text.toString()
+            var couponLife = mDialogView.coupon_life.text.toString()
+            var couponPrice = mDialogView.coupon_price.text.toString()
+//            var couponTerm = mDialogView.coupon_term.text.toString()
+
+            if (promoName.isNotEmpty() && promoWorth.isNotEmpty()&& couponLife.isNotEmpty()&&couponPrice.isNotEmpty()) {
+
+                var biz_uid = auth.currentUser!!.uid
+
+
+
+                var coupon_insert = Coupons(promoName, promoWorth.toInt(),couponLife.toInt(),couponPrice.toFloat())
+                database.child("biz_owners").child(biz_uid)
+                    .child(global_location_key.toString()).child("coupons").child(promoKey).setValue(coupon_insert)
+
+                //dismiss dialog
+                mAlertDialog.dismiss()
+                // restart activity
+//                            finish();
+//                            startActivity(getIntent());
+
+            } else {
+
+                Toast.makeText(
+                    baseContext, "ใส่ข้อมูลไม่ครบครับ",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            }
+        }
+
+        //cancel button click of custom layout
+        mDialogView.dialogCancelBtn.setOnClickListener {
+            //dismiss dialog
+            mAlertDialog.dismiss()
+        }
+
+        // dialog with editText ends
+
+
+    }
+
    // coupon write new/del/edit functions
 
     private fun write_new_coupon(){
 
         // dialog with edittext start
         //Inflate the dialog with custom view
-        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.new_promo_dialog,null)
+        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.new_coupon_dialog,null)
 
         //AlertDialogBuilder
         val mBuilder = AlertDialog.Builder(this@dashboard)
@@ -1071,19 +1308,23 @@ class dashboard : AppCompatActivity() , SensorEventListener {
         // button click of custom layout
         mDialogView.dialogAddBtn.setOnClickListener {
 
+
             var promoName = mDialogView.new_promo_name.text.toString()
             var promoWorth = mDialogView.promo_worth.text.toString()
+            var couponLife = mDialogView.coupon_life.text.toString()
+            var couponPrice = mDialogView.coupon_price.text.toString()
+//            var couponTerm = mDialogView.coupon_term.text.toString()
 
-            if (promoName.isNotEmpty() && promoWorth.isNotEmpty()) {
+            if (promoName.isNotEmpty() && promoWorth.isNotEmpty()&& couponLife.isNotEmpty()&&couponPrice.isNotEmpty()) {
 
                 var biz_uid = auth.currentUser!!.uid
 
 
 
-                var promo_insert = Promos(promoName, promoWorth.toInt())
+                var coupon_insert = Coupons(promoName, promoWorth.toInt(),couponLife.toInt(),couponPrice.toFloat())
                 database.child("biz_owners").child(biz_uid)
                     .child(global_location_key.toString()).child("coupons").push()
-                    .setValue(promo_insert)
+                    .setValue(coupon_insert)
 
                 //dismiss dialog
                 mAlertDialog.dismiss()
@@ -1161,83 +1402,6 @@ class dashboard : AppCompatActivity() , SensorEventListener {
     // ends
 
     // coupon edit
-
-    private fun coupon_edit(promoKey:String, promoName: String, promoWorth: Int?){
-
-
-        // dialog with edittext start
-        //Inflate the dialog with custom view
-        val mDialogView = LayoutInflater.from(this@dashboard).inflate(R.layout.new_promo_dialog,null)
-
-        //AlertDialogBuilder
-        val mBuilder = AlertDialog.Builder(this@dashboard)
-            .setView(mDialogView)
-            .setTitle("แก้ไข coupon")
-        //show dialog
-        val  mAlertDialog = mBuilder.show()
-
-        // disable touch outside
-
-        mAlertDialog.setCanceledOnTouchOutside(false)
-
-        // populate edit texts
-
-        mDialogView.new_promo_name.setText(promoName)
-
-        mDialogView.promo_worth.setText(promoWorth.toString())
-
-
-
-
-        // button click of custom layout
-        mDialogView.dialogAddBtn.setOnClickListener {
-
-            var promoName = mDialogView.new_promo_name.text.toString()
-            var promoWorth = mDialogView.promo_worth.text.toString()
-
-            if (promoName.isNotEmpty() && promoWorth.isNotEmpty()) {
-
-                var biz_uid = auth.currentUser!!.uid
-
-
-
-                var promo_insert = Promos(promoName, promoWorth.toInt())
-                database.child("biz_owners").child(biz_uid)
-                    .child(global_location_key.toString()).child("coupons").child(promoKey).setValue(promo_insert)
-
-                //dismiss dialog
-                mAlertDialog.dismiss()
-                // restart activity
-//                            finish();
-//                            startActivity(getIntent());
-
-            } else {
-
-                Toast.makeText(
-                    baseContext, "ใส่ข้อมูลไม่ครบครับ",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-            }
-        }
-
-        //cancel button click of custom layout
-        mDialogView.dialogCancelBtn.setOnClickListener {
-            //dismiss dialog
-            mAlertDialog.dismiss()
-        }
-
-        // dialog with editText ends
-
-
-    }
-
-
-
-
-
-
-
 
     private fun email_edit(){
 

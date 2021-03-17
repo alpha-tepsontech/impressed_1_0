@@ -38,6 +38,15 @@ data class Promos(
 )
 // ends
 
+// start data class
+data class Coupons(
+    var PromoName: String? = "",
+    var PromoWorth: Int? = 0,
+    var CouponLife:Int? =0,
+    var Price:Float? = 0.0F
+)
+// ends
+
 
 // start data class
 data class UserData(
@@ -66,6 +75,21 @@ data class Transaction(
 
 )
 // ends
+// start data class
+data class Coupons_tx(
+    var phone: String? = "",
+    var heartBank:Int? = 0,
+    var couponBank: Int? = 0,
+    var amount:Float =0.0F,
+    var upsale:Float =0.0F,
+    var type:String? = "",
+    var key:String? = "",
+    var time: Long = System.currentTimeMillis() / 1000L
+
+)
+// ends
+
+
 
 
 // set global val
