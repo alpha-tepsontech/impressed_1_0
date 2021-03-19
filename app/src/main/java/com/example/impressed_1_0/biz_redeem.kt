@@ -93,6 +93,12 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
         mDialogView.redeem_name.text = intent.getStringExtra("biz_redeem_name")
         mDialogView.redeem_amount.text = intent.getStringExtra("biz_promoWorth")
 
+        // set golden heart
+
+        if(intent.getStringExtra("biz_coupon_key") != null){
+            mDialogView.redeem_heart.setImageResource(R.drawable.g_heart)
+        }
+
         //login button click of custom layout
 
         // button click of custom layout
@@ -102,7 +108,9 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
 
             if(global_verified == true){
 
-                redeem()
+                if(intent.getStringExtra("biz_coupon_key") != null){
+                    coupon_redeem()
+                }else redeem()
 
             }else{
                 OTPprep()
@@ -351,7 +359,9 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
                     // unlink phone number
                     unlink("phone")
 
-                    redeem()
+                    if(intent.getStringExtra("biz_coupon_key") != null){
+                        coupon_redeem()
+                    }else redeem()
 
 
 
@@ -404,21 +414,39 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
 
 
     private fun redeem(){
-                    // write tx to database
-            val heartInsert = -intent.getStringExtra("biz_promoWorth").toInt()
+        // write tx to database
+        val heartInsert = -intent.getStringExtra("biz_promoWorth").toInt()
 
-            val blank:Float = 0.0f
+        val blank:Float = 0.0f
 
-            val transaction_insert = Transaction(customer_logged_phone,heartInsert,blank,blank,"redeem")
+        val transaction_insert = Transaction(customer_logged_phone,heartInsert,blank,blank,"redeem")
 
-            database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
-
-
+        database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
 
 
 
-            //dismiss dialog
-            startActivity(Intent(this,biz_dashboard::class.java))
+
+
+        //dismiss dialog
+        startActivity(Intent(this,biz_dashboard::class.java))
+    }
+
+    private fun coupon_redeem(){
+        // write tx to database
+        val couponKey = intent.getStringExtra("biz_coupon_key")
+
+        val blank:Float = 0.0f
+
+        val transaction_insert = Coupons_tx(customer_logged_phone,0,-1,blank,blank,"coupon_redeem",couponKey)
+
+        database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
+
+
+
+
+
+        //dismiss dialog
+        startActivity(Intent(this,biz_dashboard::class.java))
     }
 
 

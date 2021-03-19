@@ -53,6 +53,7 @@
             android:textColor="@color/colorLetterDark" />
 
         <ImageView
+            android:id="@+id/redeem_heart"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginRight="5dp"

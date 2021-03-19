@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
+import com.example.impressed_1_0.MyApplication.Companion.global_coupon_balance
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -60,6 +61,9 @@ private var heart_sum = 0
 private var heart_used = 0
 private var heart_life:Int = 0
 private var heart_exp_warning:Long = 0L
+private var coupon_balance = 0
+
+
 
 
 
@@ -451,211 +455,13 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
     }
 
 
-    private fun promos_database_read(){
 
-        //read data
+//             check coupon balance for a specific coupon key for the specific phone number
 
-        var biz_uid = auth.currentUser!!.uid
 
-        var promos_ref  = database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).orderByChild("promoWorth")
 
-        val promos_listener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                // clean out frame
-                biz_promo_frame.removeAllViews()
 
-                for (dsc in dataSnapshot.child("coupons").children) {
-
-                    var promoName = dsc.child("promoName").getValue(String::class.java)
-                    var promoWorth = dsc.child("promoWorth").getValue(Int::class.java)
-                    var couponLife = dsc.child("couponLife").getValue(Int::class.java)
-                    var couponPrice = dsc.child("price").getValue(Float::class.java)
-                    var couponKey = dsc.key.toString()
-
-
-
-                    val promo_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.biz_promo_set,null)
-                    val promoName_holder = promo_set.findViewById<TextView>(R.id.promoName_textview)
-                    val promoWorth_holder = promo_set.findViewById<TextView>(R.id.promoWorth_textview)
-                    val promoWorth_img_btn = promo_set.findViewById<ImageButton>(R.id.heartButton)
-                    promoName_holder.text = promoName+" | "+couponLife+" วัน | "+couponPrice!!.roundToInt().toString()+" บ."
-                    promoWorth_holder.text = couponBalance(couponKey)
-
-                    // check heart bank and set btn status
-
-                    promoWorth_img_btn.setEnabled(false)
-
-//                    if(heart_sum - promoWorth!! >= 0){
-////                        val active_color = ContextCompat.getColor(this@customer,R.color.colorHeart)
-//                        promoWorth_img_btn.setBackgroundResource(R.drawable.heart_btn)
-//                        promoWorth_img_btn.setEnabled(true)
-//                        promoName_holder.setBackgroundResource(R.drawable.enabled_border)
-//                    }
-
-                    promoWorth_img_btn.setOnClickListener{
-
-                        val intent = Intent(this@biz_dashboard,biz_redeem::class.java)
-                        intent.putExtra("biz_redeem_name",promoName)
-                        intent.putExtra("biz_promoWorth",promoWorth.toString())
-                        startActivity(intent)
-
-
-                    }
-
-
-                    biz_promo_frame.addView(promo_set)
-
-
-
-                }
-
-
-                // add separator
-                val line_view = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.line,null)
-                biz_promo_frame.addView(line_view)
-
-
-                for (ds in dataSnapshot.child("promos").children) {
-
-                    var promoName = ds.child("promoName").getValue(String::class.java)
-                    var promoWorth = ds.child("promoWorth").getValue(Int::class.java)
-
-
-
-                    val promo_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.biz_promo_set,null)
-                    val promoName_holder = promo_set.findViewById<TextView>(R.id.promoName_textview)
-                    val promoWorth_holder = promo_set.findViewById<TextView>(R.id.promoWorth_textview)
-                    val promoWorth_img_btn = promo_set.findViewById<ImageButton>(R.id.heartButton)
-                    promoName_holder.text = promoName
-                    promoWorth_holder.text = promoWorth.toString()
-
-                    // check heart bank and set btn status
-
-                    promoWorth_img_btn.setEnabled(false)
-
-                    if(heart_sum - promoWorth!! >= 0){
-//                        val active_color = ContextCompat.getColor(this@customer,R.color.colorHeart)
-                        promoWorth_img_btn.setBackgroundResource(R.drawable.heart_btn)
-                        promoWorth_img_btn.setEnabled(true)
-                        promoName_holder.setBackgroundResource(R.drawable.enabled_border)
-                    }
-
-                    promoWorth_img_btn.setOnClickListener{
-
-                        val intent = Intent(this@biz_dashboard,biz_redeem::class.java)
-                        intent.putExtra("biz_redeem_name",promoName)
-                        intent.putExtra("biz_promoWorth",promoWorth.toString())
-                        startActivity(intent)
-
-
-                    }
-
-
-                    biz_promo_frame.addView(promo_set)
-
-
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w("error",databaseError.toException())
-                // [START_EXCLUDE]
-                Toast.makeText(baseContext, "database failed",
-                    Toast.LENGTH_SHORT).show()
-                // [END_EXCLUDE]
-            }
-        }
-
-        promos_ref.addListenerForSingleValueEvent(promos_listener)
-        // database ends
-
-
-
-
-    }
-            // check coupon balance for a specific coupon key for the specific phone number
-    private fun couponBalance(couponKey: String): String {
-
-
-                var coupon_balance = 0
-
-                //read data
-
-                var tx_ref  = database.child("transactions").child(global_location_key.toString()).orderByChild("phone").equalTo(customer_logged_phone.toString())
-
-                val tx_listener = object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-
-
-                        for (ds in dataSnapshot.children) {
-
-
-                            Log.d("test-coupon_balance",couponKey+"/"+ds.child("key").getValue(String::class.java).toString())
-
-
-
-                            if(ds.child("key").getValue(String::class.java).toString() == couponKey){
-
-                                Log.d("test","matched"+ds.child("couponBank").getValue(Int::class.java).toString())
-
-                                val coupon_count = ds.child("couponBank").getValue(Int::class.java)
-                                if(coupon_count != null){
-                                coupon_balance += coupon_count}
-                            }
-
-                            // get heart sum and exp warning
-//
-//                            val heart_time = ds.child("time").getValue(Long::class.java)!!
-//                            val time = System.currentTimeMillis() / 1000L
-//
-//                            val exp_time = heart_time+(heart_life*86400)
-//
-//                            if(exp_time>time){
-//                                heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
-//                            }
-//
-//                            if(exp_time<heart_exp_warning|| heart_exp_warning == 0L){
-//                                heart_exp_warning = exp_time
-//                            }
-                        }
-
-                        Log.d("test",coupon_balance.toString())
-
-
-
-
-
-
-
-                    }
-
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        // Getting Post failed, log a message
-                        Log.w("error",databaseError.toException())
-                        // [START_EXCLUDE]
-                        Toast.makeText(baseContext, "database failed",
-                            Toast.LENGTH_SHORT).show()
-                        // [END_EXCLUDE]
-                    }
-
-
-                }
-
-                tx_ref.addValueEventListener(tx_listener)
-                // database ends
-//TODO: get return value back to display
-                return coupon_balance.toString()
-
-
-
-
-
-
-    }
     private fun tx_record_read(){
 
         //read data
@@ -678,6 +484,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                     var txType = ds.child("type").getValue(String::class.java)
                     var txHeart = ds.child("heartBank").getValue(Int::class.java)
                     var txTimeRaw = ds.child("time").getValue(Long::class.java)!!
+                    var txCoupon = ds.child("couponBank").getValue(Int::class.java)
 
 
                     val sdf = java.text.SimpleDateFormat("dd/MM/yyyy '@' HH:mm")
@@ -729,6 +536,25 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
                     // end
 
+                    // set up coupon redeem tx
+
+                    val coupon_redeem_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.coupon_record,null)
+                    val coupon_redeem_holder = coupon_redeem_set.findViewById<TextView>(R.id.coupon_record)
+                    val coupon_time_redeem_holder = coupon_redeem_set.findViewById<TextView>(R.id.coupon_time)
+                    val coupon_redeem_type = coupon_redeem_set.findViewById<TextView>(R.id.type)
+                    val coupon_redeem_unit = coupon_redeem_set.findViewById<TextView>(R.id.unit)
+
+
+
+
+                    coupon_redeem_holder.text = txCoupon.toString()
+                    coupon_time_redeem_holder.text = txTime.toString()
+                    coupon_redeem_type.text = "coupon redeem: "
+                    coupon_redeem_unit.text = "ดวง : "
+
+
+                    // end
+
 
                     if (txType == "sale") {
                         tx_scroll_view.addView(tx_set)
@@ -736,6 +562,8 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                         tx_scroll_view.addView(red_set)
                     }else if(txType == "coupon"){
                         tx_scroll_view.addView(coupon_set)
+                    }else if(txType == "coupon_redeem"){
+                        tx_scroll_view.addView(coupon_redeem_set)
                     }
 
 
@@ -901,8 +729,6 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                     }
                 }
 
-
-
                 customer_total.text = amount_sum.toString()
                 customer_heart.text = heart_sum.toString()
                 customer_upsale.text = upsales_sum.toString()
@@ -914,7 +740,7 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
                 // get promos
 
-                promos_database_read()
+                 promos_database_read()
 
 
             }
@@ -933,6 +759,281 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         // database ends
 
     }
+
+    private fun promos_database_read(){
+
+        //read data
+
+        var biz_uid = auth.currentUser!!.uid
+
+        var promos_ref  = database.child("biz_owners").child(biz_uid).child(global_location_key.toString()).orderByChild("promoWorth")
+
+        val promos_listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                // clean out frame
+                biz_promo_frame.removeAllViews()
+
+                for (dsc in dataSnapshot.child("coupons").children) {
+
+                    var promoName = dsc.child("promoName").getValue(String::class.java)
+                    var promoWorth = dsc.child("promoWorth").getValue(Int::class.java)
+                    var couponLife = dsc.child("couponLife").getValue(Int::class.java)
+                    var couponPrice = dsc.child("price").getValue(Float::class.java)
+                    var couponKey = dsc.key.toString()
+
+
+
+                    val promo_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.biz_promo_set,null)
+                    val promoName_holder = promo_set.findViewById<TextView>(R.id.promoName_textview)
+                    val couponWorth_holder = promo_set.findViewById<TextView>(R.id.promoWorth_textview)
+                    val promoWorth_img_btn = promo_set.findViewById<ImageButton>(R.id.heartButton)
+                    promoName_holder.text = promoName+" | "+couponLife+" วัน | "+couponPrice!!.roundToInt().toString()+" บ."
+                    promoWorth_img_btn.setEnabled(false)
+
+                    // get couponBalance read database again
+
+                    var coupon_ref  = database.child("transactions").child(global_location_key.toString()).orderByChild("phone").equalTo(customer_logged_phone.toString())
+
+                    val coupon_listener = object : ValueEventListener {
+
+
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                            // clear coupon balance
+
+                            coupon_balance = 0
+
+
+                            for (dscb in dataSnapshot.children) {
+
+
+                                if(dscb.child("key").getValue(String::class.java).toString() == couponKey) {
+                                    val coupon_count =
+                                        dscb.child("couponBank").getValue(Int::class.java)!!
+
+                                    // get exp time parameters
+                                    val coupon_time =
+                                        dscb.child("time").getValue(Long::class.java)!!
+                                    val time = System.currentTimeMillis() / 1000L
+                                    val exp_time = coupon_time + (heart_life * 86400)
+
+                                    if (exp_time > time) {
+                                        coupon_balance += coupon_count
+                                        val time_left = (exp_time - time)/86400
+
+                                        promoName_holder.text = promoName + " | " + time_left.toString() + " วัน | " + couponPrice!!.roundToInt().toString() + " บ."
+                                    }
+                                }
+
+
+                                couponWorth_holder.text = coupon_balance.toString()
+
+                                // check coupon balance and set btn status
+
+
+
+                                if(coupon_balance > 0){
+                                    promoWorth_img_btn.setBackgroundResource(R.drawable.coupon_btn)
+                                    promoWorth_img_btn.setImageResource(R.drawable.g_heart)
+                                    promoWorth_img_btn.setEnabled(true)
+                                    promoName_holder.setBackgroundResource(R.drawable.coupon_btn)
+                                    promoName_holder.setTextColor(getColor(R.color.colorWhite))
+                                }
+
+                                }
+                        }
+
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Getting Post failed, log a message
+                            Log.w("error",databaseError.toException())
+                            // [START_EXCLUDE]
+                            Toast.makeText(baseContext, "database failed",
+                                Toast.LENGTH_SHORT).show()
+                            // [END_EXCLUDE]
+                        }
+
+
+                    }
+
+                    coupon_ref.addValueEventListener(coupon_listener)
+
+
+
+                    promoWorth_img_btn.setOnClickListener{
+
+                        val intent = Intent(this@biz_dashboard,biz_redeem::class.java)
+                        intent.putExtra("biz_redeem_name",promoName)
+                        intent.putExtra("biz_promoWorth","1")
+                        intent.putExtra("biz_coupon_key",couponKey)
+                        startActivity(intent)
+
+
+                    }
+
+
+                    biz_promo_frame.addView(promo_set)
+
+
+
+                }
+
+
+                // add separator
+                val line_view = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.line,null)
+                biz_promo_frame.addView(line_view)
+
+
+                for (ds in dataSnapshot.child("promos").children) {
+
+                    var promoName = ds.child("promoName").getValue(String::class.java)
+                    var promoWorth = ds.child("promoWorth").getValue(Int::class.java)
+
+
+
+                    val promo_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.biz_promo_set,null)
+                    val promoName_holder = promo_set.findViewById<TextView>(R.id.promoName_textview)
+                    val promoWorth_holder = promo_set.findViewById<TextView>(R.id.promoWorth_textview)
+                    val promoWorth_img_btn = promo_set.findViewById<ImageButton>(R.id.heartButton)
+                    promoName_holder.text = promoName
+                    promoWorth_holder.text = promoWorth.toString()
+
+                    // check heart bank and set btn status
+
+                    promoWorth_img_btn.setEnabled(false)
+
+                    if(heart_sum - promoWorth!! >= 0){
+//                        val active_color = ContextCompat.getColor(this@customer,R.color.colorHeart)
+                        promoWorth_img_btn.setBackgroundResource(R.drawable.heart_btn)
+                        promoWorth_img_btn.setEnabled(true)
+                        promoName_holder.setBackgroundResource(R.drawable.enabled_border)
+                    }
+
+                    promoWorth_img_btn.setOnClickListener{
+
+                        val intent = Intent(this@biz_dashboard,biz_redeem::class.java)
+                        intent.putExtra("biz_redeem_name",promoName)
+                        intent.putExtra("biz_promoWorth",promoWorth.toString())
+                        startActivity(intent)
+
+
+                    }
+
+
+                    biz_promo_frame.addView(promo_set)
+
+
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w("error",databaseError.toException())
+                // [START_EXCLUDE]
+                Toast.makeText(baseContext, "database failed",
+                    Toast.LENGTH_SHORT).show()
+                // [END_EXCLUDE]
+            }
+        }
+
+        promos_ref.addListenerForSingleValueEvent(promos_listener)
+        // database ends
+
+
+
+
+    }
+
+//    private fun couponBalance(couponKey: String,couponLife:Int){
+//
+//
+//
+//
+//        //read data
+//
+//        var tx_ref  = database.child("transactions").child(global_location_key.toString()).orderByChild("phone").equalTo(customer_logged_phone.toString())
+//
+//        val tx_listener = object : ValueEventListener {
+//
+//
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//
+//                // clear coupon balance
+//
+//                coupon_balance = 0
+//
+//
+//                for (ds in dataSnapshot.children) {
+//
+//
+//                    if(ds.child("key").getValue(String::class.java).toString() == couponKey){
+//
+////                        Log.d("test","matched"+ds.child("couponBank").getValue(Int::class.java).toString())
+//
+//                        val coupon_count = ds.child("couponBank").getValue(Int::class.java)
+//                        if(coupon_count != null){
+//                            coupon_balance += coupon_count}
+//                    }
+//
+//                    couponWorth_holder.text
+
+
+
+
+
+                    // get heart sum and exp warning
+//
+//                            val heart_time = ds.child("time").getValue(Long::class.java)!!
+//                            val time = System.currentTimeMillis() / 1000L
+//
+//                            val exp_time = heart_time+(heart_life*86400)
+//
+//                            if(exp_time>time){
+//                                heart_sum += ds.child("heartBank").getValue(Int::class.java)!!
+//                            }
+//
+//                            if(exp_time<heart_exp_warning|| heart_exp_warning == 0L){
+//                                heart_exp_warning = exp_time
+//                            }
+//                }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//            }
+//
+//
+//            override fun onCancelled(databaseError: DatabaseError) {
+//                // Getting Post failed, log a message
+//                Log.w("error",databaseError.toException())
+//                // [START_EXCLUDE]
+//                Toast.makeText(baseContext, "database failed",
+//                    Toast.LENGTH_SHORT).show()
+//                // [END_EXCLUDE]
+//            }
+//
+//
+//        }
+//
+//        tx_ref.addValueEventListener(tx_listener)
+//
+//
+//        // database ends
+////TODO: get return value back to display
+////        return coupon_balance.toString()
+//
+//
+//
+//
+//
+//
+//    }
 
 
     private fun coupon_selector(){
@@ -1076,7 +1177,6 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                    Log.d("test-read",dataSnapshot.toString())
                 var couponWorth = 0
                 var couponPrice = 0.0F
 
