@@ -28,7 +28,9 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_biz_redeem.*
 import kotlinx.android.synthetic.main.activity_customer_redeem.*
+import kotlinx.android.synthetic.main.activity_customer_redeem.otpText
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.progress
 import kotlinx.android.synthetic.main.confirm_dialog.view.*
@@ -54,8 +56,6 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
     lateinit var mAuth: FirebaseAuth
     var verification_code = ""
     var verificationId = ""
-    var phnClean:String = ""
-    var verified = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +92,12 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
         mDialogView.redeem_title.text = "ยืนยันใช้ promotion"
         mDialogView.redeem_name.text = intent.getStringExtra("biz_redeem_name")
         mDialogView.redeem_amount.text = intent.getStringExtra("biz_promoWorth")
+
+
+        // hide keyboard
+
+        val imm = this@biz_redeem.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
 
         // set golden heart
 
@@ -147,7 +153,6 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
             val intent = Intent(this,customer_redeem::class.java)
             intent.putExtra("redeem_name",redeem_name)
             intent.putExtra("promoWorth",promo_worth)
-            intent.putExtra("verified",verified)
             startActivity(intent)
 
         }
@@ -359,6 +364,10 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
                     // unlink phone number
                     unlink("phone")
 
+                    // remember that user has already gone through OTP
+
+                    global_verified = true
+
                     if(intent.getStringExtra("biz_coupon_key") != null){
                         coupon_redeem()
                     }else redeem()
@@ -423,6 +432,8 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
 
         database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
 
+        otpText.text = "redeem in progress"
+
 
 
 
@@ -435,13 +446,15 @@ class biz_redeem : AppCompatActivity(), SensorEventListener {
         // write tx to database
         val couponKey = intent.getStringExtra("biz_coupon_key")
 
+        val couponAmount = intent.getStringExtra("biz_promoWorth").toInt()
+
         val blank:Float = 0.0f
 
-        val transaction_insert = Coupons_tx(customer_logged_phone,0,-1,blank,blank,"coupon_redeem",couponKey)
+        val transaction_insert = Coupons_tx(customer_logged_phone,0,-couponAmount,blank,blank,"coupon_redeem",couponKey)
 
         database.child("transactions").child(global_location_key.toString()).push().setValue(transaction_insert)
 
-
+        otpText.text = "coupon redeem in progress"
 
 
 

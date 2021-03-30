@@ -24,7 +24,6 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
-import com.example.impressed_1_0.MyApplication.Companion.global_coupon_balance
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -38,10 +37,15 @@ import kotlinx.android.synthetic.main.activity_biz_dashboard.heart_display
 import kotlinx.android.synthetic.main.activity_biz_dashboard.heart_life_display
 import kotlinx.android.synthetic.main.activity_biz_dashboard.log_out_btn
 import kotlinx.android.synthetic.main.activity_biz_dashboard.total_input
+import kotlinx.android.synthetic.main.activity_choices.*
 import kotlinx.android.synthetic.main.activity_customer.*
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.confirm_dialog.view.*
+import kotlinx.android.synthetic.main.coupon_amount.view.*
+import kotlinx.android.synthetic.main.coupon_amount.view.newdevice_cancel
+import kotlinx.android.synthetic.main.coupon_amount.view.newdevice_save
 import kotlinx.android.synthetic.main.dialog_frame.view.*
+import kotlinx.android.synthetic.main.new_device_dialog.view.*
 import kotlinx.android.synthetic.main.total_ent_dialog.view.*
 import kotlinx.android.synthetic.main.tx_del_dialog.view.*
 import org.w3c.dom.Text
@@ -185,15 +189,30 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
         val location_listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                val location_info = dataSnapshot.getValue()
+                // tier_1 text setup
+                for (ds in dataSnapshot.children) {
+                    Log.d("test",ds.toString())
+
+                    when(ds.key){
+                        "heartWorth" ->{
+                            heartWorth = ds.getValue(Long::class.java).toString()
+                            heart_display.text = heartWorth
+                        }
+                        "heartLife" ->{
+                            heart_life = ds.getValue(Int::class.java)!!
+                            heart_life_display.text = heart_life.toString()
+                        }
+
+                    }
+                }
 
 
 
-//                biz_location_display.text = dataSnapshot.child("locationName").getValue().toString()
-                heartWorth = dataSnapshot.child("heartWorth").getValue(String::class.java)!!
-                heart_display.text = heartWorth
-                heart_life = dataSnapshot.child("heartLife").getValue(String::class.java)!!.toInt()
-                heart_life_display.text = heart_life.toString()
+
+//                heartWorth = dataSnapshot.child("heartWorth").getValue(String::class.java)!!
+//                heart_display.text = heartWorth
+//                heart_life = dataSnapshot.child("heartLife").getValue(Int::class.java)!!.toInt()
+//                heart_life_display.text = heart_life.toString()
 
            }
 
@@ -476,8 +495,6 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
                 tx_scroll_view.removeAllViews()
 
-
-
                 for (ds in dataSnapshot.children) {
 
                     var txAmount = ds.child("amount").getValue(Float::class.java)
@@ -490,9 +507,6 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                     val sdf = java.text.SimpleDateFormat("dd/MM/yyyy '@' HH:mm")
                     val date = java.util.Date(txTimeRaw * 1000)
                     val txTime = sdf.format(date)
-
-
-
 
                     // set up sale tx
 
@@ -518,7 +532,6 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                     red_holder.text = txHeart.toString()
                     red_time_holder.text = txTime.toString()
 
-
                     //end
 
                     // set up coupon sale tx
@@ -526,9 +539,6 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                     val coupon_set = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.coupon_record,null)
                     val coupon_holder = coupon_set.findViewById<TextView>(R.id.coupon_record)
                     val coupon_time_holder = coupon_set.findViewById<TextView>(R.id.coupon_time)
-
-
-
 
                     coupon_holder.text = txAmount!!.roundToInt().toString()
                     coupon_time_holder.text = txTime.toString()
@@ -544,17 +554,12 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                     val coupon_redeem_type = coupon_redeem_set.findViewById<TextView>(R.id.type)
                     val coupon_redeem_unit = coupon_redeem_set.findViewById<TextView>(R.id.unit)
 
-
-
-
                     coupon_redeem_holder.text = txCoupon.toString()
                     coupon_time_redeem_holder.text = txTime.toString()
                     coupon_redeem_type.text = "coupon redeem: "
                     coupon_redeem_unit.text = "ดวง : "
 
-
                     // end
-
 
                     if (txType == "sale") {
                         tx_scroll_view.addView(tx_set)
@@ -599,7 +604,6 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
                             )
                         }
-
                     }
 
                     // ends
@@ -621,7 +625,22 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
                     // ends
 
+                    // setup coupon_redeem_del
+                    val coupon_redeem_del = coupon_redeem_set.findViewById<ImageButton>(R.id.coupon_del)
 
+                    coupon_redeem_del.setOnClickListener{
+
+                        if (txKey != null) {
+                            tx_delete(txKey,
+                                txAmount!!,
+                                txTime!!
+
+                            )
+                        }
+
+                    }
+
+                    // ends
                 }
             }
 
@@ -637,9 +656,6 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
         tx_ref.addValueEventListener(tx_listener)
         // database ends
-
-
-
 
     }
 
@@ -816,13 +832,13 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
                                     val coupon_time =
                                         dscb.child("time").getValue(Long::class.java)!!
                                     val time = System.currentTimeMillis() / 1000L
-                                    val exp_time = coupon_time + (heart_life * 86400)
+                                    val exp_time = coupon_time + (couponLife!!* 86400)
 
                                     if (exp_time > time) {
                                         coupon_balance += coupon_count
                                         val time_left = (exp_time - time)/86400
 
-                                        promoName_holder.text = promoName + " | " + time_left.toString() + " วัน | " + couponPrice!!.roundToInt().toString() + " บ."
+                                        promoName_holder.text = promoName + " | " + time_left.toString() + " วัน"
                                     }
                                 }
 
@@ -863,11 +879,92 @@ class biz_dashboard : AppCompatActivity() , SensorEventListener {
 
                     promoWorth_img_btn.setOnClickListener{
 
-                        val intent = Intent(this@biz_dashboard,biz_redeem::class.java)
-                        intent.putExtra("biz_redeem_name",promoName)
-                        intent.putExtra("biz_promoWorth","1")
-                        intent.putExtra("biz_coupon_key",couponKey)
-                        startActivity(intent)
+                        //coupon amount seletor
+
+                        //Inflate the dialog with custom view
+                        val mDialogView = LayoutInflater.from(this@biz_dashboard).inflate(R.layout.coupon_amount,null)
+
+                        //AlertDialogBuilder
+                        val mBuilder = AlertDialog.Builder(this@biz_dashboard)
+                            .setView(mDialogView)
+                            .setTitle("กรุณาเลือกจำนวนหัวใจที่จะใช้")
+
+
+                        //show dialog
+                        val  mAlertDialog = mBuilder.show()
+
+                        // disable touch outside
+
+                        mAlertDialog.setCanceledOnTouchOutside(false)
+
+
+                        // enable btn if text field is not empty - start
+
+                        mDialogView.coupon_amount.addTextChangedListener(object :
+                            TextWatcher {
+                            override fun onTextChanged(
+                                s: CharSequence,
+                                start: Int,
+                                before: Int,
+                                count: Int
+                            ) { if (s.toString().trim { it <= ' ' }.length > 0){
+                                mDialogView.newdevice_save.setEnabled(true)
+                                mDialogView.newdevice_save.setBackgroundColor(resources.getColor(R.color.colorBackground))
+
+                            }else{
+                                mDialogView.newdevice_save.setEnabled(false)
+                                mDialogView.newdevice_save.setBackgroundColor(resources.getColor(R.color.colorDisabled))
+
+                            }
+                            }
+
+                            override fun beforeTextChanged(
+                                s: CharSequence, start: Int, count: Int,
+                                after: Int
+                            ) { // TODO Auto-generated method stub
+                            }
+
+                            override fun afterTextChanged(s: Editable) { // TODO Auto-generated method stub
+                            }
+                        })
+
+                        // enable btn if text field is not empty - ends
+
+
+
+                        //login button click of custom layout
+                        mDialogView.newdevice_save.setOnClickListener {
+
+                            // send data to biz_redeem
+
+                            val intent = Intent(this@biz_dashboard,biz_redeem::class.java)
+                            intent.putExtra("biz_redeem_name",promoName)
+                            intent.putExtra("biz_promoWorth",mDialogView.coupon_amount.text.toString())
+                            intent.putExtra("biz_coupon_key",couponKey)
+                            startActivity(intent)
+
+
+
+                            //dismiss dialog
+                            mAlertDialog.dismiss()
+
+
+                        }
+                        //cancel button click of custom layout
+                        mDialogView.newdevice_cancel.setOnClickListener {
+                            //dismiss dialog
+                            mAlertDialog.dismiss()
+                        }
+
+                        // dialog with editText ends
+
+
+
+
+                        // coupon amount selector ends
+
+
+
 
 
                     }

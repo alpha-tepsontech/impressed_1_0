@@ -29,6 +29,7 @@ import kotlinx.android.synthetic.main.activity_customer_redeem.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.progress
 import kotlinx.android.synthetic.main.confirm_dialog.view.*
+import kotlinx.android.synthetic.main.new_device_dialog.view.*
 import kotlinx.android.synthetic.main.redeem.view.*
 import kotlinx.android.synthetic.main.verification_dialog.*
 import kotlinx.android.synthetic.main.verification_dialog.view.*
@@ -60,7 +61,10 @@ class customer_redeem : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_customer_redeem)
 
+        // hide keyboard
 
+        val imm = this@customer_redeem.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
 
 
         // gravity sensor setup
@@ -366,12 +370,15 @@ class customer_redeem : AppCompatActivity(), SensorEventListener {
 
             val redeem_name = intent.getStringExtra("redeem_name")
             val promo_worth = intent.getStringExtra("promoWorth")
+            val coupon_key   = intent.getStringExtra("coupon_key")
 
 
 
             val intent = Intent(this,biz_redeem::class.java)
             intent.putExtra("biz_redeem_name",redeem_name)
             intent.putExtra("biz_promoWorth",promo_worth)
+            intent.putExtra("biz_coupon_key",coupon_key)
+
             startActivity(intent)
 
         }
@@ -389,7 +396,6 @@ class customer_redeem : AppCompatActivity(), SensorEventListener {
     }
 
     // gravity sensor code ends
-
 
     // redeem ready pop up dialog
 
@@ -418,8 +424,11 @@ class customer_redeem : AppCompatActivity(), SensorEventListener {
         mDialogView.redeem_title.text = "พลิกเครื่องให้แคชเชียร์เลยครับ"
         mDialogView.redeem_name.text = intent.getStringExtra("redeem_name")
         mDialogView.redeem_amount.text = intent.getStringExtra("promoWorth")
+        mDialogView.redeem_heart.setImageResource(R.drawable.g_heart)
         mDialogView.redeem_btn.visibility = View.GONE
         //login button click of custom layout
+
+
 
         //cancel button click of custom layout
         mDialogView.redeem_cancel.setOnClickListener {

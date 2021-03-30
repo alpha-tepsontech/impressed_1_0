@@ -37,11 +37,13 @@ import android.hardware.SensorManager
 import android.hardware.Sensor
 import android.os.CountDownTimer
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_name
 import com.example.impressed_1_0.MyApplication.Companion.customer_logged_phone
 import com.example.impressed_1_0.MyApplication.Companion.global_location_key
+import com.example.impressed_1_0.MyApplication.Companion.global_otp_timer
 import com.example.impressed_1_0.MyApplication.Companion.global_verified
 
 // import firebase database
@@ -49,6 +51,7 @@ import com.example.impressed_1_0.MyApplication.Companion.global_verified
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.confirm_dialog.view.*
 import kotlinx.android.synthetic.main.name_dialog.view.*
@@ -89,6 +92,10 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
     private var customer_phone_listener: ValueEventListener? = null
 
+    // [START declare_auth]
+    private lateinit var auth: FirebaseAuth
+// [END declare_auth]
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,12 +104,10 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
         // set OTP gate keeper
         global_verified = false
-        // jumper
 
-//        startActivity(Intent(this,payment::class.java))
 
-        // ends
-
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
         // gravity sensor setup
         // get reference of the service
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -115,7 +120,8 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
         // disable the btn until input is entered
         log_in_btn.setEnabled(false)
 
-        welcome_text()
+        // set hero image
+        front_page()
 
 
         // custom keyboard start
@@ -440,7 +446,14 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
                 // start countdown for resend button
 
-                object : CountDownTimer(30000, 1000) {
+                // set otp counter
+                val time = System.currentTimeMillis() / 1000L
+                global_otp_timer = time+30000
+
+                var count_start = global_otp_timer-time
+
+
+                object : CountDownTimer(count_start, 1000) {
                     override fun onTick(millisUntilFinished: Long) {
 
                         mDialogView.otp_resend.text = "resend OTP ("+(millisUntilFinished / 1000).toString()+")"
@@ -453,6 +466,13 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
                 }.start()
 
                 // countdown button ends
+
+                mDialogView.otp_resend.setOnClickListener {
+
+                    OTPprep()
+                    mAlertDialog.dismiss()
+
+                }
 
                 progress.visibility = View.INVISIBLE
 
@@ -697,6 +717,38 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
 
                     }
+                    // resent button
+                    mDialogView.hidden_btn.visibility = View.VISIBLE
+
+                    // set otp counter
+                    val time = System.currentTimeMillis() / 1000L
+                    global_otp_timer = time+30000
+
+                    var count_start = global_otp_timer-time
+
+
+                    object : CountDownTimer(count_start, 1000) {
+                        override fun onTick(millisUntilFinished: Long) {
+
+                            mDialogView.hidden_btn.text = "resend OTP ("+(millisUntilFinished / 1000).toString()+")"
+                        }
+                        override fun onFinish() {
+                            mDialogView.hidden_btn.text = "resend OTP"
+                            mDialogView.hidden_btn.isEnabled = true
+                            mDialogView.hidden_btn.setBackgroundColor(resources.getColor(R.color.colorBackground))
+                        }
+                    }.start()
+
+                    // countdown button ends
+                    mDialogView.hidden_btn.setOnClickListener {
+
+                        OTPprep()
+                        mAlertDialog.dismiss()
+
+
+                    }
+
+
                     //cancel button click of custom layout
                     mDialogView.confirm_cancel.setOnClickListener {
                         //dismiss dialog
@@ -774,39 +826,52 @@ class MainActivity : AppCompatActivity() , SensorEventListener{
 
     // gravity sensor code ends
 
-    private fun welcome_text(){
+//    private fun welcome_text(){
+//
+//        // initialize_database_ref
+//        database = Firebase.database.reference
+//        // init ends
+//        // read setting from database
+//
+//        var settings_ref  = database.child("settings").child("welcome_text")
+//
+//
+//
+//        val device_listener = object : ValueEventListener {
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//
+//                welcome_text.text = dataSnapshot.getValue().toString()
+//
+//            }
+//
+//            override fun onCancelled(databaseError: DatabaseError) {
+//                // Getting Post failed, log a message
+//                Log.w("error", "welcome text failed", databaseError.toException())
+//                // [START_EXCLUDE]
+//                Toast.makeText(baseContext, "Failed to load welcome text.",
+//                    Toast.LENGTH_SHORT).show()
+//                // [END_EXCLUDE]
+//            }
+//        }
+//
+//
+//        settings_ref.addListenerForSingleValueEvent(device_listener)
+//
+//        // ends database read
+//
+//
+//    }
 
-        // initialize_database_ref
-        database = Firebase.database.reference
-        // init ends
-        // read setting from database
+    /// front page hero image function
 
-        var settings_ref  = database.child("settings").child("welcome_text")
+    private fun front_page(){
 
+        var biz_uid = auth.currentUser!!.uid
+        val front_image = findViewById(R.id.frontPage) as ImageView
 
-
-        val device_listener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                welcome_text.text = dataSnapshot.getValue().toString()
-
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w("error", "welcome text failed", databaseError.toException())
-                // [START_EXCLUDE]
-                Toast.makeText(baseContext, "Failed to load welcome text.",
-                    Toast.LENGTH_SHORT).show()
-                // [END_EXCLUDE]
-            }
-        }
-
-
-        settings_ref.addListenerForSingleValueEvent(device_listener)
-
-        // ends database read
-
+        Picasso.get()
+            .load("http://www.tepsontech.com/pratupjai/cloud/"+biz_uid+"/front.png")
+            .into(front_image)
 
     }
 

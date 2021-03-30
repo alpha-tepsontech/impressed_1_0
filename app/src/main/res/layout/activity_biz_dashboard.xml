@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.4" />
+        app:layout_constraintWidth_percent="0.45" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
@@ -87,18 +87,16 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:text="x"
-            android:textColor="@color/colorHeart"
-            tools:layout_editor_absoluteX="901dp"
-            tools:layout_editor_absoluteY="103dp" />
+            android:textColor="@color/colorWhite"
+            android:fontFamily="@font/sukhumvit_bold"/>
 
         <TextView
             android:id="@+id/customer_heart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
-            android:textColor="@color/colorHeart"
-            tools:layout_editor_absoluteX="909dp"
-            tools:layout_editor_absoluteY="103dp" />
+            android:textColor="@color/colorWhite"
+            android:fontFamily="@font/sukhumvit_bold"/>
 
     </LinearLayout>
 
@@ -110,7 +108,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
-        app:layout_constraintStart_toEndOf="@+id/scrollView3"
+        app:layout_constraintStart_toEndOf="@+id/input_view"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo_thai_dark" />
 
@@ -393,7 +391,7 @@
         app:layout_constraintBottom_toTopOf="@+id/log_out_btn"
         app:layout_constraintEnd_toEndOf="@+id/input_view"
         app:layout_constraintStart_toStartOf="@+id/input_view"
-        app:layout_constraintWidth_percent="0.4">
+        app:layout_constraintWidth_percent="0.45">
 
         <LinearLayout
             android:id="@+id/biz_promo_frame"
@@ -407,7 +405,7 @@
     <LinearLayout
         android:id="@+id/total_btns"
         android:layout_width="0dp"
-        app:layout_constraintWidth_percent="0.2"
+        app:layout_constraintWidth_percent="0.15"
         android:layout_height="0dp"
         android:gravity="bottom"
         android:orientation="vertical"
@@ -460,7 +458,7 @@
         app:layout_constraintBottom_toTopOf="@+id/numpad_linearlayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/input_view"
-        app:layout_constraintWidth_percent="0.6" />
+        app:layout_constraintWidth_percent="0.55" />
 
     <LinearLayout
         android:id="@+id/numpad_linearlayout"
@@ -642,11 +640,9 @@
         android:id="@+id/biz_email_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
         android:text="biz_email"
         android:textColor="@color/colorLetterDark"
-        app:layout_constraintStart_toEndOf="@+id/scrollView3"
+        app:layout_constraintStart_toStartOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="@+id/scrollView4" />
 
     <ScrollView

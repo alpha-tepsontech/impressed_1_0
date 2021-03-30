@@ -138,7 +138,7 @@
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.4" />
+        app:layout_constraintWidth_percent="0.3" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -237,7 +237,7 @@
         android:paddingRight="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.7"
-        app:layout_constraintWidth_percent="0.6">
+        app:layout_constraintWidth_percent="0.7">
 
         <LinearLayout
             android:id="@+id/customer_promo_frame"
@@ -250,11 +250,13 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:text="โปรโมชั่นทั้งหมด"
         android:textColor="@color/colorLetterDark"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout21"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout21" />
+        app:layout_constraintStart_toStartOf="@+id/scrollView2"
+        app:layout_constraintTop_toTopOf="@+id/input_view" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

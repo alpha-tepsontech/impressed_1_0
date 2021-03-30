@@ -107,7 +107,7 @@ class MyApplication: Application() {
         var global_customers = 0
         var global_exp_date:Long = 0
         var global_verified = false
-        var global_coupon_balance = 0
+        var global_otp_timer = 0L
 
     }
 

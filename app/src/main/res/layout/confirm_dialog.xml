@@ -43,6 +43,18 @@
             android:textColor="@color/colorLetterlight" />
 
         <Button
+            android:id="@+id/hidden_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:background="@color/colorDisabled"
+            android:fontFamily="@font/sukhumvit_medium"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:visibility="gone"
+            android:enabled="false"/>
+
+        <Button
             android:id="@+id/confirm_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
